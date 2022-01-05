@@ -43,33 +43,28 @@ module.exports = function (app) {
     response.json(result);
   });
 
-
   //inloggning
-   app.post("/rest/login", async (request, response) => {
-     let encryptedPassword = getHash(request.body.password);
-     let user = await db.all(
-       "SELECT * FROM users WHERE username = ? AND password = ?",
-       [request.body.username, encryptedPassword]
-     );
+  app.post("/rest/login", async (request, response) => {
+    let encryptedPassword = getHash(request.body.password);
+    let user = await db.all(
+      "SELECT * FROM users WHERE username = ? AND password = ?",
+      [request.body.username, encryptedPassword]
+    );
 
-     user = user[0]; 
-     console.log("request.session.verification", request.session.verification);
+    user = user[0];
+    console.log("request.session.verification", request.session.verification);
 
-     if (user && user.username)
-     {
-         request.session.user = user;
-         user.loggedIn = true;
-         user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
-         response.json({ loggedIn: true });
-     }
-     else {
-         response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-         response.json({ loggedIn: false, message: "no matching user" });
-       }
+    if (user && user.username) {
+      request.session.user = user;
+      user.loggedIn = true;
+      user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
+      response.json({ loggedIn: true });
+    } else {
+      response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+      response.json({ loggedIn: false, message: "no matching user" });
+    }
+  });
 
-   });
-  
-  
   //Hämta inloggad användare
   app.get("/rest/login", async (request, response) => {
     let user;
@@ -90,9 +85,12 @@ module.exports = function (app) {
     }
   });
 
-
-
-
+  // logga ut
+  app.delete("/rest/login", async (request, response) => {
+    request.session.destroy(() => {
+      response.json({ loggedIn: false });
+    });
+  });
 
   return db;
 };
