@@ -1,3 +1,14 @@
+const crypto = require("crypto");
+const salt = "öoaheriaheithfd".toString("hex");
+function getHash(password) {
+  // utility att skapa kryperade lösenord
+  let hash = crypto
+    .pbkdf2Sync(password, salt, 1000, 64, `sha512`)
+    .toString("hex");
+  return hash;
+}
+
+
 module.exports = function (app) {
   // mysqlite
   const sqlite = require("sqlite3");
@@ -9,12 +20,79 @@ module.exports = function (app) {
   db.run = util.promisify(db.run);
 
   // REST routes (endpoints)
-   app.get("/rest/users", async (req, res) => {
-     let query = "SELECT * FROM users";
-     let result = await db.all(query);
-     res.json(result);
+  app.get("/rest/users", async (req, res) => {
+    let query = "SELECT * FROM users";
+    let result = await db.all(query);
+    res.json(result);
+  });
+
+  //Registrering
+  app.post("/rest/users", async (request, response) => {
+    let user = request.body;
+    let encryptedPassword = getHash(user.password); // encrypted password
+    let result;
+    try {
+      result = await db.all("INSERT INTO users VALUES(?,?,?)", [
+        null,
+        user.username,
+        encryptedPassword,
+      ]);
+    } catch (e) {
+      console.error(e);
+    }
+    response.json(result);
+  });
+
+
+  //inloggning
+   app.post("/rest/login", async (request, response) => {
+     let encryptedPassword = getHash(request.body.password);
+     let user = await db.all(
+       "SELECT * FROM users WHERE username = ? AND password = ?",
+       [request.body.username, encryptedPassword]
+     );
+
+     user = user[0]; 
+     console.log("request.session.verification", request.session.verification);
+
+     if (user && user.username)
+     {
+         request.session.user = user;
+         user.loggedIn = true;
+         user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
+         response.json({ loggedIn: true });
+     }
+     else {
+         response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+         response.json({ loggedIn: false, message: "no matching user" });
+       }
+
    });
+  
+  
+  //Hämta inloggad användare
+  app.get("/rest/login", async (request, response) => {
+    let user;
+    if (request.session.user) {
+      user = await db.all(
+        "SELECT * FROM users WHERE username = ? AND password = ?",
+        [request.session.user.username, request.session.user.password]
+      );
+      user = user[0];
+    }
+    if (user && user.username) {
+      user.loggedIn = true;
+      delete user.password; // skicka aldrig password till frontend
+      response.json(user);
+    } else {
+      response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+      response.json({ loggedIn: false, message: "not logged in" });
+    }
+  });
+
+
+
 
 
   return db;
-}
+};
