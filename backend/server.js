@@ -2,7 +2,7 @@
 const selectedSQL = ["sqlite"][0]; // 0 = sqlite, 1 = mysql, 2 = mssql
 
 // server port
-let port = 3000;
+let port = 8000;
 
 // express server
 let express = require("express");
