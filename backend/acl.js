@@ -14,7 +14,7 @@ module.exports = function (req, res, next) {
     roles = ["anonymous"];
   }
 
-  // let roles = req.session?.user?.roles || ["anonymous"];
+
   roles.push("*");
 
   console.log({
