@@ -41,8 +41,8 @@ app.use(
 
 
 // ACL
-//......
-
+const acl = require("./acl.js");
+app.use(acl);
 
  
 // database specific REST ROUTES
