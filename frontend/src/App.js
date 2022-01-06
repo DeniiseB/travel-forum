@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CreateGroup from "./pages/CreateGroup.jsx";
 import "./App.css";
 import GroupProvider from "./contexts/GroupContext";
@@ -8,9 +8,9 @@ function App() {
     <div className="App">
       <GroupProvider>
         <Router>
-          <Routes>
-            <Route exact path="/create-group" element={CreateGroup()} />
-          </Routes>
+          <Switch>
+            <Route exact path="/create-group" component={CreateGroup} />
+          </Switch>
         </Router>
       </GroupProvider>
     </div>
