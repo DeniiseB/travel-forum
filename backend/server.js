@@ -34,7 +34,10 @@ app.use(
     secret: "keyboard cat jksfj<khsdka",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // ändra till true för secure cookie (felsöka behövs här nu)
+    cookie: {
+      secure: false,
+      httpOnly: true,
+    }, // ändra till true för secure cookie (felsöka behövs här nu)
   })
 );
 
