@@ -1,0 +1,17 @@
+GET http://localhost:8000/rest/users
+
+###
+
+GET http://localhost:8000/rest/groups
+
+###
+
+POST http://localhost:8000/rest/groups
+Content-Type: application/json
+
+{
+  "creatorUserId": 3,
+  "groupName": "UK roadtrip"
+}
+
+###

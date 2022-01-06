@@ -14,6 +14,7 @@ function CreateGroup() {
     console.log(access);
     console.log(comment);
 
+    // Add date
     // Send info to db
     // Go to group page
 
