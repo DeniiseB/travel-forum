@@ -31,16 +31,25 @@ module.exports = function (app) {
     let user = request.body;
     let encryptedPassword = getHash(user.password); // encrypted password
     let result;
-    try {
-      result = await db.all("INSERT INTO users VALUES(?,?,?)", [
-        null,
-        user.username,
-        encryptedPassword,
-      ]);
-    } catch (e) {
-      console.error(e);
-    }
-    response.json(result);
+    let userExists = await db.all("SELECT * FROM users WHERE username = ?", user.username);
+    userExists = userExists[0]
+    
+      try {
+        result = await db.all("INSERT INTO users VALUES(?,?,?)", [
+          null,
+          user.username,
+          encryptedPassword,
+        ]);
+         response.json(result); 
+      } catch (e) {
+        console.error(e);
+        response.status(400).send("Bad request");
+
+      }
+    
+    
+   
+    
   });
 
   //inloggning

@@ -37,7 +37,7 @@ app.use(
     cookie: {
       secure: false,
       httpOnly: true,
-    }, // ändra till true för secure cookie (felsöka behövs här nu)
+    }, 
   })
 );
 
