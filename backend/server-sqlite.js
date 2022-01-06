@@ -21,6 +21,8 @@ module.exports = function (app) {
     res.json(result);
   });
 
+
+  // UPDATE with correct values ***********************
   app.post("/rest/groups", async (req, res) => {
     const newGroup = req.body;
     console.log("newGroup: ", newGroup);

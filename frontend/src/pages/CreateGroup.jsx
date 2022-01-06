@@ -1,20 +1,30 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
 import { useState } from "react";
+import { useGroupContext } from "../contexts/GroupContext";
 
 function CreateGroup() {
+  const { postNewGroup } = useGroupContext();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Sweden");
   const [access, setAccess] = useState("Public");
   const [comment, setComment] = useState("");
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log(title);
-    console.log(category);
-    console.log(access);
-    console.log(comment);
 
     // Add date
+    // Add post comment with date
+
+    // Add current user id
+    // Add comment id
+    const newGroup = {
+      creatorUserId: 8,
+      groupName: title,
+    };
+
+    let response = await postNewGroup(newGroup);
+    console.log(response);
+
     // Send info to db
     // Go to group page
 
@@ -77,7 +87,15 @@ function CreateGroup() {
 
           <Form.Group className="mt-2" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Comment</Form.Label>
-            <Form.Control value={comment} onChange={(e) => {setComment(e.target.value)}} as="textarea" rows={3} maxLength="1000" />
+            <Form.Control
+              value={comment}
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+              as="textarea"
+              rows={3}
+              maxLength="1000"
+            />
           </Form.Group>
 
           <Button className="mt-3" variant="primary" type="submit">
