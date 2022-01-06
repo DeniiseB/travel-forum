@@ -8,6 +8,10 @@ let port = 8000;
 let express = require("express");
 const app = express();
 
+//Flood control
+const floodControl = require("./flood-control.js")
+app.use(floodControl)
+
 
 
 // set limit for json request body

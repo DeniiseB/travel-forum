@@ -54,6 +54,19 @@ module.exports = function (app) {
 
   //inloggning
   app.post("/rest/login", async (request, response) => {
+
+    request.session.passwordAttempts = request.session.passwordAttempts || 1;
+
+      if (request.session.passwordAttempts > 3) {
+        response.status(401);
+        response.json({
+          error:
+            "Too many attempts",
+        }); 
+        return;
+    }
+    
+
     let encryptedPassword = getHash(request.body.password);
     let user = await db.all(
       "SELECT * FROM users WHERE username = ? AND password = ?",
@@ -65,10 +78,12 @@ module.exports = function (app) {
 
     if (user && user.username) {
       request.session.user = user;
+      request.session.passwordAttempts = 0;
       user.loggedIn = true;
       user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
       response.json({ loggedIn: true });
     } else {
+      request.session.passwordAttempts++;
       response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
       response.json({ loggedIn: false, message: "no matching user" });
     }
