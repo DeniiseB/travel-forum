@@ -1,14 +1,14 @@
 import './App.css';
 import InsideCategory from './pages/InsideCategory';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <Routes>
+        <Switch>
           <Route exact path="/inside-category" component={InsideCategory} />
-        </Routes>
+        </Switch>
       </Router>
     </div>
   );
