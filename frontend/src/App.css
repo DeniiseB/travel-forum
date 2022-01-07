@@ -2,6 +2,13 @@
   text-align: center;
 
 }
+body,html {
+    margin: 0;
+    padding: 0;
+}
+* {
+    box-sizing: border-box;
+}
 
 .App-logo {
   height: 40vmin;
@@ -12,6 +19,9 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+main{
+  min-height: 100vh;
 }
 
 .App-header {
