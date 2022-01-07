@@ -36,7 +36,8 @@ const UserContextProvider = (props) => {
 
 
 const values = {
-  register
+  register,
+  login
 };
 
 return (

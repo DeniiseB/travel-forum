@@ -1,13 +1,16 @@
 import React from "react";
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
+import { Link, useHistory } from "react-router-dom";
 
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameExists, setUsernameExists] = useState(false)
-   const [registeredUser, setRegisteredUser] = useState(false);
- const {register} = useContext(UserContext);
+ 
+  
+  const { register } = useContext(UserContext);
+    const history = useHistory();
   
   async function registerNewUser() {
    
@@ -25,13 +28,11 @@ export default function Register() {
      }, 2000);
     }
    else {
-     setUsername("")
-     setPassword("")
-     setRegisteredUser(true)
-       setTimeout(function () {
-         setRegisteredUser(false);
-       }, 2000);
+     
+     history.push("/")
     }
+    setUsername("");
+    setPassword("");
   }
 
   return (
@@ -63,16 +64,10 @@ export default function Register() {
           >
             This username already exists
           </p>
-          <p
-            className="success"
-            style={registeredUser ? styles.success : styles.hide}
-          >
-            User had been successfully registered
-          </p>
         </div>
         <div className="login" style={styles.login}>
           <p>
-            Already registered? <a href="/login">Log in</a>
+            Already registered? <Link to="/login">Log in</Link>
           </p>
         </div>
       </div>
