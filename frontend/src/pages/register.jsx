@@ -5,6 +5,8 @@ import { UserContext } from "../contexts/UserContext";
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameExists, setUsernameExists] = useState(false)
+   const [registeredUser, setRegisteredUser] = useState(false);
  const {register} = useContext(UserContext);
   
   async function registerNewUser() {
@@ -14,7 +16,22 @@ export default function Register() {
       password: password
     }
     console.log(user)
-    await register(user)
+    let res = await register(user)
+   if(res.status === 400){
+     console.log("This username is already in use, choose another one")
+     setUsernameExists(true)
+     setTimeout(function () {
+       setUsernameExists(false);
+     }, 2000);
+    }
+   else {
+     setUsername("")
+     setPassword("")
+     setRegisteredUser(true)
+       setTimeout(function () {
+         setRegisteredUser(false);
+       }, 2000);
+    }
   }
 
   return (
@@ -38,8 +55,20 @@ export default function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-
           <button onClick={registerNewUser}>Register</button>
+
+          <p
+            className="warning"
+            style={usernameExists ? styles.warning : styles.hide}
+          >
+            This username already exists
+          </p>
+          <p
+            className="success"
+            style={registeredUser ? styles.success : styles.hide}
+          >
+            User had been successfully registered
+          </p>
         </div>
         <div className="login" style={styles.login}>
           <p>
@@ -87,5 +116,19 @@ const styles = {
   },
   login: {
     fontSize: "23px",
+  },
+  warning: {
+    fontSize: "20px",
+    color: "red",
+    display: "block",
+  },
+  hide: {
+    color: "white",
+    fontSize: "20px",
+  },
+  success: {
+    fontSize: "20px",
+    color: "green",
+    display: "block",
   },
 };

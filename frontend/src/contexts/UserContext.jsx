@@ -14,7 +14,16 @@ const UserContextProvider = (props) => {
      body: JSON.stringify(user),
    });
    return res;
- };
+  };
+  
+  const login = async (credentials) => {
+     let res = await fetch("/rest/login", {
+       method: "POST",
+       headers: { "content-type": "application/json" },
+       body: JSON.stringify(credentials),
+     });
+     return res;
+  }
 
 
 
