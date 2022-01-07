@@ -30,7 +30,7 @@ const GroupProvider = (props) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(groupToPost)
+        body: JSON.stringify(groupToPost),
       });
       return await res.json();
     } catch {
@@ -38,13 +38,33 @@ const GroupProvider = (props) => {
     }
   };
 
+  const postNewComment = async (commentToPost) => {
+    try {
+      let res = await fetch("/rest/comments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(commentToPost),
+      });
+      console.log(res)
+      return await res.json();
+    } catch {
+      console.log("Posting comment failed");
+    }
+  };
+
   const values = {
     groups,
-    postNewGroup
+    postNewGroup,
+    postNewComment,
   };
 
   return (
-    <GroupContext.Provider value={values}>{props.children}</GroupContext.Provider>
+    <GroupContext.Provider value={values}>
+      {props.children}
+    </GroupContext.Provider>
   );
 };
 

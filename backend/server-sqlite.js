@@ -25,12 +25,26 @@ module.exports = function (app) {
     const newGroup = req.body;
     try {
       db.run(
-        "INSERT INTO groups (creatorUserId, groupName) VALUES (?, ?)",
-        [newGroup.creatorUserId, newGroup.groupName]
+        "INSERT INTO groups (creatorUserId, groupName, groupAccess) VALUES (?, ?, ?)",
+        [newGroup.creatorUserId, newGroup.groupName, newGroup.groupAccess]
       );
-      res.json({ success: "Post to db succeeded" });
+      res.json({ success: "Post group to db succeeded" });
     } catch {
-      res.json({ error: "Post to db failed" });
+      res.json({ error: "Post group to db failed" });
+    }
+  });
+
+  app.post("/rest/comments", async (req, res) => {
+    const newComment = req.body;
+    try {
+      db.run("INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)", [
+        newComment.userId,
+        newComment.date,
+        newComment.content,
+      ]);
+      res.json({ success: "Post comment to db succeeded", response: res });
+    } catch {
+      res.json({ error: "Post comment to db failed" });
     }
   });
 

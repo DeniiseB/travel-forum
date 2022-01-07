@@ -11,7 +11,18 @@ Content-Type: application/json
 
 {
   "creatorUserId": 22,
-  "groupName": "UK roadtrip"
+  "groupName": "UK roadtrip",
+  "groupAccess": "public"
+}
+
+###
+
+POST http://localhost:8000/rest/comments
+Content-Type: application/json
+
+{
+  "userId": 22,
+  "content": "Looking for people to join me on a trip to Finland"
 }
 
 ###

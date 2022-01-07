@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
 
 function CreateGroup() {
-  const { postNewGroup } = useGroupContext();
+  const { postNewGroup, postNewComment } = useGroupContext();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Sweden");
   const [access, setAccess] = useState("Public");
@@ -12,26 +12,41 @@ function CreateGroup() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // Add date
-    // Add post comment with date
+    await postComment();
 
     // Add current user id
     // Add comment id
-    const newGroup = {
-      creatorUserId: "8",
-      groupName: title,
-    };
 
-    let response = await postNewGroup(newGroup);
-    console.log(response);
+    // const newGroup = {
+    //   creatorUserId: 8,
+    //   groupName: title,
+    //   groupAccess: access,
+    // };
 
-    // Send info to db
+    // let response = await postNewGroup(newGroup);
+    // console.log(response);
+
     // Go to group page
 
     setTitle("");
     setCategory("Sweden");
     setAccess("Public");
     setComment("");
+  }
+
+  async function postComment() {
+    // Converts JS date to SQLite datetime
+    const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+    const firstComment = {
+      userId: 8,
+      // date: date,
+      content: comment,
+    };
+
+    let res = await postNewComment(firstComment)
+
+    console.log(res)
   }
 
   return (

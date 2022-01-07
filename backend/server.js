@@ -1,5 +1,5 @@
 // välj SQL-version
-const selectedSQL = ["sqlite"][0]; // 0 = sqlite, 1 = mysql, 2 = mssql
+const selectedSQL = ["sqlite"][0]; 
 
 // server port
 let port = 8000;
@@ -47,8 +47,6 @@ app.use(acl);
  
 // database specific REST ROUTES
 const db = require("./server-" + selectedSQL + ".js")(app);
-
-
 
 
 // start av webbservern
