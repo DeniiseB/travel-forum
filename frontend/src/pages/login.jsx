@@ -1,14 +1,14 @@
 import React from 'react'
 
-function login() {
+function Login() {
   return (
-    <div className=''>
+    <div className='loginWrapper'>
       
     </div>
   )
 }
 
-export default login
+export default Login
 
 
 const styles = {};
