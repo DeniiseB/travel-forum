@@ -10,7 +10,7 @@ POST http://localhost:8000/rest/groups
 Content-Type: application/json
 
 {
-  "creatorUserId": 3,
+  "creatorUserId": 22,
   "groupName": "UK roadtrip"
 }
 

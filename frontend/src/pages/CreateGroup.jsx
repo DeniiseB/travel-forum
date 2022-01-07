@@ -18,7 +18,7 @@ function CreateGroup() {
     // Add current user id
     // Add comment id
     const newGroup = {
-      creatorUserId: 8,
+      creatorUserId: "8",
       groupName: title,
     };
 
