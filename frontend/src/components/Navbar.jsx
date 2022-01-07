@@ -42,6 +42,7 @@ const styles = {
   },
   registerButton: {
     marginLeft: "10px",
+    marginRight: "5vw",
   },
   loginButton: {
     
@@ -49,7 +50,7 @@ const styles = {
 
   ul: {
     fontSize: "1.2em",
-    paddingLeft: "8vw",
+    paddingLeft: "5vw",
   },
   mainName: {
     fontFamily: "Montserrat, sans-serif",

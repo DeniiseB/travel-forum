@@ -3,7 +3,9 @@ import { ListGroup, ListGroupItem, } from 'reactstrap';
 import CategoryCard from '../components/CatergoryCard';
 
 function Home() {
-  const data = [{ "category": "USA", "groupAmount": 10 }, { "category": "Sweden", "groupAmount": 23 }];
+  const data = [{ "category": "USA", "groupAmount": 10 },
+    { "category": "Sweden", "groupAmount": 23 },
+    { "category": "Denmark", "groupAmount": 7 }];
 
   return (
     <div className="Home">
@@ -31,5 +33,6 @@ const styles = {
   groupAmountTitle: {
     marginTop: "2vh",
     marginLeft: "250px",
+    marginRight: "5vw",
   }
 }

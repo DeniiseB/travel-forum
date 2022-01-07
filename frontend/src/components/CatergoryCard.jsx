@@ -30,5 +30,6 @@ const styles = {
   },
   cardOwner: {
     marginLeft: "250px",
+    marginRight: "5vw",
   },
 }
