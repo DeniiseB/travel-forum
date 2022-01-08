@@ -9,7 +9,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [badCredentials, setBadCredentials] = useState(false);
 
-  const { login } = useContext(UserContext);
+  const { login, currentUser, logout } = useContext(UserContext);
     const history = useHistory();
 
   async function loginUser() {
@@ -19,7 +19,8 @@ function Login() {
     }
     let res = await login(credentials)
     if (res.status === 200) {
-     history.push("/")
+      history.push("/")
+     
 
       
     }
@@ -64,8 +65,6 @@ function Login() {
           >
             Bad credentials
           </p>
-
-
         </div>
 
         <div className="register" style={styles.register}>

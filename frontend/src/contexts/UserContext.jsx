@@ -6,6 +6,12 @@ export const UserContext = createContext();
 
 const UserContextProvider = (props) => {
 
+    useEffect(async () => {
+      await getCurrentUser();
+    }, []);
+
+   const [currentUser, setCurrentUser] = useState(null);
+
 
  const register = async (user) => {
    let res = await fetch("/rest/users", {
@@ -22,8 +28,28 @@ const UserContextProvider = (props) => {
        headers: { "content-type": "application/json" },
        body: JSON.stringify(credentials),
      });
+    await getCurrentUser()
      return res;
   }
+
+  const getCurrentUser=async () => {
+    let res = await fetch("/rest/login");
+    let user = await res.json()
+    if (user.username) {
+       setCurrentUser(user)
+    }
+    console.log("current user is ", user)
+     return res;
+  }
+
+
+   const logout = async () => {
+     let res = await fetch("/rest/login", {
+       method: "DELETE"
+     });
+     setCurrentUser(null)
+     return res;
+   };
 
 
 
@@ -37,7 +63,9 @@ const UserContextProvider = (props) => {
 
 const values = {
   register,
-  login
+  login,
+  currentUser,
+  logout,
 };
 
 return (
