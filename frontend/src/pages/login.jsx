@@ -9,7 +9,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [badCredentials, setBadCredentials] = useState(false);
 
-  const { login, currentUser, logout } = useContext(UserContext);
+  const { login } = useContext(UserContext);
     const history = useHistory();
 
   async function loginUser() {
