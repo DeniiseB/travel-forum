@@ -20,7 +20,7 @@ module.exports = function (app) {
     res.json(result);
   });
 
-  // UPDATE with correct values ***********************
+  // ADD crosstable for groupMembers, groupModerators and categories
   app.post("/rest/groups", async (req, res) => {
     const newGroup = req.body;
     const sql =
@@ -29,7 +29,7 @@ module.exports = function (app) {
       newGroup.creatorUserId,
       newGroup.groupName,
       newGroup.groupAccess,
-      newGroup.commentIds
+      newGroup.commentIds,
     ];
     db.run(sql, params, function (err, result) {
       if (err) {
@@ -56,20 +56,6 @@ module.exports = function (app) {
       });
     });
   });
-
-  // app.post("/rest/comments", async (req, res) => {
-  //   const newComment = req.body;
-  //   try {
-  //     db.run("INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)", [
-  //       newComment.userId,
-  //       newComment.date,
-  //       newComment.content,
-  //     ]);
-  //     res.json({ success: "Post comment to db succeeded" });
-  //   } catch {
-  //     res.json({ error: "Post comment to db failed" });
-  //   }
-  // });
 
   return db;
 };

@@ -13,27 +13,24 @@ function CreateGroup() {
     e.preventDefault();
 
     const commentId = await postComment();
-    console.log("Comment ID: ", commentId)
-
-    // Add current user id
 
     // Adding first commentId as string. New comment ids will be added to this string.
     const newGroup = {
-      creatorUserId: 8,
+      creatorUserId: 8, // Add current user id **************
       groupName: title,
       groupAccess: access,
-      commentIds: commentId
+      commentIds: commentId,
     };
 
     let response = await postNewGroup(newGroup);
     console.log(response);
-
-    // Redirect to group page
-
+ 
     setTitle("");
     setCategory("Sweden");
     setAccess("Public");
     setComment("");
+    
+    // Redirect to group page *************
   }
 
   async function postComment() {
@@ -45,9 +42,9 @@ function CreateGroup() {
       content: comment,
     };
 
-    let res = await postNewComment(firstComment)
-    console.log(res)
-    return res.id.toString()
+    let res = await postNewComment(firstComment);
+    console.log(res);
+    return res.id.toString();
   }
 
   return (
