@@ -4,8 +4,8 @@ module.exports = function (app) {
   const db = new sqlite.Database("./database/travel.db");
   // vi gör om metoderna all och run till promise-metoder så att vi kan använda async/await för att vänta på databasen
   const util = require("util");
-  db.all = util.promisify(db.all);
-  db.run = util.promisify(db.run);
+  // db.all = util.promisify(db.all);
+  // db.run = util.promisify(db.run);
 
   // REST routes (endpoints)
   app.get("/rest/users", async (req, res) => {
@@ -36,17 +36,35 @@ module.exports = function (app) {
 
   app.post("/rest/comments", async (req, res) => {
     const newComment = req.body;
-    try {
-      db.run("INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)", [
-        newComment.userId,
-        newComment.date,
-        newComment.content,
-      ]);
-      res.json({ success: "Post comment to db succeeded", response: res });
-    } catch {
-      res.json({ error: "Post comment to db failed" });
-    }
+    const sql = "INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)";
+    const params = [newComment.userId, newComment.date, newComment.content];
+
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        "message": "Returning comment ID",
+        "id": this.lastID
+      })
+    });
+
   });
+
+  // app.post("/rest/comments", async (req, res) => {
+  //   const newComment = req.body;
+  //   try {
+  //     db.run("INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)", [
+  //       newComment.userId,
+  //       newComment.date,
+  //       newComment.content,
+  //     ]);
+  //     res.json({ success: "Post comment to db succeeded" });
+  //   } catch {
+  //     res.json({ error: "Post comment to db failed" });
+  //   }
+  // });
 
   return db;
 };
