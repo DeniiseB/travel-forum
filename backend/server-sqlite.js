@@ -23,15 +23,21 @@ module.exports = function (app) {
   // UPDATE with correct values ***********************
   app.post("/rest/groups", async (req, res) => {
     const newGroup = req.body;
-    try {
-      db.run(
-        "INSERT INTO groups (creatorUserId, groupName, groupAccess) VALUES (?, ?, ?)",
-        [newGroup.creatorUserId, newGroup.groupName, newGroup.groupAccess]
-      );
+    const sql =
+      "INSERT INTO groups (creatorUserId, groupName, groupAccess, commentIds) VALUES (?, ?, ?, ?)";
+    const params = [
+      newGroup.creatorUserId,
+      newGroup.groupName,
+      newGroup.groupAccess,
+      newGroup.commentIds
+    ];
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
       res.json({ success: "Post group to db succeeded" });
-    } catch {
-      res.json({ error: "Post group to db failed" });
-    }
+    });
   });
 
   app.post("/rest/comments", async (req, res) => {
@@ -45,11 +51,10 @@ module.exports = function (app) {
         return;
       }
       res.json({
-        "message": "Returning comment ID",
-        "id": this.lastID
-      })
+        message: "Returning comment ID",
+        id: this.lastID,
+      });
     });
-
   });
 
   // app.post("/rest/comments", async (req, res) => {

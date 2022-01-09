@@ -48,7 +48,6 @@ const GroupProvider = (props) => {
         },
         body: JSON.stringify(commentToPost),
       });
-      console.log(res)
       return await res.json();
     } catch {
       console.log("Posting comment failed");

@@ -12,21 +12,23 @@ function CreateGroup() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    await postComment();
+    const commentId = await postComment();
+    console.log("Comment ID: ", commentId)
 
     // Add current user id
-    // Add comment id
 
-    // const newGroup = {
-    //   creatorUserId: 8,
-    //   groupName: title,
-    //   groupAccess: access,
-    // };
+    // Adding first commentId as string. New comment ids will be added to this string.
+    const newGroup = {
+      creatorUserId: 8,
+      groupName: title,
+      groupAccess: access,
+      commentIds: commentId
+    };
 
-    // let response = await postNewGroup(newGroup);
-    // console.log(response);
+    let response = await postNewGroup(newGroup);
+    console.log(response);
 
-    // Go to group page
+    // Redirect to group page
 
     setTitle("");
     setCategory("Sweden");
@@ -35,18 +37,17 @@ function CreateGroup() {
   }
 
   async function postComment() {
-    // Converts JS date to SQLite datetime
     const date = new Date().toISOString().slice(0, 19).replace("T", " ");
 
     const firstComment = {
       userId: 8,
-      // date: date,
+      date: date,
       content: comment,
     };
 
     let res = await postNewComment(firstComment)
-
     console.log(res)
+    return res.id.toString()
   }
 
   return (
