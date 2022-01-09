@@ -4,8 +4,8 @@ module.exports = function (app) {
   const db = new sqlite.Database("./database/travel.db");
   // vi gör om metoderna all och run till promise-metoder så att vi kan använda async/await för att vänta på databasen
   const util = require("util");
-  // db.all = util.promisify(db.all);
-  // db.run = util.promisify(db.run);
+  db.all = util.promisify(db.all);
+  db.run = util.promisify(db.run);
 
   // REST routes (endpoints)
   app.get("/rest/users", async (req, res) => {

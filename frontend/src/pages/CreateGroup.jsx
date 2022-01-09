@@ -1,6 +1,7 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
 import { useState } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
+import { useHistory } from "react-router-dom"
 
 function CreateGroup() {
   const { postNewGroup, postNewComment } = useGroupContext();
@@ -8,6 +9,7 @@ function CreateGroup() {
   const [category, setCategory] = useState("Sweden");
   const [access, setAccess] = useState("Public");
   const [comment, setComment] = useState("");
+  const history = useHistory();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -29,8 +31,9 @@ function CreateGroup() {
     setCategory("Sweden");
     setAccess("Public");
     setComment("");
+
+    // history.push("/")
     
-    // Redirect to group page *************
   }
 
   async function postComment() {
