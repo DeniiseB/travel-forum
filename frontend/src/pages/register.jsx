@@ -6,30 +6,24 @@ import { Link, useHistory } from "react-router-dom";
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [usernameExists, setUsernameExists] = useState(false)
- 
-  
+  const [usernameExists, setUsernameExists] = useState(false);
   const { register } = useContext(UserContext);
-    const history = useHistory();
-  
+  const history = useHistory();
+
   async function registerNewUser() {
-   
     let user = {
       username: username,
-      password: password
-    }
-    console.log(user)
-    let res = await register(user)
-   if(res.status === 400){
-     console.log("This username is already in use, choose another one")
-     setUsernameExists(true)
-     setTimeout(function () {
-       setUsernameExists(false);
-     }, 2000);
-    }
-   else {
-     
-     history.push("/")
+      password: password,
+    };
+    let res = await register(user);
+    if (res.status === 400) {
+      setUsernameExists(true);
+      setTimeout(function () {
+        setUsernameExists(false);
+      }, 8000);
+    } else {
+      console.log("User registered");
+      history.push("/");
     }
     setUsername("");
     setPassword("");
@@ -74,8 +68,6 @@ export default function Register() {
     </div>
   );
 }
-
-
 
 const styles = {
   resgisterWrapper: {

@@ -8,9 +8,7 @@ function getHash(password) {
   return hash;
 }
 
-
 module.exports = function (app) {
-  // mysqlite
   const sqlite = require("sqlite3");
   // öppnar och ansluter till databasen
   const db = new sqlite.Database("./database/travel.db");
@@ -26,7 +24,7 @@ module.exports = function (app) {
     res.json(result);
   });
 
-  //Registrering
+  // Registrering
   app.post("/rest/users", async (request, response) => {
     let user = request.body;
     let encryptedPassword = getHash(user.password); // encrypted password
@@ -44,17 +42,11 @@ module.exports = function (app) {
       } catch (e) {
         console.error(e);
         response.status(400).send("Bad request");
-
       }
-    
-    
-   
-    
   });
 
-  //inloggning
+  // Inloggning
   app.post("/rest/login", async (request, response) => {
-
     request.session.passwordAttempts = request.session.passwordAttempts || 1;
 
       if (request.session.passwordAttempts > 3) {
@@ -65,8 +57,7 @@ module.exports = function (app) {
         }); 
         return;
     }
-    
-
+  
     let encryptedPassword = getHash(request.body.password);
     let user = await db.all(
       "SELECT * FROM users WHERE username = ? AND password = ?",
@@ -89,7 +80,7 @@ module.exports = function (app) {
     }
   });
 
-  //Hämta inloggad användare
+  // Hämta inloggad användare
   app.get("/rest/login", async (request, response) => {
     let user;
     if (request.session.user) {

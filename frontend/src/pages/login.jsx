@@ -1,39 +1,32 @@
-import React from 'react'
+import React from "react";
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { Link, useHistory } from "react-router-dom";
 
 function Login() {
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [badCredentials, setBadCredentials] = useState(false);
-
   const { login } = useContext(UserContext);
-    const history = useHistory();
+  const history = useHistory();
 
   async function loginUser() {
     let credentials = {
       username: username,
-      password:password
-    }
-    let res = await login(credentials)
+      password: password,
+    };
+    let res = await login(credentials);
     if (res.status === 200) {
-      history.push("/")
-     
-
-      
+      history.push("/");
+    } else {
+      setBadCredentials(true);
+      setTimeout(function () {
+        setBadCredentials(false);
+      }, 8000);
     }
-    else {
-      setBadCredentials(true)
-       setTimeout(function () {
-         setBadCredentials(false);
-       }, 2000);
-    }
-    setUsername("")
-    setPassword("")
+    setUsername("");
+    setPassword("");
   }
-
 
   return (
     <div className="loginWrapper" style={styles.loginWrapper}>
@@ -77,8 +70,7 @@ function Login() {
   );
 }
 
-export default Login
-
+export default Login;
 
 const styles = {
   loginWrapper: {
