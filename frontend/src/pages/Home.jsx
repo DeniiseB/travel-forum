@@ -1,6 +1,6 @@
 import React from 'react';
 import { ListGroup, ListGroupItem, } from 'reactstrap';
-import CategoryCard from '../components/CatergoryCard';
+import CategoryCard from '../components/CategoryCard';
 
 function Home() {
   const data = [{ "category": "USA", "groupAmount": 10 },
