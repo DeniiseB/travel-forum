@@ -1,28 +1,46 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'reactstrap';
+import { useState, useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
+
 
 function Navbar() {
-  return (
-    
-    <nav class="navbar navbar-dark" style={styles.navbar}>
-        <a href="/" style={styles.mainName} className="link">
-          Travel Forum
-        </a>
-       
-          <div style={styles.loginButtons}>
-        <div style={styles.loginButton}>
-          <Button color="dark" size="sm">Login</Button>
-            </div>
-            <div style={styles.registerButton}>
-          <Button color="dark" size="sm">Register</Button>
-            </div>
-          </div>
-        
-     
 
-      </nav>
-      );
+   const { currentUser, logout } = useContext(UserContext);
+
+  return (
+    <nav class="navbar navbar-dark" style={styles.navbar}>
+      <a href="/" style={styles.mainName} className="link">
+        Travel Forum
+      </a>
+      {currentUser === null ? (
+        <div style={styles.loginButtons}>
+          <div style={styles.loginButton}>
+            <Button color="dark" size="sm">
+              Login
+            </Button>
+          </div>
+          <div style={styles.registerButton}>
+            <Button color="dark" size="sm">
+              Register
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div style={styles.logoutButton}>
+            <Button color="dark" size="sm" onClick={logout}>
+              Logout
+            </Button>
+          </div>
+          <div>
+              <h3>{currentUser.username}</h3>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
 
 }
 
