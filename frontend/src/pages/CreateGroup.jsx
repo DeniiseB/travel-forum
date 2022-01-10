@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom"
 function CreateGroup() {
   const { postNewGroup, postNewComment } = useGroupContext();
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Sweden");
+  const [category, setCategory] = useState("Other");
   const [access, setAccess] = useState("Public");
   const [comment, setComment] = useState("");
   const history = useHistory();
@@ -14,7 +14,12 @@ function CreateGroup() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const commentId = await postComment();
+    let commentId = await postComment();
+
+    if (commentId.error) {
+      console.log("In error!")
+      return
+    } else { commentId = commentId.id.toString()}
 
     // Adding first commentId as string. New comment ids will be added to this string.
     const newGroup = {
@@ -32,8 +37,7 @@ function CreateGroup() {
     setAccess("Public");
     setComment("");
 
-    // history.push("/")
-    
+    // history.push("/")   
   }
 
   async function postComment() {
@@ -47,7 +51,7 @@ function CreateGroup() {
 
     let res = await postNewComment(firstComment);
     console.log(res);
-    return res.id.toString();
+    return res;
   }
 
   return (
@@ -72,6 +76,7 @@ function CreateGroup() {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
+                <option>Other</option>
                 <option>Sweden</option>
                 <option>Finland</option>
                 <option>United Kingdom</option>
@@ -114,9 +119,15 @@ function CreateGroup() {
             />
           </Form.Group>
 
-          <Button className="mt-3" variant="primary" type="submit">
+          <Button
+            className="mt-3"
+            variant="primary"
+            type="submit"
+            // disabled={!title || !comment}
+          >
             Create Group
           </Button>
+          <div>{(!title || !comment) && <p>Please fill out all fields</p>}</div>
         </Form>
       </div>
     </div>
