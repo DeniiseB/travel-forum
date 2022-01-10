@@ -1,24 +1,40 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'reactstrap';
+import { createContext, useState, useEffect } from "react";
 
 function Navbar() {
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  
+  function loginSet (){
+    setLoggedIn(true)
+  }
   return (
-    
+
     <nav class="navbar navbar-dark" style={styles.navbar}>
         <a href="/" style={styles.mainName} className="link">
           Travel Forum
         </a>
-       
+        {!loggedIn ? (
           <div style={styles.loginButtons}>
         <div style={styles.loginButton}>
-          <Button color="dark" size="sm">Login</Button>
+          <Button color="dark" size="sm" onClick={loginSet}>Login</Button>
             </div>
             <div style={styles.registerButton}>
-          <Button color="dark" size="sm">Register</Button>
+          <Button color="dark" size="sm" onClick={loginSet}>Register</Button>
             </div>
           </div>
-        
+        ) : (
+         <div>
+          <div style={styles.logoutButton}>
+            <Button color="dark" size="sm" >Logout</Button>
+          </div>
+          <div>
+            <h3>#Username</h3>
+          </div>
+        </div>
+        )}
      
 
       </nav>
