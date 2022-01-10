@@ -4,7 +4,7 @@ function InsideCategory() {
   return (
     <div className="App">
       <h1>Categories</h1>
-      <table className="table table-bordered" bordered="true">
+      <table className="table table-bordered">
         <thead>
           <tr>
             <th scope="colSpan">#</th>
