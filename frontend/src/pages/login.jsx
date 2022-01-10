@@ -7,6 +7,7 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [badCredentials, setBadCredentials] = useState(false);
+  const [tooManyAttempts, setTooManyAttempts]=useState(false)
   const { login } = useContext(UserContext);
   const history = useHistory();
 
@@ -16,16 +17,55 @@ function Login() {
       password: password,
     };
     let res = await login(credentials);
-    if (res.status === 200) {
+    setTimeout(function () {
+      if (res.status) {
+
+
+      if (res.status === 200) {
+        history.push("/");
+      }
+      else if (res.status === 403)
+      {
+        setTooManyAttempts(true);
+        console.log("Too many password attempts");
+        setTimeout(function () {
+          setTooManyAttempts(false);
+        }, 3000);
+      }
+      else
+      {
+        setBadCredentials(true);
+        setTimeout(function () {
+          setBadCredentials(false);
+        }, 3000);
+        }
+        setUsername("");
+        setPassword("");
+      }
+      else {
+        setTooManyAttempts(true)
+      }
+     }, 5);
+/*     if (res.status === 200) {
       history.push("/");
-    } else {
+    } 
+    else if (res.status === 403) {
+      setTooManyAttempts(true)
+      console.log("Too many password attempts")
+       setTimeout(function () {
+         setTooManyAttempts(false);
+       }, 8000);
+    }
+    
+    
+    else {
       setBadCredentials(true);
       setTimeout(function () {
         setBadCredentials(false);
       }, 8000);
     }
     setUsername("");
-    setPassword("");
+    setPassword(""); */
   }
 
   return (
@@ -48,7 +88,7 @@ function Login() {
             style={styles.input}
           />
 
-          <button onClick={loginUser} style={styles.button}>
+          <button onClick={loginUser} style={styles.button} disabled={tooManyAttempts}>
             Log in
           </button>
 
@@ -58,6 +98,8 @@ function Login() {
           >
             Bad credentials
           </p>
+
+          <p className="warning" style={tooManyAttempts ? styles.attempts : styles.unvisable}>Too many attempts, please try again later</p>
         </div>
 
         <div className="register" style={styles.register}>
@@ -122,5 +164,19 @@ const styles = {
   hide: {
     color: "white",
     fontSize: "20px",
+  },
+  unvisable: {
+    display: "none",
+  },
+  attempts: {
+    position: "fixed",
+    right: "20px",
+    bottom: "100px",
+    color: "white",
+    fontSize: "20px",
+    backgroundColor: "red",
+    padding: "3px",
+    borderRadius: "5px",
+    opacity:"0.7"
   },
 };

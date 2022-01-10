@@ -48,16 +48,25 @@ module.exports = function (app) {
   // Inloggning
   app.post("/rest/login", async (request, response) => {
     request.session.passwordAttempts = request.session.passwordAttempts || 1;
+    
+    
 
-      if (request.session.passwordAttempts > 3) {
-        response.status(401);
-        response.json({
-          error:
-            "Too many attempts",
-        }); 
-        return;
+    if (request.session.passwordAttempts > 3) {
+      await sleep(3000);
+      request.session.passwordAttempts = 0; //Setting password attempts to 0 after 3 sec
+      response.status(403);
+      response.json({
+        error: "Attempts are now restored",
+      });
+      return;
     }
-  
+
+    function sleep(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+        
+      });
+    }
     let encryptedPassword = getHash(request.body.password);
     let user = await db.all(
       "SELECT * FROM users WHERE username = ? AND password = ?",
@@ -65,7 +74,7 @@ module.exports = function (app) {
     );
 
     user = user[0];
-    console.log("request.session.verification", request.session.verification);
+   
 
     if (user && user.username) {
       request.session.user = user;
