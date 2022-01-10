@@ -1,7 +1,7 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
 import { useState } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
-import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom";
 
 function CreateGroup() {
   const { postNewGroup, postNewComment } = useGroupContext();
@@ -9,6 +9,7 @@ function CreateGroup() {
   const [category, setCategory] = useState("Other");
   const [access, setAccess] = useState("Public");
   const [comment, setComment] = useState("");
+  const [warning, setWarning] = useState(false);
   const history = useHistory();
 
   async function handleSubmit(e) {
@@ -17,9 +18,13 @@ function CreateGroup() {
     let commentId = await postComment();
 
     if (commentId.error) {
-      console.log("In error!")
-      return
-    } else { commentId = commentId.id.toString()}
+      console.log(commentId.error);
+      setWarning(true);
+      return;
+    } else {
+      commentId = commentId.id.toString();
+      setWarning(false);
+    }
 
     // Adding first commentId as string. New comment ids will be added to this string.
     const newGroup = {
@@ -30,14 +35,20 @@ function CreateGroup() {
     };
 
     let response = await postNewGroup(newGroup);
-    console.log(response);
- 
-    setTitle("");
-    setCategory("Sweden");
-    setAccess("Public");
-    setComment("");
 
-    // history.push("/")   
+    if (response.error) {
+      console.log(response.error);
+      setWarning(true);
+      return;
+    } else {
+      setTitle("");
+      setCategory("Sweden");
+      setAccess("Public");
+      setComment("");
+      setWarning(false);
+
+      // history.push("/")
+    }
   }
 
   async function postComment() {
@@ -50,7 +61,6 @@ function CreateGroup() {
     };
 
     let res = await postNewComment(firstComment);
-    console.log(res);
     return res;
   }
 
@@ -123,11 +133,15 @@ function CreateGroup() {
             className="mt-3"
             variant="primary"
             type="submit"
-            // disabled={!title || !comment}
+            disabled={!title || !comment}
           >
             Create Group
           </Button>
-          <div>{(!title || !comment) && <p>Please fill out all fields</p>}</div>
+          <div>
+            {(!title || !comment || warning) && (
+              <p>Please fill out all fields</p>
+            )}
+          </div>
         </Form>
       </div>
     </div>

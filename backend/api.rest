@@ -10,10 +10,10 @@ POST http://localhost:8000/rest/groups
 Content-Type: application/json
 
 {
-  "creatorUserId": 22,
+  "creatorUserId": 28,
   "groupName": "UK roadtrip",
   "groupAccess": "public",
-  "commentIds": "12"
+  "commentIds": ""
 }
 
 ###
@@ -22,7 +22,7 @@ POST http://localhost:8000/rest/comments
 Content-Type: application/json
 
 {
-  "userId": 22,
+  "userId": 28,
   "content": "Looking for people to join me on a trip to Finland"
 }
 
