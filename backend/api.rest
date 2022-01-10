@@ -12,7 +12,8 @@ Content-Type: application/json
 {
   "creatorUserId": 22,
   "groupName": "UK roadtrip",
-  "groupAccess": "public"
+  "groupAccess": "public",
+  "commentIds": "12"
 }
 
 ###
