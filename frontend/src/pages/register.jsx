@@ -7,7 +7,7 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameExists, setUsernameExists] = useState(false);
-  const { register } = useContext(UserContext);
+  const { register, login } = useContext(UserContext);
   const history = useHistory();
 
   async function registerNewUser() {
@@ -21,9 +21,12 @@ export default function Register() {
       setTimeout(function () {
         setUsernameExists(false);
       }, 8000);
-    } else {
+      
+    }
+    else {
       console.log("User registered");
       history.push("/");
+      await login(user)
     }
     setUsername("");
     setPassword("");
@@ -71,7 +74,6 @@ export default function Register() {
 
 const styles = {
   resgisterWrapper: {
-    width: "100%",
     height: "100vh",
     backgroundColor: "#f1e7e0",
     display: "flex",
@@ -79,9 +81,6 @@ const styles = {
     justifyContent: "center",
   },
   container: {
-    backgroundColor: "white",
-    width: "80%",
-    height: "80%",
     display: "grid",
     gridTemplateRows: "25% 50% 25%",
     fontSize: "2em",
@@ -94,7 +93,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "2vh",
-    fontSize: "3em",
+    fontSize: "0.8em",
     width: "80%",
     alignItems: "center",
     marginLeft: "4vh",
@@ -103,6 +102,7 @@ const styles = {
   },
   login: {
     fontSize: "23px",
+    marginTop:"20px"
   },
   warning: {
     fontSize: "20px",
@@ -110,7 +110,7 @@ const styles = {
     display: "block",
   },
   hide: {
-    color: "white",
+    color: "#f1e7e0",
     fontSize: "20px",
   },
   success: {
