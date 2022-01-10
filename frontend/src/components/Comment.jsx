@@ -7,16 +7,6 @@ function Comment(props) {
         <p style={{ marginBottom: "0" }}> By #userName</p>
         <p>{props.commentObject.date}</p>
       </div>
-      {/* <Row>
-        <Col>
-          <p>By #userName</p>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-        <p>{props.commentObject.date}</p>
-        </Col>
-      </Row> */}
       <Row>
         <Col>
           <p>{props.commentObject.content}</p>
@@ -33,10 +23,12 @@ const styles = {
     width: "20rem",
     border: "solid lightGrey 1px",
     borderRadius: "4px",
+    marginBottom: "0.5rem"
   },
   commentHeader: {
     display: "flex",
     alignItems: "flex-start",
-    flexDirection: "column"
+    flexDirection: "column",
+    fontSize: "small"
   }
 };

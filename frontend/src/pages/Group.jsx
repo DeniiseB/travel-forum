@@ -17,7 +17,7 @@ function Group() {
       userId: 10,
       date: "10/01/2022 16:49",
       content:
-        "I would like to travel there too! I need to get some cash together first and then I'll be able to go.",
+        "I would like to travel there too! I need to get some cash together first and then I'll be able to go. I would like to travel there too! I need to get some cash together first and then I'll be able to go. I would like to travel there too! I need to get some cash together first and then I'll be able to go. I would like to travel there too! I need to get some cash together first and then I'll be able to go. I would like to travel there too! I need to get some cash together first and then I'll be able to go.",
     },
     {
       id: 3,
