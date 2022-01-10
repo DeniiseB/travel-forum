@@ -90,53 +90,53 @@ export default Login;
 
 const styles = {
   loginWrapper: {
-    width: "100%",
+    /*  width: "100%",
     height: "100vh",
-    backgroundColor: "#f1e7e0",
+    backgroundColor: "#f1e7e0",*/
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#f1e7e0",
+    height: "100vh",
   },
 
   container: {
-    backgroundColor: "white",
-    width: "80%",
-    height: "80%",
     display: "grid",
     gridTemplateRows: "60% 40%",
-    fontSize: "2em",
   },
 
   inputs: {
-    paddingTop: "5vh",
+    
     display: "flex",
     flexDirection: "column",
     gap: "2vh",
-    fontSize: "3em",
-    width: "80%",
+    fontSize: "1.5em",
+   
     alignItems: "center",
-    marginLeft: "4vh",
+   
     justifyContent: "center",
     borderBottom: "5px solid #f1e7e0",
   },
   input: {
-    height: "10%",
-    padding: "1vh",
+    borderRadius: "5px",
+    border: "none",
+    padding:"4px"
   },
   button: {
-    fontSize: "20px",
-    width: "38%",
+     fontSize: "20px",
+    width: "38%", 
   },
   register: {
-    fontSize: "28px",
+    fontSize: "20px",
   },
   warning: {
-    fontSize: "20px",
+     fontSize: "20px",
     color: "red",
-    display: "block",
+    display: "block", 
+    padding:"2vh"
   },
   hide: {
-    color: "white",
+    color: "#f1e7e0",
     fontSize: "20px",
   },
   unvisable: {
@@ -144,13 +144,13 @@ const styles = {
   },
   attempts: {
     position: "fixed",
-    right: "20px",
+    right: "45px",
     bottom: "100px",
     color: "white",
-    fontSize: "20px",
+    fontSize: "15px",
     backgroundColor: "red",
     padding: "3px",
     borderRadius: "5px",
-    opacity:"0.7"
+    opacity: "0.7",
   },
 };

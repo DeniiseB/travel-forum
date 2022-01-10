@@ -54,7 +54,7 @@ module.exports = function (app) {
 
     if (request.session.passwordAttempts > 3) {
       await sleep(60000);
-      request.session.passwordAttempts = 0; //Setting password attempts to 0 after 3 sec
+      request.session.passwordAttempts = 0; //Setting password attempts to 0 after 1 min
       response.status(403);
       response.json({
         error: "Attempts are now restored",
