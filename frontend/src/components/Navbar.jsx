@@ -5,9 +5,13 @@ import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 
 
+
 function Navbar() {
 
-   const { currentUser, logout } = useContext(UserContext);
+  const { currentUser, logout } = useContext(UserContext);
+
+
+
 
   return (
     <nav class="navbar navbar-dark" style={styles.navbar}>
@@ -18,12 +22,16 @@ function Navbar() {
         <div style={styles.loginButtons}>
           <div style={styles.loginButton}>
             <Button color="dark" size="sm">
-              Login
+              <a href="/login" style={styles.href}>
+                Login
+              </a>
             </Button>
           </div>
           <div style={styles.registerButton}>
             <Button color="dark" size="sm">
-              Register
+              <a href="/register" style={styles.href}>
+                Register
+              </a>
             </Button>
           </div>
         </div>
@@ -35,7 +43,7 @@ function Navbar() {
             </Button>
           </div>
           <div>
-              <h3>{currentUser.username}</h3>
+            <h3>{currentUser.username}</h3>
           </div>
         </div>
       )}
@@ -79,4 +87,8 @@ const styles = {
   hide: {
     display: "none",
   },
+  href: {
+    color: "white",
+    textDecoration:"none"
+  }
 };
