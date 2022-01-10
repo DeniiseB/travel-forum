@@ -17,46 +17,20 @@ function Login() {
       password: password,
     };
     let res = await login(credentials);
-    setTimeout(function () {
-      if (res.status) {
-
-
-      if (res.status === 200) {
-        history.push("/");
-      }
-      else if (res.status === 403)
-      {
-        setTooManyAttempts(true);
-        console.log("Too many password attempts");
-        setTimeout(function () {
-          setTooManyAttempts(false);
-        }, 3000);
-      }
-      else
-      {
-        setBadCredentials(true);
-        setTimeout(function () {
-          setBadCredentials(false);
-        }, 3000);
-        }
-        setUsername("");
-        setPassword("");
-      }
-      else {
-        setTooManyAttempts(true)
-      }
-     }, 5);
-/*     if (res.status === 200) {
+   
+    
+    
+  if (res.status === 200) {
       history.push("/");
     } 
-    else if (res.status === 403) {
-      setTooManyAttempts(true)
-      console.log("Too many password attempts")
-       setTimeout(function () {
-         setTooManyAttempts(false);
-       }, 8000);
-    }
+  
     
+    else if (res.status === 500) {
+    setTooManyAttempts(true)
+     setTimeout(function () {
+       setTooManyAttempts(false);
+     }, 8000);
+    }
     
     else {
       setBadCredentials(true);
@@ -65,7 +39,7 @@ function Login() {
       }, 8000);
     }
     setUsername("");
-    setPassword(""); */
+    setPassword(""); 
   }
 
   return (

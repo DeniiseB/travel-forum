@@ -47,12 +47,13 @@ module.exports = function (app) {
 
   // Inloggning
   app.post("/rest/login", async (request, response) => {
+    request.setTimeout(10);
     request.session.passwordAttempts = request.session.passwordAttempts || 1;
     
     
 
     if (request.session.passwordAttempts > 3) {
-      await sleep(3000);
+      await sleep(60000);
       request.session.passwordAttempts = 0; //Setting password attempts to 0 after 3 sec
       response.status(403);
       response.json({

@@ -27,6 +27,7 @@ const UserContextProvider = (props) => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify(credentials),
     });
+    console.log(res)
     await getCurrentUser();
     return res;
   };
