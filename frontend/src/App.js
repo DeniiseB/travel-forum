@@ -5,11 +5,13 @@ import Register from './pages/Register';
 import UserContextProvider from './contexts/UserContext';
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
+import CategoryContextProvider from './contexts/CategoryContext';
 
 function App() {
   return (
     <div className="App">
       <UserContextProvider>
+        <CategoryContextProvider>
         <Navbar />
         <Router>
           <main>
@@ -20,6 +22,7 @@ function App() {
             </Switch>
           </main>
         </Router>
+        </CategoryContextProvider>
       </UserContextProvider>
     </div>
   );

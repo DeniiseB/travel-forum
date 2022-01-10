@@ -117,5 +117,11 @@ module.exports = function (app) {
     });
   });
 
+  app.get("/rest/categories", async (req, res) => {
+    let query = "SELECT * FROM categories";
+    let result = await db.all(query);
+    res.json(result);
+  });
+ 
   return db;
 };
