@@ -118,10 +118,10 @@ module.exports = function (app) {
   });
 
   app.get("/rest/categories", async (req, res) => {
-    let query = "SELECT * FROM categories";
+    let query = "SELECT COUNT(*) as groupAmount,categories.name,categories.id FROM groupsXcategories, categories, groups WHERE groupsXcategories.categoryId = categories.id AND groupsXcategories.groupId = groups.id GROUP BY categories.name";
     let result = await db.all(query);
     res.json(result);
   });
- 
+
   return db;
 };
