@@ -6,30 +6,41 @@ import { Link, useHistory } from "react-router-dom";
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [usernameExists, setUsernameExists] = useState(false);
+  const [passwordMismatch, setPasswordMismatch]=useState(false)
   const { register, login } = useContext(UserContext);
   const history = useHistory();
 
   async function registerNewUser() {
-    let user = {
-      username: username,
-      password: password,
-    };
-    let res = await register(user);
-    if (res.status === 400) {
-      setUsernameExists(true);
-      setTimeout(function () {
-        setUsernameExists(false);
-      }, 8000);
-      
+
+    if (confirmPassword === password) {
+      let user = {
+        username: username,
+        password: password,
+      };
+      let res = await register(user);
+      if (res.status === 400) {
+        setUsernameExists(true);
+        setTimeout(function () {
+          setUsernameExists(false);
+        }, 5000);
+      } else {
+        console.log("User registered");
+        history.push("/");
+        await login(user);
+      }
+      setUsername("");
+      setPassword("");
+      setConfirmPassword("")
     }
     else {
-      console.log("User registered");
-      history.push("/");
-      await login(user)
+      setPasswordMismatch(true)
+       setTimeout(function () {
+         setPasswordMismatch(false);
+       }, 5000);
     }
-    setUsername("");
-    setPassword("");
+    
   }
 
   return (
@@ -40,6 +51,7 @@ export default function Register() {
         </div>
         <div className="inputs" style={styles.inputs}>
           <input
+            style={styles.input}
             type="text"
             placeholder="username"
             value={username}
@@ -47,10 +59,18 @@ export default function Register() {
           />
 
           <input
+            style={styles.input}
             type="text"
             placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+          <input
+            style={styles.input}
+            type="text"
+            placeholder="confirm password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
           <button onClick={registerNewUser}>Register</button>
@@ -65,6 +85,12 @@ export default function Register() {
         <div className="login" style={styles.login}>
           <p>
             Already registered? <Link to="/login">Log in</Link>
+          </p>
+          <p
+            className="warning"
+            style={passwordMismatch ? styles.mismatch : styles.invisable}
+          >
+            Password mismatch
           </p>
         </div>
       </div>
@@ -100,14 +126,20 @@ const styles = {
     justifyContent: "center",
     borderBottom: "5px solid #f1e7e0",
   },
+  input: {
+    borderRadius: "5px",
+    border: "none",
+    padding: "4px",
+  },
   login: {
     fontSize: "23px",
-    marginTop:"20px"
+    marginTop: "20px",
   },
   warning: {
     fontSize: "20px",
     color: "red",
     display: "block",
+    paddingBottom: "5vh",
   },
   hide: {
     color: "#f1e7e0",
@@ -117,5 +149,19 @@ const styles = {
     fontSize: "20px",
     color: "green",
     display: "block",
+  },
+  invisable: {
+    display: "none",
+  },
+  mismatch: {
+    position: "fixed",
+    right: "35vw",
+    bottom: "7vh",
+    color: "white",
+    fontSize: "15px",
+    backgroundColor: "red",
+    padding: "3px",
+    borderRadius: "5px",
+    opacity: "0.7",
   },
 };
