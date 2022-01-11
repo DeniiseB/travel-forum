@@ -7,7 +7,7 @@ const CategoryContextProvider = (props) => {
   const [categories, setCategories] = useState(null);
   
   useEffect(() => {
-    setCategories(getCategories())
+    getCategories()
   }, []);
 
  
@@ -15,7 +15,7 @@ const CategoryContextProvider = (props) => {
     let res = await fetch("/rest/categories");
     let data = await res.json();
     console.log(data, 'data / categories')
-    return data
+    setCategories(data)
   };
 
 

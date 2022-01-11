@@ -8,11 +8,11 @@ function CategoryCard(props) {
     <Col sm="6">
       <Card body style={styles.card}>
         <div style={styles.cardCategory}>
-          <CardTitle >{props.props.category}</CardTitle>
+          <CardTitle >{props.props.name}</CardTitle>
         </div>
-        <div style={styles.cardOwner}>
+        {/* <div style={styles.cardOwner}>
           <CardTitle>{props.props.groupAmount}</CardTitle>
-        </div>
+        </div> */}
       </Card>
     </Col>
   );
