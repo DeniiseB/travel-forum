@@ -205,35 +205,62 @@ module.exports = function (app) {
       user = await db.all("SELECT * FROM users WHERE id = ?", [
         req.params.userId,
       ]);
-      user=user[0]
-      
-      
-      
+      user = user[0];
+
       if (user.createdGroups !== null) {
-        
-        let groupsIdsArr=user.createdGroups.split(",")
-        
-         let createdGroupsArr=[]
+        let groupsIdsArr = user.createdGroups.split(",");
+
+        let createdGroupsArr = [];
         try {
           for (let groupdId of groupsIdsArr) {
-             group = await db.all("SELECT * FROM groups WHERE id = ?", [
-               groupdId,
-             ]);
-            createdGroupsArr.push(group[0])
+            group = await db.all("SELECT * FROM groups WHERE id = ?", [
+              groupdId,
+            ]);
+            createdGroupsArr.push(group[0]);
           }
-          res.json(createdGroupsArr)
-        }
-        catch (e) {
-          console.log(e)
+          res.json(createdGroupsArr);
+        } catch (e) {
+          console.log(e);
           response.status(400).send("Bad request");
         }
-        
-      } 
-      
-      else {
+      } else {
         res.status(204).send("No content");
       }
-       
+    } catch (e) {
+      console.error(e);
+      response.status(400).send("Bad request");
+    }
+  });
+
+  //Get created groups of user
+  app.get("/rest/joined-groups/:userId", async (req, res) => {
+    let group;
+
+    try {
+      user = await db.all("SELECT * FROM users WHERE id = ?", [
+        req.params.userId,
+      ]);
+      user = user[0];
+
+      if (user.joinedGroups !== null) {
+        let groupsIdsArr = user.joinedGroups.split(",");
+
+        let joinedGroupsArr = [];
+        try {
+          for (let groupdId of groupsIdsArr) {
+            group = await db.all("SELECT * FROM groups WHERE id = ?", [
+              groupdId,
+            ]);
+            joinedGroupsArr.push(group[0]);
+          }
+          res.json(joinedGroupsArr);
+        } catch (e) {
+          console.log(e);
+          response.status(400).send("Bad request");
+        }
+      } else {
+        res.status(204).send("No content");
+      }
     } catch (e) {
       console.error(e);
       response.status(400).send("Bad request");
