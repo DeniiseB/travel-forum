@@ -54,10 +54,23 @@ const GroupProvider = (props) => {
     }
   };
 
+
+
+  const getCreatedGroups = async (userId) => {
+    
+      let res = await fetch("/rest/created-groups/" + userId)
+      
+      return await res.json()
+    
+  };
+
+  
+
   const values = {
     groups,
     postNewGroup,
     postNewComment,
+    getCreatedGroups,
   };
 
   return (

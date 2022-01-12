@@ -24,6 +24,6 @@
   },
   {
     "path": "/rest/groups*",
-    "roles": [{ "role": "anonymous", "methods": ["GET"] }]
+    "roles": [{ "role": "*", "methods": ["GET"] }]
   }
 ]

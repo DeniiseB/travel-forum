@@ -219,7 +219,7 @@ module.exports = function (app) {
              group = await db.all("SELECT * FROM groups WHERE id = ?", [
                groupdId,
              ]);
-            createdGroupsArr.push(group)
+            createdGroupsArr.push(group[0])
           }
           res.json(createdGroupsArr)
         }
