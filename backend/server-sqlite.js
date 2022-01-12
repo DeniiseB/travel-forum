@@ -29,32 +29,31 @@ module.exports = function (app) {
     let user = request.body;
     let encryptedPassword = getHash(user.password); // encrypted password
     let result;
-    let userExists = await db.all("SELECT * FROM users WHERE username = ?", user.username);
-    userExists = userExists[0]
-    
-      try {
-        result = await db.all("INSERT INTO users VALUES(?,?,?,?,?)", [
-          null,
-          user.username,
-          encryptedPassword,
-          null,
-          null
-        ]);
-         response.json(result); 
-      } catch (e) {
-        console.error(e);
-        response.status(400).send("Bad request");
-      }
+    let userExists = await db.all(
+      "SELECT * FROM users WHERE username = ?",
+      user.username
+    );
+    userExists = userExists[0];
+
+    try {
+      result = await db.all("INSERT INTO users VALUES(?,?,?,?,?)", [
+        null,
+        user.username,
+        encryptedPassword,
+        null,
+        null,
+      ]);
+      response.json(result);
+    } catch (e) {
+      console.error(e);
+      response.status(400).send("Bad request");
+    }
   });
-
-
 
   // Inloggning
   app.post("/rest/login", async (request, response) => {
     request.setTimeout(10);
     request.session.passwordAttempts = request.session.passwordAttempts || 1;
-    
-    
 
     if (request.session.passwordAttempts > 3) {
       await sleep(60000);
@@ -69,7 +68,6 @@ module.exports = function (app) {
     function sleep(ms) {
       return new Promise((resolve) => {
         setTimeout(resolve, ms);
-        
       });
     }
     let encryptedPassword = getHash(request.body.password);
@@ -79,7 +77,6 @@ module.exports = function (app) {
     );
 
     user = user[0];
-   
 
     if (user && user.username) {
       request.session.user = user;
@@ -114,77 +111,73 @@ module.exports = function (app) {
     }
   });
 
-  
-    
-    //Logga ut
-       app.delete("/rest/login", async (request, response) => {
-         request.session.destroy(() => {
-           response.json({ loggedIn: false });
-         });
-       });
-  
-  
-      app.get("/rest/groups", async (req, res) => {
-        let query = "SELECT * FROM groups";
-        let result = await db.all(query);
-        res.json(result);
+  //Logga ut
+  app.delete("/rest/login", async (request, response) => {
+    request.session.destroy(() => {
+      response.json({ loggedIn: false });
+    });
+  });
+
+  app.get("/rest/groups", async (req, res) => {
+    let query = "SELECT * FROM groups";
+    let result = await db.all(query);
+    res.json(result);
+  });
+
+  // ADD crosstable for groupMembers, groupModerators and categories
+  app.post("/rest/groups", (req, res) => {
+    const newGroup = req.body;
+    const sql =
+      "INSERT INTO groups (creatorUserId, groupName, groupAccess, commentIds) VALUES (?, ?, ?, ?)";
+    const params = [
+      newGroup.creatorUserId,
+      newGroup.groupName,
+      newGroup.groupAccess,
+      newGroup.commentIds,
+    ];
+
+    if (
+      !newGroup.creatorUserId ||
+      !newGroup.groupName.trim() ||
+      !newGroup.groupAccess.trim() ||
+      !newGroup.commentIds.trim()
+    ) {
+      res.json({ error: "No empty fields allowed" });
+      return;
+    }
+
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ success: "Post group to db succeeded" });
+    });
+  });
+
+  app.post("/rest/comments", (req, res) => {
+    const newComment = req.body;
+    const sql = "INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)";
+    const params = [newComment.userId, newComment.date, newComment.content];
+
+    if (!newComment.userId || !newComment.date || !newComment.content.trim()) {
+      res.json({ error: "No empty fields allowed" });
+      return;
+    }
+
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: "Returning comment ID",
+        id: this.lastID,
       });
+    });
+  });
 
-      // ADD crosstable for groupMembers, groupModerators and categories
-      app.post("/rest/groups", (req, res) => {
-        const newGroup = req.body;
-        const sql =
-          "INSERT INTO groups (creatorUserId, groupName, groupAccess, commentIds) VALUES (?, ?, ?, ?)";
-        const params = [
-          newGroup.creatorUserId,
-          newGroup.groupName,
-          newGroup.groupAccess,
-          newGroup.commentIds,
-        ];
-
-        if (
-          !newGroup.creatorUserId ||
-          !newGroup.groupName.trim() ||
-          !newGroup.groupAccess.trim() ||
-          !newGroup.commentIds.trim()
-        ) {
-          res.json({ error: "No empty fields allowed" });
-          return;
-        }
-
-        db.run(sql, params, function (err, result) {
-          if (err) {
-            res.status(400).json({ error: err.message });
-            return;
-          }
-          res.json({ success: "Post group to db succeeded" });
-        });
-      });
-
-      app.post("/rest/comments", (req, res) => {
-        const newComment = req.body;
-        const sql = "INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)";
-        const params = [newComment.userId, newComment.date, newComment.content];
-
-        if (!newComment.userId || !newComment.date || !newComment.content.trim()) {
-          res.json({ error: "No empty fields allowed" });
-          return;
-        }
-
-        db.run(sql, params, function (err, result) {
-          if (err) {
-            res.status(400).json({ error: err.message });
-            return;
-          }
-          res.json({
-            message: "Returning comment ID",
-            id: this.lastID,
-          });
-        });
-      });
-
-  
-    //Get specific group
+  //Get specific group
   app.get("/rest/groups/:id", async (req, res) => {
     let group;
 
@@ -195,17 +188,59 @@ module.exports = function (app) {
       group = group[0];
       if (group != undefined) {
         res.json(group);
-      }
-      else {
-        res.status(204).send("No content")
+      } else {
+        res.status(204).send("No content");
       }
     } catch (e) {
       console.error(e);
       response.status(400).send("Bad request");
     }
   });
-  
-      return db;
+
+  //Get created groups of user
+  app.get("/rest/created-groups/:userId", async (req, res) => {
+    let group;
+
+    try {
+      user = await db.all("SELECT * FROM users WHERE id = ?", [
+        req.params.userId,
+      ]);
+      user=user[0]
+      
+      
+      
+      if (user.createdGroups !== null) {
+        
+        let groupsIdsArr=user.createdGroups.split(",")
+        
+         let createdGroupsArr=[]
+        try {
+          for (let groupdId of groupsIdsArr) {
+             group = await db.all("SELECT * FROM groups WHERE id = ?", [
+               groupdId,
+             ]);
+            createdGroupsArr.push(group)
+          }
+          res.json(createdGroupsArr)
+        }
+        catch (e) {
+          console.log(e)
+          response.status(400).send("Bad request");
+        }
+        
+      } 
+      
+      else {
+        res.status(204).send("No content");
+      }
+       
+    } catch (e) {
+      console.error(e);
+      response.status(400).send("Bad request");
+    }
+  });
+
+  return db;
 }
 
   
