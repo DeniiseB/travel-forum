@@ -47,6 +47,8 @@ module.exports = function (app) {
       }
   });
 
+
+
   // Inloggning
   app.post("/rest/login", async (request, response) => {
     request.setTimeout(10);
@@ -181,6 +183,23 @@ module.exports = function (app) {
         });
       });
 
+  
+    //Get specific group
+  app.get("/rest/groups/:id", async (req, res) => {
+    let group;
+
+    try {
+      group = await db.all("SELECT * FROM groups WHERE id = ?", [
+        req.params.id,
+      ]);
+      group = group[0];
+      res.json(group);
+    } catch (e) {
+      console.error(e);
+      response.status(4204).send("No content");
+    }
+  });
+  
       return db;
 }
 
