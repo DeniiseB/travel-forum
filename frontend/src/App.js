@@ -9,11 +9,13 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CreateGroup from "./pages/CreateGroup.jsx";
 import "./App.css";
 import GroupProvider from "./contexts/GroupContext";
+import CategoryContextProvider from './contexts/CategoryContext';
 
 function App() {
   return (
     <div className="App">
-  <UserContextProvider>
+    <UserContextProvider>
+        <CategoryContextProvider>
         <GroupProvider>
         <Navbar />
         <Router>
@@ -27,6 +29,7 @@ function App() {
           </main>
       </Router>
       </GroupProvider>
+        </CategoryContextProvider>
       </UserContextProvider>
     </div>
   );

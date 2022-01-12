@@ -1,21 +1,28 @@
 import React from 'react';
-import { ListGroup, ListGroupItem, } from 'reactstrap';
 import CategoryCard from '../components/CatergoryCard';
+import { CategoryContext } from '../contexts/CategoryContext';
+import { useState, useContext } from "react";
 
 function Home() {
-  const data = [{ "category": "USA", "groupAmount": 10 },
-    { "category": "Sweden", "groupAmount": 23 },
-    { "category": "Denmark", "groupAmount": 7 }];
+
+  const { categories } = useContext(CategoryContext);
+
+  console.log(categories)
+ 
 
   return (
     <div className="Home">
       <h2 style={styles.catergoryTitle}>Categorys</h2>
       <h5 style={styles.groupAmountTitle}>Group Amount</h5>
+      {!categories ? (
+        <div></div>
+      ):(
       <div>
-          {data.map((item, index) => (
+          {categories.map((item, index) => (
             <CategoryCard props={item} key={index} />
           ))}
       </div>
+      )}
     </div>
   );
 }
