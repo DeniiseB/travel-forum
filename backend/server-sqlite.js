@@ -193,10 +193,15 @@ module.exports = function (app) {
         req.params.id,
       ]);
       group = group[0];
-      res.json(group);
+      if (group != undefined) {
+        res.json(group);
+      }
+      else {
+        res.status(204).send("No content")
+      }
     } catch (e) {
       console.error(e);
-      response.status(4204).send("No content");
+      response.status(400).send("Bad request");
     }
   });
   
