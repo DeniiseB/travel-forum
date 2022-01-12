@@ -1,14 +1,10 @@
-import React from 'react';
-import CategoryCard from '../components/CatergoryCard';
-import { CategoryContext } from '../contexts/CategoryContext';
-import { useState, useContext } from "react";
+import React from "react";
+import CategoryCard from "../components/CatergoryCard";
+import { CategoryContext } from "../contexts/CategoryContext";
+import { useContext } from "react";
 
 function Home() {
-
   const { categoriesWithGroups } = useContext(CategoryContext);
-
-  console.log(categoriesWithGroups);
- 
 
   return (
     <div className="Home">
@@ -27,7 +23,6 @@ function Home() {
   );
 }
 
-
 export default Home;
 
 const styles = {
@@ -41,5 +36,5 @@ const styles = {
     marginTop: "2vh",
     marginLeft: "250px",
     marginRight: "5vw",
-  }
-}
+  },
+};
