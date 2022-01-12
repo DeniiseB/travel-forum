@@ -9,24 +9,26 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CreateGroup from "./pages/CreateGroup.jsx";
 import "./App.css";
 import GroupProvider from "./contexts/GroupContext";
+import MyGroups from './pages/MyGroups';
 
 function App() {
   return (
     <div className="App">
-  <UserContextProvider>
+      <UserContextProvider>
         <GroupProvider>
-        <Navbar />
-        <Router>
-          <main>
-            <Switch>
-              <Route path="/register" exact component={Register} />
-              <Route path="/login" exact component={Login} />
-            <Route path="/" exact component={Home} />
-             <Route exact path="/create-group" component={CreateGroup} />
-            </Switch>
-          </main>
-      </Router>
-      </GroupProvider>
+          <Navbar />
+          <Router>
+            <main>
+              <Switch>
+                <Route path="/register" exact component={Register} />
+                <Route path="/login" exact component={Login} />
+                <Route path="/" exact component={Home} />
+                <Route exact path="/create-group" component={CreateGroup} />
+                <Route exact path="/my-groups" component={MyGroups} />
+              </Switch>
+            </main>
+          </Router>
+        </GroupProvider>
       </UserContextProvider>
     </div>
   );
