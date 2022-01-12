@@ -1,0 +1,29 @@
+GET http://localhost:8000/rest/users
+
+###
+
+GET http://localhost:8000/rest/groups
+
+###
+
+POST http://localhost:8000/rest/groups
+Content-Type: application/json
+
+{
+  "creatorUserId": 28,
+  "groupName": "UK roadtrip",
+  "groupAccess": "public",
+  "commentIds": ""
+}
+
+###
+
+POST http://localhost:8000/rest/comments
+Content-Type: application/json
+
+{
+  "userId": 28,
+  "content": "Looking for people to join me on a trip to Finland"
+}
+
+###

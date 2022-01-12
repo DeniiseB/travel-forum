@@ -2,8 +2,24 @@
   {
     "path": "/rest/*",
     "roles": [
-      { "role": "*", "methods": ["GET"] },
-      { "role": "admin", "methods": ["GET", "POST", "PUT", "DELETE"] }
+      { "role": "*", "methods": ["GET", "POST"] },
+      { "role": "admin", "methods": ["GET", "PUT", "DELETE"] }
+    ]
+  },
+  {
+    "path": "/rest/users*",
+    "roles": [{ "role": "anonymous", "methods": ["POST"] }]
+  },
+
+  {
+    "path": "/rest/login",
+    "roles": [
+      { "role": "anonymous", "methods": ["POST"] },
+      { "role": "member", "methods": ["GET", "DELETE"] },
+      { "role": "user", "methods": ["GET", "DELETE"] },
+      { "role": "admin", "methods": ["GET", "DELETE"] },
+      { "role": "groupAdmin", "methods": ["GET", "DELETE"] },
+      { "role": "groupModerator", "methods": ["GET", "DELETE"] }
     ]
   }
 ]

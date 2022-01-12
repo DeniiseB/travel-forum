@@ -1,5 +1,5 @@
 // välj SQL-version
-const selectedSQL = ["sqlite"][0]; // 0 = sqlite, 1 = mysql, 2 = mssql
+const selectedSQL = ["sqlite"][0]; 
 
 // server port
 let port = 8000;
@@ -7,6 +7,10 @@ let port = 8000;
 // express server
 let express = require("express");
 const app = express();
+
+//Flood control
+const floodControl = require("./flood-control.js")
+app.use(floodControl)
 
 
 
@@ -34,7 +38,10 @@ app.use(
     secret: "keyboard cat jksfj<khsdka",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // ändra till true för secure cookie (felsöka behövs här nu)
+    cookie: {
+      secure: false,
+      httpOnly: true,
+    }, 
   })
 );
 
@@ -47,8 +54,6 @@ app.use(acl);
  
 // database specific REST ROUTES
 const db = require("./server-" + selectedSQL + ".js")(app);
-
-
 
 
 // start av webbservern
