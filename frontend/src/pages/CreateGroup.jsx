@@ -1,7 +1,8 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
 import { useHistory } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 
 function CreateGroup() {
   const { postNewGroup, postNewComment } = useGroupContext();
@@ -11,6 +12,7 @@ function CreateGroup() {
   const [comment, setComment] = useState("");
   const [warning, setWarning] = useState(false);
   const history = useHistory();
+  const { currentUser } = useContext(UserContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -28,7 +30,7 @@ function CreateGroup() {
 
     // Adding first commentId as string. New comment ids will be added to this string.
     const newGroup = {
-      creatorUserId: 8, // Add current user id **************
+      creatorUserId: currentUser.id, 
       groupName: title,
       groupAccess: access,
       commentIds: commentId,
