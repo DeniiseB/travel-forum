@@ -30,7 +30,7 @@ function CreateGroup() {
 
     // Adding first commentId as string. New comment ids will be added to this string.
     const newGroup = {
-      creatorUserId: currentUser.id, 
+      creatorUserId: currentUser.id,
       groupName: title,
       groupAccess: access,
       commentIds: commentId,
@@ -49,7 +49,7 @@ function CreateGroup() {
       setComment("");
       setWarning(false);
 
-      // history.push("/")
+      history.push("/");
     }
   }
 

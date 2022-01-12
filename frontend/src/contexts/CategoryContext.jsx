@@ -4,23 +4,23 @@ import { createContext, useState, useEffect } from "react";
 export const CategoryContext = createContext();
 
 const CategoryContextProvider = (props) => {
-  const [categories, setCategories] = useState(null);
+  const [categoriesWithGroups, setCategoriesWithGroups] = useState(null);
   
   useEffect(() => {
-    getCategories()
+    getCategoriesWithGroups()
   }, []);
 
  
-  const getCategories = async () => {
-    let res = await fetch("/rest/categories");
+  const getCategoriesWithGroups = async () => {
+    let res = await fetch("/rest/groupsxcategories");
     let data = await res.json();
     console.log(data, 'data / categories')
-    setCategories(data)
+    setCategoriesWithGroups(data);
   };
 
 
   const values = {
-    categories,
+    categoriesWithGroups,
   };
 
   return (
