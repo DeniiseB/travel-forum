@@ -40,8 +40,8 @@ module.exports = function (app) {
         null,
         user.username,
         encryptedPassword,
-        null,
-        null,
+        "",
+        "",
       ]);
       response.json(result);
     } catch (e) {
@@ -201,70 +201,76 @@ module.exports = function (app) {
   app.get("/rest/created-groups/:userId", async (req, res) => {
     let group;
 
-    try {
-      user = await db.all("SELECT * FROM users WHERE id = ?", [
-        req.params.userId,
-      ]);
-      user = user[0];
+    if (req.params.userId !== undefined) {
+       try {
+         user = await db.all("SELECT * FROM users WHERE id = ?", [
+           req.params.userId,
+         ]);
+         user = user[0];
 
-      if (user.createdGroups !== null) {
-        let groupsIdsArr = user.createdGroups.split(",");
+         if (user.createdGroups !== "") {
+           let groupsIdsArr = user.createdGroups.split(",");
 
-        let createdGroupsArr = [];
-        try {
-          for (let groupdId of groupsIdsArr) {
-            group = await db.all("SELECT * FROM groups WHERE id = ?", [
-              groupdId,
-            ]);
-            createdGroupsArr.push(group[0]);
-          }
-          res.json(createdGroupsArr);
-        } catch (e) {
-          console.log(e);
-          response.status(400).send("Bad request");
-        }
-      } else {
-        res.status(204).send("No content");
-      }
-    } catch (e) {
-      console.error(e);
-      response.status(400).send("Bad request");
+           let createdGroupsArr = [];
+           try {
+             for (let groupdId of groupsIdsArr) {
+               group = await db.all("SELECT * FROM groups WHERE id = ?", [
+                 groupdId,
+               ]);
+               createdGroupsArr.push(group[0]);
+             }
+             res.json(createdGroupsArr);
+           } catch (e) {
+             console.log(e);
+             response.status(400).send("Bad request");
+           }
+         } else {
+           res.status(204).send("No content");
+         }
+       } catch (e) {
+         console.error(e);
+         response.status(400).send("Bad request");
+       }
     }
+   
   });
 
   //Get created groups of user
   app.get("/rest/joined-groups/:userId", async (req, res) => {
     let group;
 
-    try {
-      user = await db.all("SELECT * FROM users WHERE id = ?", [
-        req.params.userId,
-      ]);
-      user = user[0];
+    if (req.params.userId !== undefined) {
+      try {
+        user = await db.all("SELECT * FROM users WHERE id = ?", [
+          req.params.userId,
+        ]);
+        user = user[0];
 
-      if (user.joinedGroups !== null) {
-        let groupsIdsArr = user.joinedGroups.split(",");
+        if (user.joinedGroups !== "") {
+          let groupsIdsArr = user.joinedGroups.split(",");
 
-        let joinedGroupsArr = [];
-        try {
-          for (let groupdId of groupsIdsArr) {
-            group = await db.all("SELECT * FROM groups WHERE id = ?", [
-              groupdId,
-            ]);
-            joinedGroupsArr.push(group[0]);
+          let joinedGroupsArr = [];
+          try {
+            for (let groupdId of groupsIdsArr) {
+              group = await db.all("SELECT * FROM groups WHERE id = ?", [
+                groupdId,
+              ]);
+              joinedGroupsArr.push(group[0]);
+            }
+            res.json(joinedGroupsArr);
+          } catch (e) {
+            console.log(e);
+            response.status(400).send("Bad request");
           }
-          res.json(joinedGroupsArr);
-        } catch (e) {
-          console.log(e);
-          response.status(400).send("Bad request");
+        } else {
+          res.status(204).send("No content");
         }
-      } else {
-        res.status(204).send("No content");
+      } catch (e) {
+        console.error(e);
+        response.status(400).send("Bad request");
       }
-    } catch (e) {
-      console.error(e);
-      response.status(400).send("Bad request");
     }
+    
   });
 
   return db;

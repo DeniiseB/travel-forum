@@ -9,15 +9,22 @@ import { UserContext } from "../contexts/UserContext";
 
 function MyGroups() {
 
-  const { getCreatedGroups } = useGroupContext();
+  const {  getJoinedAndCreatedGroups } =
+    useGroupContext();
   const { currentUser, getCurrentUser } = useContext(UserContext);
-  const [allCreatedGroups, setAllCreatedGroups]=useState([])
+  const [allCreatedGroups, setAllCreatedGroups] = useState([])
+  const [allJoinedGroups, setAllJoinedGroups]=useState([])
 
   useEffect(async () => {
 
-     let user = await getCurrentUser();
-    let res = await getCreatedGroups(user.id);
-    await setAllCreatedGroups(res);
+    let user = await getCurrentUser();
+    if (user !== null) {
+      let res=await getJoinedAndCreatedGroups(user.id)
+
+    
+    setAllCreatedGroups(res[0]);
+    setAllJoinedGroups(res[1])
+    }
     
   }, []);
 
@@ -25,16 +32,21 @@ function MyGroups() {
 
   return (
     <div className="wrapper">
-      <h5 className="name" style={styles.name}>Created groups</h5>
-      <div className="header" style={styles.header}>
+      <h5 className="name" style={styles.name}>
+        Created groups
+      </h5>
+      <div
+        className="header"
+        style={allCreatedGroups && allCreatedGroups.length > 0 ? styles.header : styles.hide}
+      >
         <p>Topics</p>
-      <p>Group name</p>
+        <p>Group name</p>
       </div>
-      
+
       <div className="createdGroups" style={styles.createdGroups}>
-        {allCreatedGroups.length > 0 && currentUser.id ? (
+        { allCreatedGroups!==undefined &&   allCreatedGroups.length > 0 && currentUser.id ? (
           allCreatedGroups.map((group) => (
-            <div className="groupItem" style={styles.groupItem}>
+            <div className="groupItem" style={styles.groupItem} key={group.id}>
               <p>#Category</p>
               <p>{group.groupName}</p>
             </div>
@@ -44,8 +56,18 @@ function MyGroups() {
         )}
       </div>
 
-      <div className="joinedGroups">
-        <h5 style={styles.name}>Joined groups</h5>
+      <h5 style={styles.nameJoined}>Joined groups</h5>
+      <div className="joinedGroups" style={styles.joinedGroups}>
+        { allJoinedGroups!==undefined &&   allJoinedGroups.length > 0 && currentUser.id ? (
+          allJoinedGroups.map((group) => (
+            <div className="groupItem" style={styles.groupItem} key={group.id}>
+              <p>#Category</p>
+              <p>{group.groupName}</p>
+            </div>
+          ))
+        ) : (
+          <p>You don't have any joined groups yet</p>
+        )}
       </div>
     </div>
   );
@@ -59,26 +81,42 @@ const styles = {
     flexDirection: "column",
     paddingTop: "2vh",
     paddingRight: "2vh",
-    paddingLeft:"2vh",
+    paddingLeft: "2vh",
     overflowY: "scroll",
-    height:"25vh"
+    height: "25vh",
+  },
+  joinedGroups: {
+    display: "flex",
+    flexDirection: "column",
+    paddingTop: "2vh",
+    paddingRight: "2vh",
+    paddingLeft: "2vh",
+    overflowY: "scroll",
+    height: "25vh",
   },
   header: {
     display: "flex",
     justifyContent: "center",
     gap: "20vw",
-    paddingTop:"3vh"
-    
+    paddingTop: "3vh",
   },
   name: {
-    marginTop:"5vh"
+    marginTop: "5vh",
+    paddingBottom:"1vh"
   },
   groupItem: {
     display: "flex",
     border: "1px solid black",
-    justifyContent:"center",
-    gap:"10vh"
-    
+    justifyContent: "center",
+    gap: "10vh",
+    alignItems: "center",
+   
+  },
+  hide: {
+    display: "none",
+  },
+  nameJoined: {
+    marginTop: "8vh",
+    paddingBottom:"3vh"
   }
-  
-}
+};
