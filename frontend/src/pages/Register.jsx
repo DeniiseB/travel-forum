@@ -17,7 +17,7 @@ export default function Register() {
     if (confirmPassword === password) {
       let user = {
         username: username,
-        password: password,
+        password: password
       };
       let res = await register(user);
       if (res.status === 400) {

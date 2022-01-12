@@ -33,10 +33,12 @@ module.exports = function (app) {
     userExists = userExists[0]
     
       try {
-        result = await db.all("INSERT INTO users VALUES(?,?,?)", [
+        result = await db.all("INSERT INTO users VALUES(?,?,?,?,?)", [
           null,
           user.username,
           encryptedPassword,
+          null,
+          null
         ]);
          response.json(result); 
       } catch (e) {
