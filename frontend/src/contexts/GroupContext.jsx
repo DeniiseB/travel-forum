@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 const GroupContext = createContext("");
 
@@ -9,9 +9,6 @@ export const useGroupContext = () => {
 const GroupProvider = (props) => {
   const [groups, setGroups] = useState([]);
 
-  // useEffect(() => {
-  //   fetchAllGroups();
-  // }, []);
 
   const fetchAllGroups = async () => {
     try {

@@ -2,6 +2,7 @@ import React from 'react';
 import CategoryCard from '../components/CatergoryCard';
 import { CategoryContext } from '../contexts/CategoryContext';
 import { useState, useContext } from "react";
+import { Link } from 'react-router-dom';
 
 function Home() {
 
@@ -12,16 +13,18 @@ function Home() {
 
   return (
     <div className="Home">
-      <h2 style={styles.catergoryTitle}>Categorys</h2>
+      <h2 style={styles.catergoryTitle}>Categories</h2>
       <h5 style={styles.groupAmountTitle}>Group Amount</h5>
       {!categories ? (
         <div></div>
-      ):(
-      <div>
+      ) : (
+        <div>
           {categories.map((item, index) => (
-            <CategoryCard props={item} key={index} />
+            <Link to={"/inside-category/"+ item.id}>
+              <CategoryCard props={item} key={index} />
+            </Link>
           ))}
-      </div>
+        </div>
       )}
     </div>
   );

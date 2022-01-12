@@ -25,7 +25,7 @@ function App() {
               <Route path="/login" exact component={Login} />
             <Route path="/" exact component={Home} />
              <Route exact path="/create-group" component={CreateGroup} />
-            <Route exact path="/inside-category" component={InsideCategory} />
+            <Route exact path="/inside-category/:id" component={InsideCategory} />
             </Switch>
           </main>
       </Router>
