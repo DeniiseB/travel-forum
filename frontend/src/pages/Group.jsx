@@ -1,13 +1,14 @@
 import { useParams } from "react-router-dom";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import Comment from "../components/Comment";
 import { useEffect, useState } from "react";
 
 function Group() {
   const { groupid } = useParams();
-  const { fetchGroupById } = useGroupContext();
+  const { fetchGroupById, fetchCommentById } = useGroupContext();
   const [group, setGroup] = useState({});
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     getAndSetGroup();
@@ -15,37 +16,23 @@ function Group() {
 
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
-    console.log(fetchedGroup)
     setGroup(fetchedGroup);
+    getAndSetComments(fetchedGroup);
   }
 
-  const fakeCommentArray = [
-    {
-      id: 1,
-      userId: 8,
-      date: "10/01/2022 16:49",
-      content:
-        "I would like to travel there too! I need to get some cash together first and then I'll be able to go.",
-    },
-    {
-      id: 2,
-      userId: 10,
-      date: "10/01/2022 16:49",
-      content:
-        "I would like to travel there too! I need to get some cash together first and then I'll be able to go. I would like to travel there too! I need to get some cash together first and then I'll be able to go. I would like to travel there too! I need to get some cash together first and then I'll be able to go. I would like to travel there too! I need to get some cash together first and then I'll be able to go. I would like to travel there too! I need to get some cash together first and then I'll be able to go.",
-    },
-    {
-      id: 3,
-      userId: 8,
-      date: "10/01/2022 16:49",
-      content:
-        "I would like to travel there too! I need to get some cash together first and then I'll be able to go.",
-    },
-  ];
+  async function getAndSetComments(group) {
+    const commentIdArray = group.commentIds.split(" ");
+    let commentArray = [];
+    for (let commentId of commentIdArray) {
+      let comment = await fetchCommentById(parseInt(commentId));
+      commentArray.push(comment);
+    }
+    setComments(commentArray);
+  }
 
   return (
     <div>
-      { group &&
+      {group && comments && (
         <div className="m-2">
           <Container>
             <Row>
@@ -63,14 +50,27 @@ function Group() {
             </Row>
           </Container>
           <Container className="mt-2">
-            {fakeCommentArray.map((commentObject) => (
+            {comments.map((commentObject) => (
               <Comment key={commentObject.id} commentObject={commentObject} />
             ))}
           </Container>
         </div>
-      }
+      )}
+      {!group && (
+        <div style={styles.spinnerDiv}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      )}
     </div>
   );
 }
 
 export default Group;
+
+const styles = {
+  spinnerDiv: {
+    marginTop: "10rem",
+  },
+};

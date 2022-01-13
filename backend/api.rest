@@ -35,3 +35,9 @@ Content-Type: application/json
   "groupId": 32,
   "categoryId": 1
 }
+
+###
+
+GET http://localhost:8000/rest/comments/20
+
+###
