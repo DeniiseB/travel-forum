@@ -272,8 +272,8 @@ module.exports = function (app) {
     
   });
 
-  return db;
-}
+  
+
 
   app.post("/rest/comments", (req, res) => {
     const newComment = req.body;
