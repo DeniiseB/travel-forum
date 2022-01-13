@@ -10,25 +10,28 @@ import CreateGroup from "./pages/CreateGroup.jsx";
 import "./App.css";
 import GroupProvider from "./contexts/GroupContext";
 import MyGroups from './pages/MyGroups';
+import CategoryContextProvider from './contexts/CategoryContext';
 
 function App() {
   return (
     <div className="App">
       <UserContextProvider>
-        <GroupProvider>
-          <Navbar />
-          <Router>
-            <main>
-              <Switch>
-                <Route path="/register" exact component={Register} />
-                <Route path="/login" exact component={Login} />
-                <Route path="/" exact component={Home} />
-                <Route exact path="/create-group" component={CreateGroup} />
-                <Route exact path="/my-groups" component={MyGroups} />
-              </Switch>
-            </main>
-          </Router>
-        </GroupProvider>
+        <CategoryContextProvider>
+          <GroupProvider>
+            <Navbar />
+            <Router>
+              <main>
+                <Switch>
+                  <Route path="/register" exact component={Register} />
+                  <Route path="/login" exact component={Login} />
+                  <Route path="/" exact component={Home} />
+                  <Route exact path="/create-group" component={CreateGroup} />
+                  <Route exact path="/my-groups" component={MyGroups} />
+                </Switch>
+              </main>
+            </Router>
+          </GroupProvider>
+        </CategoryContextProvider>
       </UserContextProvider>
     </div>
   );

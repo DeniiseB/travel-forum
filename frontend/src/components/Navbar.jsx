@@ -15,7 +15,7 @@ function Navbar() {
 
 
   return (
-    <nav class="navbar navbar-dark" style={styles.navbar}>
+    <nav className="navbar navbar-dark" style={styles.navbar}>
       <a href="/" style={styles.mainName} className="link">
         Travel Forum
       </a>

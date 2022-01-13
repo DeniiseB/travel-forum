@@ -3,66 +3,81 @@ import { useState, useContext } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
+import { CategoryContext } from "../contexts/CategoryContext";
 
 function CreateGroup() {
   const { postNewGroup, postNewComment } = useGroupContext();
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Other");
+  const [category, setCategory] = useState(1);
   const [access, setAccess] = useState("Public");
   const [comment, setComment] = useState("");
   const [warning, setWarning] = useState(false);
   const history = useHistory();
   const { currentUser } = useContext(UserContext);
+  const { categories, postToGroupsXCategories } = useContext(CategoryContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    let commentId = await postComment();
+    let commentObject = await postComment();
 
-    if (commentId.error) {
-      console.log(commentId.error);
+    if (commentObject.error) {
+      console.log(commentObject.error);
       setWarning(true);
       return;
     } else {
-      commentId = commentId.id.toString();
       setWarning(false);
     }
 
-    // Adding first commentId as string. New comment ids will be added to this string.
-    const newGroup = {
-      creatorUserId: currentUser.id, 
-      groupName: title,
-      groupAccess: access,
-      commentIds: commentId,
-    };
+    let commentObjectId = commentObject.id.toString();
+    let newGroupObject = await postGroup(commentObjectId);
 
-    let response = await postNewGroup(newGroup);
-
-    if (response.error) {
-      console.log(response.error);
+    if (newGroupObject.error) {
+      console.log(newGroupObject.error);
       setWarning(true);
       return;
     } else {
-      setTitle("");
-      setCategory("Sweden");
-      setAccess("Public");
-      setComment("");
       setWarning(false);
-
-      // history.push("/")
     }
+
+    let newGroupObjectId = newGroupObject.id.toString();
+    await postGroupsXCategories(newGroupObjectId);
+
+    setTitle("");
+    setCategory("Sweden");
+    setAccess("Public");
+    setComment("");
+    history.push("/");
   }
 
   async function postComment() {
     const date = new Date().toISOString().slice(0, 19).replace("T", " ");
-
     const firstComment = {
       userId: 8,
       date: date,
       content: comment,
     };
-
     let res = await postNewComment(firstComment);
+    return res;
+  }
+
+  async function postGroup(commentId) {
+    const newGroup = {
+      creatorUserId: currentUser.id,
+      groupName: title,
+      groupAccess: access,
+      commentIds: commentId,
+    };
+    let res = await postNewGroup(newGroup);
+    return res;
+  }
+
+  async function postGroupsXCategories(newGroupId) {
+    let newRow = {
+      groupId: newGroupId,
+      categoryId: category,
+    };
+    let res = await postToGroupsXCategories(newRow);
     return res;
   }
 
@@ -84,14 +99,13 @@ function CreateGroup() {
           <Row className="mt-2">
             <Form.Group as={Col} controlId="formGridState">
               <Form.Label>Category</Form.Label>
-              <Form.Select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                <option>Other</option>
-                <option>Sweden</option>
-                <option>Finland</option>
-                <option>United Kingdom</option>
+              <Form.Select onChange={(e) => setCategory(e.target.value)}>
+                {categories &&
+                  categories.map((category) => (
+                    <option value={category.id} key={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
               </Form.Select>
             </Form.Group>
           </Row>
@@ -135,7 +149,7 @@ function CreateGroup() {
             className="mt-3"
             variant="primary"
             type="submit"
-            disabled={!title || !comment}
+            // disabled={!title || !comment}
           >
             Create Group
           </Button>
