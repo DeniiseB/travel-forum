@@ -61,6 +61,7 @@ function MyGroups() {
         { allJoinedGroups!==undefined &&   allJoinedGroups.length > 0 && currentUser.id ? (
           allJoinedGroups.map((group) => (
             <div className="groupItem" style={styles.groupItem} key={group.id}>
+              
               <p>{group.category }</p>
               <p>{group.groupName}</p>
             </div>
@@ -110,6 +111,8 @@ const styles = {
     justifyContent: "center",
     gap: "10vh",
     alignItems: "center",
+    paddingTop:"1vh"
+    
    
   },
   hide: {
