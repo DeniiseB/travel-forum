@@ -1,17 +1,21 @@
 const accessList = require("./access-list.json");
 
 module.exports = function (req, res, next) {
- 
+  let roles = [];
 
-   let roles = [];
-
-   if (req.session?.user?.roles) {
-     roles = [req.session.user.roles];
-   } else {
-     roles = ["anonymous"];
+  if (req.session?.user?.roles)
+  {
+    for (let userRole of req.session.user.roles)
+    {
+      roles.push(userRole);
+    }
   }
-  
-  roles.push("*")
+  else {
+    roles = ["anonymous"];
+  }
+
+
+  roles.push("*");
 
   console.log({
     "req.path": req.path,
@@ -28,22 +32,19 @@ module.exports = function (req, res, next) {
     if (req.path.match(new RegExp(access.path))) {
       for (role of access.roles) {
         if (roles.includes(role.role)) {
-              if (role.methods.includes(req.method)) {
-                // @todo case independent match?
-                found = true;
-              }
+          if (role.methods.includes(req.method)) {
+            // @todo case independent match?
+            found = true;
+          }
         }
       }
     }
-
   }
 
- 
-    if (found) {
-      next();
-    } else {
-      res.status(403); // @todo skriva logik för att ge "rätt" felmeddelande, som 401 eller 403 beroende på om jag är inloggad eller inte
-      res.json({ error: "You don't have access" });
-    }
-  
+  if (found) {
+    next();
+  } else {
+    res.status(403); // @todo skriva logik för att ge "rätt" felmeddelande, som 401 eller 403 beroende på om jag är inloggad eller inte
+    res.json({ error: "You don't have access" });
+  }
 };
