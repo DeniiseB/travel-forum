@@ -1,4 +1,6 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
+import ReactQuill from 'react-quill'; // ES6
+import 'react-quill/dist/quill.snow.css'; // ES6
 import { useState, useContext } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
 import { useHistory } from "react-router-dom";
@@ -80,7 +82,9 @@ function CreateGroup() {
     let res = await postToGroupsXCategories(newRow);
     return res;
   }
-
+  const handleChange = (value) => {
+    setComment(value);
+  }
   return (
     <div className="m-2">
       <div>
@@ -134,15 +138,8 @@ function CreateGroup() {
 
           <Form.Group className="mt-2" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Comment</Form.Label>
-            <Form.Control
-              value={comment}
-              onChange={(e) => {
-                setComment(e.target.value);
-              }}
-              as="textarea"
-              rows={3}
-              maxLength="1000"
-            />
+            <ReactQuill value={comment || ''}
+              onChange={handleChange} />
           </Form.Group>
 
           <Button
