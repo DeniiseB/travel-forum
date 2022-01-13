@@ -53,7 +53,7 @@ function CreateGroup() {
   async function postComment() {
     const date = new Date().toISOString().slice(0, 19).replace("T", " ");
     const firstComment = {
-      userId: 8,
+      userId: currentUser.id,
       date: date,
       content: comment,
     };
