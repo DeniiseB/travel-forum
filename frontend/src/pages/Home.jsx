@@ -1,32 +1,27 @@
-import React from 'react';
-import CategoryCard from '../components/CatergoryCard';
-import { CategoryContext } from '../contexts/CategoryContext';
-import { useState, useContext } from "react";
+import React from "react";
+import CategoryCard from "../components/CatergoryCard";
+import { CategoryContext } from "../contexts/CategoryContext";
+import { useContext } from "react";
 
 function Home() {
-
-  const { categories } = useContext(CategoryContext);
-
-  console.log(categories)
- 
+  const { categoriesWithGroups } = useContext(CategoryContext);
 
   return (
     <div className="Home">
-      <h2 style={styles.catergoryTitle}>Categorys</h2>
-      <h5 style={styles.groupAmountTitle}>Group Amount</h5>
-      {!categories ? (
+      <h2 style={styles.catergoryTitle}>Categories</h2>
+      <h5 style={styles.groupAmountTitle}>Groups</h5>
+      {!categoriesWithGroups ? (
         <div></div>
-      ):(
-      <div>
-          {categories.map((item, index) => (
+      ) : (
+        <div>
+          {categoriesWithGroups.map((item, index) => (
             <CategoryCard props={item} key={index} />
           ))}
-      </div>
+        </div>
       )}
     </div>
   );
 }
-
 
 export default Home;
 
@@ -41,5 +36,5 @@ const styles = {
     marginTop: "2vh",
     marginLeft: "250px",
     marginRight: "5vw",
-  }
-}
+  },
+};
