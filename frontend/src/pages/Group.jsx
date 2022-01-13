@@ -1,9 +1,24 @@
 import { useParams } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import { useGroupContext } from "../contexts/GroupContext";
 import Comment from "../components/Comment";
+import { useEffect, useState } from "react";
 
 function Group() {
   const { groupid } = useParams();
+  const { fetchGroupById } = useGroupContext();
+  const [group, setGroup] = useState({});
+
+  useEffect(() => {
+    getAndSetGroup();
+  }, [groupid]);
+
+  async function getAndSetGroup() {
+    const fetchedGroup = await fetchGroupById(groupid);
+    console.log(fetchedGroup)
+    setGroup(fetchedGroup);
+  }
+
   const fakeCommentArray = [
     {
       id: 1,
@@ -30,31 +45,32 @@ function Group() {
 
   return (
     <div>
-      <div className="m-2">
-        <Container>
-          <Row>
-            <Col>
-              <h2>#groupName</h2>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Button>Members</Button>
-            </Col>
-            <Col>
-              <Button>Comment</Button>
-            </Col>
-          </Row>
-        </Container>
-        <Container className="mt-2">
-          {fakeCommentArray.map((commentObject) => (
-            <Comment key={commentObject.id} commentObject={commentObject} />
-          ))}
-        </Container>
-      </div>
+      { group &&
+        <div className="m-2">
+          <Container>
+            <Row>
+              <Col>
+                <h2>{group.groupName}</h2>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Button>Members</Button>
+              </Col>
+              <Col>
+                <Button>Comment</Button>
+              </Col>
+            </Row>
+          </Container>
+          <Container className="mt-2">
+            {fakeCommentArray.map((commentObject) => (
+              <Comment key={commentObject.id} commentObject={commentObject} />
+            ))}
+          </Container>
+        </div>
+      }
     </div>
   );
 }
 
 export default Group;
-

@@ -9,16 +9,22 @@ export const useGroupContext = () => {
 const GroupProvider = (props) => {
   const [groups, setGroups] = useState([]);
 
-  // useEffect(() => {
-  //   fetchAllGroups();
-  // }, []);
-
   const fetchAllGroups = async () => {
     try {
       let res = await fetch("/rest/groups");
       setGroups(await res.json());
     } catch {
       console.log("Fetching all groups failed");
+    }
+  };
+
+  const fetchGroupById = async (groupId) => {
+    try {
+      let res = await fetch("/rest/groups/" + groupId);
+      let resJson = await res.json();
+      return resJson.data;
+    } catch {
+      console.log("Fetching group by ID failed");
     }
   };
 
@@ -56,6 +62,7 @@ const GroupProvider = (props) => {
 
   const values = {
     groups,
+    fetchGroupById,
     postNewGroup,
     postNewComment,
   };

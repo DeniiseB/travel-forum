@@ -149,7 +149,7 @@ function CreateGroup() {
             className="mt-3"
             variant="primary"
             type="submit"
-            // disabled={!title || !comment}
+            disabled={!title || !comment}
           >
             Create Group
           </Button>

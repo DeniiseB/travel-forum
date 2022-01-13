@@ -157,6 +157,21 @@ module.exports = function (app) {
     });
   });
 
+  app.get("/rest/groups/:id", (req, res) => {
+    const query = "SELECT * FROM groups WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
   app.post("/rest/comments", (req, res) => {
     const newComment = req.body;
     const sql = "INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)";
