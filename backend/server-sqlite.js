@@ -216,7 +216,13 @@ module.exports = function (app) {
                group = await db.all("SELECT * FROM groups WHERE id = ?", [
                  groupdId,
                ]);
-               createdGroupsArr.push(group[0]);
+               group = group[0]
+               let categoryName = await db.all(
+                 "SELECT name from categories INNER JOIN groupsXcategories ON groupsXcategories.groupId=? AND groupsXcategories.categoryId=categories.id",
+                 [group.id]
+               );
+               group.category = categoryName[0].name;
+               createdGroupsArr.push(group);
              }
              res.json(createdGroupsArr);
            } catch (e) {
@@ -254,7 +260,13 @@ module.exports = function (app) {
               group = await db.all("SELECT * FROM groups WHERE id = ?", [
                 groupdId,
               ]);
-              joinedGroupsArr.push(group[0]);
+              group = group[0]
+              let categoryName = await db.all(
+                "SELECT name from categories INNER JOIN groupsXcategories ON groupsXcategories.groupId=? AND groupsXcategories.categoryId=categories.id",
+                [group.id]
+              );
+              group.category = categoryName[0].name;
+              joinedGroupsArr.push(group);
             }
             res.json(joinedGroupsArr);
           } catch (e) {

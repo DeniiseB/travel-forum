@@ -47,7 +47,7 @@ function MyGroups() {
         { allCreatedGroups!==undefined &&   allCreatedGroups.length > 0 && currentUser.id ? (
           allCreatedGroups.map((group) => (
             <div className="groupItem" style={styles.groupItem} key={group.id}>
-              <p>#Category</p>
+              <p>{group.category}</p>
               <p>{group.groupName}</p>
             </div>
           ))
@@ -61,7 +61,7 @@ function MyGroups() {
         { allJoinedGroups!==undefined &&   allJoinedGroups.length > 0 && currentUser.id ? (
           allJoinedGroups.map((group) => (
             <div className="groupItem" style={styles.groupItem} key={group.id}>
-              <p>#Category</p>
+              <p>{group.category }</p>
               <p>{group.groupName}</p>
             </div>
           ))
