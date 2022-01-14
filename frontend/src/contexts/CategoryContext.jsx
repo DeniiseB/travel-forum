@@ -31,6 +31,12 @@ const CategoryContextProvider = (props) => {
     setCategoriesWithGroups(data);
   };
 
+  const getGroupIdsByCategoryId = async (categoryId) => {
+    let res = await fetch("/rest/groupsxcategories/" + categoryId);
+    let data = await res.json();
+    return data
+  };
+
   const postToGroupsXCategories = async (rowToPost) => {
     try {
       let res = await fetch("/rest/groupsxcategories", {
@@ -54,13 +60,14 @@ const CategoryContextProvider = (props) => {
     } catch {
       console.log("Fetching category failed");
     }
-  }
+  };
 
   const values = {
     categories,
     getCategoryById,
     categoriesWithGroups,
     postToGroupsXCategories,
+    getGroupIdsByCategoryId,
   };
 
   return (

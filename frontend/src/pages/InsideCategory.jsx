@@ -5,17 +5,25 @@ import { useParams } from "react-router-dom";
 
 function InsideCategory() {
   const fakeArray = ["French speaker", "Fishing friend", "Travel buddy"];
-  const { getCategoryById } = useContext(CategoryContext);
+  const { getCategoryById, getGroupIdsByCategoryId } = useContext(CategoryContext);
   const { id } = useParams();
   const [category, setCategory] = useState({});
+  const [groups, setGroups] = useState([])
 
   useEffect(() => {
     fetchCategory();
-  }, []);
+  }, [id]);
 
   async function fetchCategory() {
     const fetchedCategory = await getCategoryById(id);
     setCategory(fetchedCategory.data)
+
+    await fetchGroups()
+  }
+
+  async function fetchGroups() { 
+    const fetchedGroupIds = await getGroupIdsByCategoryId(id)
+    console.log("fetchedGroupIds: ", fetchedGroupIds)
   }
 
   return (

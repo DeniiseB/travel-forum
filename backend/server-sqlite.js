@@ -270,20 +270,24 @@ module.exports = function (app) {
   })
 
 
-  app.get("/rest/groups&categories/:id", (req, res) => {
-    const query = "SELECT * FROM groupsXcategories WHERE categoryId = ?" 
-    const params = [req.params.id]
-    db.each(query, params, (error, row) => {
-      if (error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-        console.log("row ", row);
-        res.json({
-          message: "Great success",
-          data: row ,
-        });
-    })
+  app.get("/rest/groupsxcategories/:id", async (req, res) => {
+    const query = "SELECT groupId FROM groupsXcategories WHERE categoryId = ?" 
+    const params = [req.params.id];
+    let result = await db.all(query, params);
+    res.json(result);
+
+    // const params = [req.params.id]
+    // db.each(query, params, (error, row) => {
+    //   if (error) {
+    //     res.status(400).json({ error: error.message });
+    //     return;
+    //   }
+    //     console.log("row ", row);
+    //     res.json({
+    //       message: "Great success",
+    //       data: row ,
+    //     });
+    // })
   })
 
   return db;

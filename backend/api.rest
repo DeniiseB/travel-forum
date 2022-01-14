@@ -49,3 +49,5 @@ Content-Type: application/json
 GET http://localhost:8000/rest/comments/20
 
 ###
+
+GET http://localhost:8000/rest/groupsxcategories/187
