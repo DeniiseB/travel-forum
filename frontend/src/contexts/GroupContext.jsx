@@ -12,7 +12,7 @@ const GroupProvider = (props) => {
   const fetchAllGroups = async () => {
     try {
       let res = await fetch("/rest/groups");
-      console.log(res)
+      console.log(res);
       let data = await res.json();
       setGroups(data);
     } catch {

@@ -118,6 +118,21 @@ module.exports = function (app) {
     });
   });
 
+  app.get("/rest/users/:username", (req, res) => {
+    const query = "SELECT * FROM users WHERE username = ?";
+    const params = [req.params.username];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
   app.get("/rest/groups", async (req, res) => {
     let query = "SELECT * FROM groups";
     let result = await db.all(query);
