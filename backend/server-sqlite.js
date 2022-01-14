@@ -192,7 +192,7 @@ module.exports = function (app) {
         res.status(400).json({ error: error.message });
         return;
       }
-      console.log("row ", row)
+      console.log("row ", row);
       res.json({
         message: "Great success",
         data: row,
@@ -200,5 +200,25 @@ module.exports = function (app) {
     });
   })
 
+
+  app.get("/rest/groups&categories/:id", (req, res) => { //döpa om till groupscategories lägg till :id
+    const query = "SELECT * FROM groupsXcategories WHERE categoryId = ?"  //select groupIds
+    const params = [req.params.id]
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+        console.log("row ", row);
+        res.json({
+          message: "Great success",
+          data: row,
+        });
+    })
+  })
+
   return db;
 };
+
+
+
