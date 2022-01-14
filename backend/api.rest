@@ -33,7 +33,9 @@ GET http://localhost:8000/rest/categories/1
 
 ###
 
-GET http://localhost:8000/rest/groups&categories/170
+GET http://localhost:8000/rest/groups&categories/187
+
+###
 POST http://localhost:8000/rest/groupsxcategories
 Content-Type: application/json
 

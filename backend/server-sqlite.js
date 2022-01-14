@@ -270,10 +270,10 @@ module.exports = function (app) {
   })
 
 
-  app.get("/rest/groups&categories/:id", (req, res) => { //döpa om till groupscategories lägg till :id
-    const query = "SELECT * FROM groupsXcategories WHERE categoryId = ?"  //select groupIds
+  app.get("/rest/groups&categories/:id", (req, res) => {
+    const query = "SELECT * FROM groupsXcategories WHERE categoryId = ?" 
     const params = [req.params.id]
-    db.get(query, params, (error, row) => {
+    db.each(query, params, (error, row) => {
       if (error) {
         res.status(400).json({ error: error.message });
         return;
@@ -281,7 +281,7 @@ module.exports = function (app) {
         console.log("row ", row);
         res.json({
           message: "Great success",
-          data: row,
+          data: row ,
         });
     })
   })
