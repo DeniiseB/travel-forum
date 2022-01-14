@@ -3,7 +3,8 @@ import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 
 function Invite(props) {
-  const { getUserByUserName } = useContext(UserContext);
+  const { getUserByUserName, addGroupIdToJoinedGroupIds } =
+    useContext(UserContext);
   const [userName, setUserName] = useState("");
   const [userNotFound, setUserNotFound] = useState(false);
 
@@ -14,8 +15,24 @@ function Invite(props) {
   async function handleSubmit(e) {
     e.preventDefault();
     let fetchedUser = await getUserByUserName(userName);
-    setUserNotFound(!fetchedUser)
-    console.log(fetchedUser);
+    setUserNotFound(!fetchedUser);
+    if (fetchedUser) {
+      await addGroupToUser(fetchedUser);
+    }
+    // ADD user to group!!!!!!
+  }
+
+  async function addGroupToUser(user) {
+    let userJoinedGroupIds = user.joinedGroups.split(" ");
+    if (!userJoinedGroupIds.includes(props.group.id.toString())) {
+      userJoinedGroupIds.push(props.group.id.toString());
+      let groupObject = {
+        userId: user.id,
+        groupIds: userJoinedGroupIds.join(" "),
+      };
+      let response = await addGroupIdToJoinedGroupIds(groupObject);
+      console.log(response.data);
+    }
   }
 
   return (
@@ -31,10 +48,12 @@ function Invite(props) {
               placeholder="ex. robin420"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-            />{ userNotFound &&
+            />
+            {userNotFound && (
               <Form.Text className="text-muted">
                 Sorry, we can't find that user
-              </Form.Text>}
+              </Form.Text>
+            )}
           </Form.Group>
           <Button variant="primary" type="submit" disabled={!userName}>
             Add

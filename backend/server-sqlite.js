@@ -133,6 +133,29 @@ module.exports = function (app) {
     });
   });
 
+  app.patch("/api/user/:id", (req, res) => {
+    var data = {
+      joinedGroups: req.body.groupIds,
+    };
+    db.run(
+      `UPDATE users set 
+           joinedGroups = COALESCE(?,joinedGroups)
+           WHERE id = ?`,
+      [data.joinedGroups, req.params.id],
+      function (err, result) {
+        if (err) {
+          res.status(400).json({ error: res.message });
+          return;
+        }
+        res.json({
+          message: "success",
+          data: data,
+          changes: this.changes,
+        });
+      }
+    );
+  });
+
   app.get("/rest/groups", async (req, res) => {
     let query = "SELECT * FROM groups";
     let result = await db.all(query);

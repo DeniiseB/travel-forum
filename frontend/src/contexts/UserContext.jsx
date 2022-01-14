@@ -59,12 +59,26 @@ const UserContextProvider = (props) => {
     }
   };
 
+  const addGroupIdToJoinedGroupIds = async (groupObject) => {
+    try {
+      let res = await fetch("/api/user/" + groupObject.userId, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ groupIds: groupObject.groupIds }),
+      });
+      return await res.json();
+    } catch {
+      console.log("Updating user joinedGroups failed");
+    }
+  };
+
   const values = {
     register,
     login,
     currentUser,
     logout,
     getUserByUserName,
+    addGroupIdToJoinedGroupIds,
   };
 
   return (

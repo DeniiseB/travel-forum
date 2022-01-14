@@ -41,3 +41,12 @@ Content-Type: application/json
 GET http://localhost:8000/rest/comments/20
 
 ###
+
+PATCH http://localhost:8000/api/user/2
+Content-Type: application/json
+
+{
+  "groupIds": 32
+}
+
+###

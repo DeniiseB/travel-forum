@@ -73,7 +73,7 @@ function Group() {
           </Spinner>
         </div>
       )}
-      <Invite showModal={toggleInviteModal} show={showInviteModal}/>
+      <Invite showModal={toggleInviteModal} show={showInviteModal} group={group}/>
     </div>
   );
 }
