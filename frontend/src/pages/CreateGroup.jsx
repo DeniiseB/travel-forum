@@ -1,6 +1,6 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
-import ReactQuill from 'react-quill'; // ES6
-import 'react-quill/dist/quill.snow.css'; // ES6
+import ReactQuill from "react-quill"; // ES6
+import "react-quill/dist/quill.snow.css"; // ES6
 import { useState, useContext } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
 import { useHistory } from "react-router-dom";
@@ -49,7 +49,7 @@ function CreateGroup() {
     setCategory("Sweden");
     setAccess("Public");
     setComment("");
-    history.push("/");
+    history.push("/group/" + newGroupObjectId);
   }
 
   async function postComment() {
@@ -58,6 +58,7 @@ function CreateGroup() {
       userId: currentUser.id,
       date: date,
       content: comment,
+      author: currentUser.username,
     };
     let res = await postNewComment(firstComment);
     return res;
@@ -84,7 +85,7 @@ function CreateGroup() {
   }
   const handleChange = (value) => {
     setComment(value);
-  }
+  };
   return (
     <div className="m-2">
       <div>
@@ -138,8 +139,7 @@ function CreateGroup() {
 
           <Form.Group className="mt-2" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Comment</Form.Label>
-            <ReactQuill value={comment || ''}
-              onChange={handleChange} />
+            <ReactQuill value={comment || ""} onChange={handleChange} />
           </Form.Group>
 
           <Button

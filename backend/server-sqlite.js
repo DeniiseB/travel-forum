@@ -174,10 +174,21 @@ module.exports = function (app) {
 
   app.post("/rest/comments", (req, res) => {
     const newComment = req.body;
-    const sql = "INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)";
-    const params = [newComment.userId, newComment.date, newComment.content];
+    const sql =
+      "INSERT INTO comments (userId, date, content, author) VALUES (?, ?, ?, ?)";
+    const params = [
+      newComment.userId,
+      newComment.date,
+      newComment.content,
+      newComment.author,
+    ];
 
-    if (!newComment.userId || !newComment.date || !newComment.content.trim()) {
+    if (
+      !newComment.userId ||
+      !newComment.date ||
+      !newComment.content.trim() ||
+      !newComment.author.trim()
+    ) {
       res.json({ error: "No empty fields allowed" });
       return;
     }

@@ -4,7 +4,7 @@ function Comment(props) {
   return (
     <Container style={styles.commentContainer}>
       <div style={styles.commentHeader}>
-        <p style={{ marginBottom: "0" }}> By #userName</p>
+        <p style={{ marginBottom: "0" }}> By {props.commentObject.author}</p>
         <p>{props.commentObject.date}</p>
       </div>
       <Row>
