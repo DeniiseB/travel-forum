@@ -9,13 +9,24 @@ export const useGroupContext = () => {
 const GroupProvider = (props) => {
   const [groups, setGroups] = useState([]);
 
-
   const fetchAllGroups = async () => {
     try {
       let res = await fetch("/rest/groups");
-      setGroups(await res.json());
+      console.log(res)
+      let data = await res.json();
+      setGroups(data);
     } catch {
       console.log("Fetching all groups failed");
+    }
+  };
+
+  const fetchGroupById = async (groupId) => {
+    try {
+      let res = await fetch("/rest/groups/" + groupId);
+      let resJson = await res.json();
+      return resJson.data;
+    } catch {
+      console.log("Fetching group by ID failed");
     }
   };
 
@@ -32,6 +43,16 @@ const GroupProvider = (props) => {
       return await res.json();
     } catch {
       console.log("Posting group failed");
+    }
+  };
+
+  const fetchCommentById = async (commentId) => {
+    try {
+      let res = await fetch("/rest/comments/" + commentId);
+      let resJson = await res.json();
+      return resJson.data;
+    } catch {
+      console.log("Fetching comment by ID failed");
     }
   };
 
@@ -53,7 +74,9 @@ const GroupProvider = (props) => {
 
   const values = {
     groups,
+    fetchGroupById,
     postNewGroup,
+    fetchCommentById,
     postNewComment,
   };
 

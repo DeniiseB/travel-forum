@@ -124,7 +124,6 @@ module.exports = function (app) {
     res.json(result);
   });
 
-  // ADD crosstable for groupMembers, groupModerators and categories
   app.post("/rest/groups", (req, res) => {
     const newGroup = req.body;
     const sql =
@@ -151,16 +150,45 @@ module.exports = function (app) {
         res.status(400).json({ error: err.message });
         return;
       }
-      res.json({ success: "Post group to db succeeded" });
+      res.json({
+        message: "Returning comment ID",
+        id: this.lastID,
+      });
+    });
+  });
+
+  app.get("/rest/groups/:id", (req, res) => {
+    const query = "SELECT * FROM groups WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
     });
   });
 
   app.post("/rest/comments", (req, res) => {
     const newComment = req.body;
-    const sql = "INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)";
-    const params = [newComment.userId, newComment.date, newComment.content];
+    const sql =
+      "INSERT INTO comments (userId, date, content, author) VALUES (?, ?, ?, ?)";
+    const params = [
+      newComment.userId,
+      newComment.date,
+      newComment.content,
+      newComment.author,
+    ];
 
-    if (!newComment.userId || !newComment.date || !newComment.content.trim()) {
+    if (
+      !newComment.userId ||
+      !newComment.date ||
+      !newComment.content.trim() ||
+      !newComment.author.trim()
+    ) {
       res.json({ error: "No empty fields allowed" });
       return;
     }
@@ -177,9 +205,50 @@ module.exports = function (app) {
     });
   });
 
-  app.get("/rest/categories", async (req, res) => {
+  app.get("/rest/comments/:id", (req, res) => {
+    const query = "SELECT * FROM comments WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
+  app.get("/rest/groupsxcategories", async (req, res) => {
     let query =
       "SELECT COUNT(*) as groupAmount,categories.name,categories.id FROM groupsXcategories, categories, groups WHERE groupsXcategories.categoryId = categories.id AND groupsXcategories.groupId = groups.id GROUP BY categories.name";
+    let result = await db.all(query);
+    res.json(result);
+  });
+
+  app.post("/rest/groupsxcategories", (req, res) => {
+    const newRow = req.body;
+    const sql =
+      "INSERT INTO groupsXcategories (groupId, categoryId) VALUES (?, ?)";
+    const params = [newRow.groupId, newRow.categoryId];
+
+    if (!newRow.groupId || !newRow.categoryId) {
+      res.json({ error: "No empty fields allowed" });
+      return;
+    }
+
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ success: "Post to groupsXcategories db succeeded" });
+    });
+  });
+
+  app.get("/rest/categories", async (req, res) => {
+    let query = "SELECT * from categories";
     let result = await db.all(query);
     res.json(result);
   });

@@ -4,17 +4,47 @@ import { createContext, useState, useEffect } from "react";
 export const CategoryContext = createContext();
 
 const CategoryContextProvider = (props) => {
-  const [categories, setCategories] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [categoriesWithGroups, setCategoriesWithGroups] = useState(null);
 
   useEffect(() => {
     getCategories();
   }, []);
 
+  useEffect(() => {
+    getCategoriesWithGroups();
+  }, []);
+
   const getCategories = async () => {
-    let res = await fetch("/rest/categories");
+    try {
+      let res = await fetch("/rest/categories");
+      let data = await res.json();
+      setCategories(data);
+    } catch {
+      console.log("Fetching categories failed");
+    }
+  };
+
+  const getCategoriesWithGroups = async () => {
+    let res = await fetch("/rest/groupsxcategories");
     let data = await res.json();
-    console.log(data, "data / categories");
-    setCategories(data);
+    setCategoriesWithGroups(data);
+  };
+
+  const postToGroupsXCategories = async (rowToPost) => {
+    try {
+      let res = await fetch("/rest/groupsxcategories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(rowToPost),
+      });
+      return await res.json();
+    } catch {
+      console.log("Posting row failed");
+    }
   };
 
   const getCategoryById = async (id) => {
@@ -24,11 +54,13 @@ const CategoryContextProvider = (props) => {
     } catch {
       console.log("Fetching category failed");
     }
-  };
+  }
 
   const values = {
     categories,
     getCategoryById,
+    categoriesWithGroups,
+    postToGroupsXCategories,
   };
 
   return (

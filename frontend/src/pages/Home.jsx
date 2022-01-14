@@ -1,27 +1,23 @@
-import React from 'react';
-import CategoryCard from '../components/CatergoryCard';
-import { CategoryContext } from '../contexts/CategoryContext';
-import { useState, useContext } from "react";
+import React from "react";
+import CategoryCard from "../components/CatergoryCard";
+import { CategoryContext } from "../contexts/CategoryContext";
+import { useContext } from "react";
 import { Link } from 'react-router-dom';
 
 function Home() {
-
-  const { categories } = useContext(CategoryContext);
-
-  console.log(categories)
- 
+  const { categoriesWithGroups } = useContext(CategoryContext);
 
   return (
     <div className="Home">
-      <h2 style={styles.catergoryTitle}>Categories</h2>
-      <h5 style={styles.groupAmountTitle}>Group Amount</h5>
-      {!categories ? (
+      <h2 style={styles.categoryTitle}>Categories</h2>
+      <h5 style={styles.groupAmountTitle}>Groups</h5>
+      {!categoriesWithGroups ? (
         <div></div>
       ) : (
         <div>
-          {categories.map((item, index) => (
+          {categoriesWithGroups.map((item, index) => (
             <Link to={"/inside-category/"+ item.id}>
-              <CategoryCard props={item} key={index} />
+            <CategoryCard props={item} key={index} />
             </Link>
           ))}
         </div>
@@ -29,7 +25,6 @@ function Home() {
     </div>
   );
 }
-
 
 export default Home;
 
@@ -44,5 +39,5 @@ const styles = {
     marginTop: "2vh",
     marginLeft: "250px",
     marginRight: "5vw",
-  }
-}
+  },
+};
