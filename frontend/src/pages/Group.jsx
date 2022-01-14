@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import Comment from "../components/Comment";
+import Invite from "../components/Invite";
 import { useEffect, useState } from "react";
 
 function Group() {
@@ -9,6 +10,7 @@ function Group() {
   const { fetchGroupById, fetchCommentById } = useGroupContext();
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
   useEffect(() => {
     getAndSetGroup();
@@ -30,6 +32,11 @@ function Group() {
     setComments(commentArray);
   }
 
+  const toggleInviteModal = () => { 
+    let boolean = showInviteModal ? false : true;
+    setShowInviteModal(boolean)
+  }
+
   return (
     <div>
       {group && comments && (
@@ -41,6 +48,9 @@ function Group() {
               </Col>
             </Row>
             <Row>
+              <Col>
+                <Button onClick={toggleInviteModal}>Invite</Button>
+              </Col>
               <Col>
                 <Button>Members</Button>
               </Col>
@@ -63,6 +73,7 @@ function Group() {
           </Spinner>
         </div>
       )}
+      <Invite showModal={toggleInviteModal} show={showInviteModal}/>
     </div>
   );
 }
