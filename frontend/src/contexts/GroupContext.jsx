@@ -72,12 +72,28 @@ const GroupProvider = (props) => {
     }
   };
 
+  const putCommentInGroup = async (commentId , group) => {
+    let string = group.commentIds+','+commentId
+    let newString = {"str": string}
+    try {
+      let res = await fetch("/rest/groups/" + group.id, {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(newString),
+      });
+      return await res.json();
+    } catch {
+      console.log("Posting comment failed");
+    }
+  };
+
   const values = {
     groups,
     fetchGroupById,
     postNewGroup,
     fetchCommentById,
     postNewComment,
+    putCommentInGroup,
   };
 
   return (

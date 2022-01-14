@@ -253,5 +253,28 @@ module.exports = function (app) {
     res.json(result);
   });
 
+  app.put("/rest/groups/:id", async (req, res) => {
+  try{
+    let data = await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?",[
+      req.body.str,
+      req.params.id
+    ])
+    if (!req.body.str || !req.params.id){
+      res.json({ error: "No empty fields allowed" });
+      return;
+    }
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "PUT into groups.commentId Success",
+      res,
+    });
+  }catch(e){
+    console.log(e)
+  }
+  });
+
   return db;
 };

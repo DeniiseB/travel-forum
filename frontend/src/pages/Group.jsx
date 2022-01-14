@@ -3,12 +3,14 @@ import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import Comment from "../components/Comment";
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 function Group() {
   const { groupid } = useParams();
   const { fetchGroupById, fetchCommentById } = useGroupContext();
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     getAndSetGroup();
@@ -30,6 +32,10 @@ function Group() {
     setComments(commentArray);
   }
 
+  function redirectToCommentPage() {
+    history.push("/create-comment/" + groupid);
+  }
+
   return (
     <div>
       {group && comments && (
@@ -45,7 +51,7 @@ function Group() {
                 <Button>Members</Button>
               </Col>
               <Col>
-                <Button>Comment</Button>
+                <Button onClick={redirectToCommentPage}>Comment</Button>
               </Col>
             </Row>
           </Container>

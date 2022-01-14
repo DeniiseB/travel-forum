@@ -21,5 +21,11 @@
       { "role": "groupAdmin", "methods": ["GET", "DELETE"] },
       { "role": "groupModerator", "methods": ["GET", "DELETE"] }
     ]
+  },
+  {
+    "path": "/rest/groups/*",
+    "roles": [
+     {"role": "*","methods": ["PUT"]}
+    ]
   }
 ]
