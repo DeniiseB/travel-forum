@@ -14,7 +14,7 @@ function MyGroups() {
   const { currentUser, getCurrentUser } = useContext(UserContext);
   const [allCreatedGroups, setAllCreatedGroups] = useState([])
   const [allJoinedGroups, setAllJoinedGroups]=useState([])
-
+   const history = useHistory();
   useEffect(async () => {
 
     let user = await getCurrentUser();
@@ -28,6 +28,11 @@ function MyGroups() {
     
   }, []);
 
+
+  function redirect(e, groupId) {
+    e.preventDefault()
+    history.push("/group/"+groupId)
+  }
  
 
   return (
@@ -37,16 +42,27 @@ function MyGroups() {
       </h5>
       <div
         className="header"
-        style={allCreatedGroups && allCreatedGroups.length > 0 ? styles.header : styles.hide}
+        style={
+          allCreatedGroups && allCreatedGroups.length > 0
+            ? styles.header
+            : styles.hide
+        }
       >
         <p>Topics</p>
         <p>Group name</p>
       </div>
 
       <div className="createdGroups" style={styles.createdGroups}>
-        { allCreatedGroups!==undefined &&   allCreatedGroups.length > 0 && currentUser.id ? (
+        {allCreatedGroups !== undefined &&
+        allCreatedGroups.length > 0 &&
+        currentUser.id ? (
           allCreatedGroups.map((group) => (
-            <div className="groupItem" style={styles.groupItem} key={group.id}>
+            <div
+              className="groupItem"
+              style={styles.groupItem}
+              key={group.id}
+              onClick={(e) => redirect(e, group.id)}
+            >
               <p>{group.category}</p>
               <p>{group.groupName}</p>
             </div>
@@ -58,11 +74,17 @@ function MyGroups() {
 
       <h5 style={styles.nameJoined}>Joined groups</h5>
       <div className="joinedGroups" style={styles.joinedGroups}>
-        { allJoinedGroups!==undefined &&   allJoinedGroups.length > 0 && currentUser.id ? (
+        {allJoinedGroups !== undefined &&
+        allJoinedGroups.length > 0 &&
+        currentUser.id ? (
           allJoinedGroups.map((group) => (
-            <div className="groupItem" style={styles.groupItem} key={group.id}>
-              
-              <p>{group.category }</p>
+            <div
+              className="groupItem"
+              style={styles.groupItem}
+              key={group.id}
+              onClick={(e) => redirect(e, group.id)}
+            >
+              <p>{group.category}</p>
               <p>{group.groupName}</p>
             </div>
           ))
