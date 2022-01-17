@@ -2,13 +2,17 @@ import { Table } from "react-bootstrap";
 import { CategoryContext } from "../contexts/CategoryContext";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useGroupContext } from "../contexts/GroupContext";
+import { Link } from "react-router-dom";
+
 
 function InsideCategory() {
-  const fakeArray = ["French speaker", "Fishing friend", "Travel buddy"];
-  const { getCategoryById, getGroupIdsByCategoryId } = useContext(CategoryContext);
+  const { getCategoryById, getGroupIdsByCategoryId } =
+    useContext(CategoryContext);
   const { id } = useParams();
   const [category, setCategory] = useState({});
-  const [groups, setGroups] = useState([])
+  const [groups, setGroups] = useState([]);
+  const { fetchGroupById } = useGroupContext();
 
   useEffect(() => {
     fetchCategory();
@@ -16,19 +20,27 @@ function InsideCategory() {
 
   async function fetchCategory() {
     const fetchedCategory = await getCategoryById(id);
-    setCategory(fetchedCategory.data)
+    setCategory(fetchedCategory.data);
 
-    await fetchGroups()
+    await fetchGroups();
   }
 
-  async function fetchGroups() { 
-    const fetchedGroupIds = await getGroupIdsByCategoryId(id)
-    console.log("fetchedGroupIds: ", fetchedGroupIds)
-  }
+  async function fetchGroups() {
+    const fetchedGroupIds = await getGroupIdsByCategoryId(id);
+    const groupsArray = []
+    for (let idObject of fetchedGroupIds) {
+      let group = await fetchGroupById(idObject.groupId)
+      groupsArray.push(group)
+    }
+    setGroups(groupsArray)
+   }
 
   return (
     <div className="App">
-      {category && 
+      <p>
+        <Link style={styles.link} to="/create-group">Create group</Link>
+      </p>
+      {category && (
         <Table className="table table-hover" style={styles.categoriesTable}>
           <thead>
             <tr>
@@ -37,19 +49,22 @@ function InsideCategory() {
               </th>
             </tr>
           </thead>
-          <tbody>
-            {fakeArray.map((name) => (
-              <tr key={name}>
-                <th scope="row">{name}</th>
-              </tr>
-            ))}
-          </tbody>
+          {groups && (
+            <tbody>
+              {groups.map((group) => (
+                <tr key={group.id}>
+                  <th scope="row">{group.groupName}</th>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </Table>
-      }{!category &&
+      )}
+      {!category && (
         <div>
           <h1>ADD SPINNER</h1>
-      </div>
-      }
+        </div>
+      )}
     </div>
   );
 }
@@ -65,4 +80,10 @@ const styles = {
     marginRight: "auto",
     marginTop: "5rem",
   },
+  link: {
+    textDecoration: "none",
+    color: "black",
+    marginLeft: "15rem",
+    
+  }
 };

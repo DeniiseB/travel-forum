@@ -34,7 +34,7 @@ const CategoryContextProvider = (props) => {
   const getGroupIdsByCategoryId = async (categoryId) => {
     let res = await fetch("/rest/groupsxcategories/" + categoryId);
     let data = await res.json();
-    return data
+    return data;
   };
 
   const postToGroupsXCategories = async (rowToPost) => {
@@ -62,12 +62,13 @@ const CategoryContextProvider = (props) => {
     }
   };
 
+
   const values = {
     categories,
     getCategoryById,
     categoriesWithGroups,
     postToGroupsXCategories,
-    getGroupIdsByCategoryId,
+    getGroupIdsByCategoryId
   };
 
   return (

@@ -275,19 +275,6 @@ module.exports = function (app) {
     const params = [req.params.id];
     let result = await db.all(query, params);
     res.json(result);
-
-    // const params = [req.params.id]
-    // db.each(query, params, (error, row) => {
-    //   if (error) {
-    //     res.status(400).json({ error: error.message });
-    //     return;
-    //   }
-    //     console.log("row ", row);
-    //     res.json({
-    //       message: "Great success",
-    //       data: row ,
-    //     });
-    // })
   })
 
   return db;
