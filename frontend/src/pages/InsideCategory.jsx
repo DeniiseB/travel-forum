@@ -1,4 +1,4 @@
-import { Table } from "react-bootstrap";
+import { Table, Spinner } from "react-bootstrap";
 import { CategoryContext } from "../contexts/CategoryContext";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -38,7 +38,9 @@ function InsideCategory() {
   return (
     <div className="App">
       <p>
-        <Link style={styles.link} to="/create-group">Create group</Link>
+        <Link style={styles.link} to="/create-group">
+          Create group
+        </Link>
       </p>
       {category && (
         <Table className="table table-hover" style={styles.categoriesTable}>
@@ -62,7 +64,7 @@ function InsideCategory() {
       )}
       {!category && (
         <div>
-          <h1>ADD SPINNER</h1>
+          <Spinner animation="grow" variant="dark"/>
         </div>
       )}
     </div>
