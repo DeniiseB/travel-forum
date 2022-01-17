@@ -72,12 +72,26 @@ const GroupProvider = (props) => {
     }
   };
 
+  const addUserIdToGroupMembers = async (groupObject) => {
+    try {
+      let res = await fetch("/api/groups/" + groupObject.groupId, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ userIds: groupObject.userIds }),
+      });
+      return await res.json();
+    } catch {
+      console.log("Updating groupMembers failed");
+    }
+  };
+
   const values = {
     groups,
     fetchGroupById,
     postNewGroup,
     fetchCommentById,
     postNewComment,
+    addUserIdToGroupMembers,
   };
 
   return (

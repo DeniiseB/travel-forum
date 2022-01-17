@@ -1,15 +1,23 @@
 import { Button, Modal, Form } from "react-bootstrap";
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
+import { useGroupContext } from "../contexts/GroupContext";
 
 function Invite(props) {
   const { getUserByUserName, addGroupIdToJoinedGroupIds } =
     useContext(UserContext);
+  const { addUserIdToGroupMembers } = useGroupContext();
   const [userName, setUserName] = useState("");
   const [userNotFound, setUserNotFound] = useState(false);
+  const [userAdded, setUserAdded] = useState(false);
+  const [userAlreadyAdded, setUserAlreadyAdded] = useState(false);
 
   function handleClose() {
     props.showModal();
+  }
+
+  function updateGroupWithNewMembers() {
+    props.updateGroup();
   }
 
   async function handleSubmit(e) {
@@ -18,8 +26,8 @@ function Invite(props) {
     setUserNotFound(!fetchedUser);
     if (fetchedUser) {
       await addGroupToUser(fetchedUser);
+      await addUserToGroup(fetchedUser);
     }
-    // ADD user to group!!!!!!
   }
 
   async function addGroupToUser(user) {
@@ -30,9 +38,38 @@ function Invite(props) {
         userId: user.id,
         groupIds: userJoinedGroupIds.join(" "),
       };
-      let response = await addGroupIdToJoinedGroupIds(groupObject);
-      console.log(response.data);
+      await addGroupIdToJoinedGroupIds(groupObject);
     }
+  }
+
+  async function addUserToGroup(user) {
+    let groupMemberIds = props.group.groupMembers.split(" ");
+    if (!groupMemberIds.includes(user.id.toString())) {
+      groupMemberIds.push(user.id.toString());
+      let groupObject = {
+        groupId: props.group.id,
+        userIds: groupMemberIds.join(" "),
+      };
+      await addUserIdToGroupMembers(groupObject);
+      userAddedMessage();
+      updateGroupWithNewMembers();
+    } else {
+      userAlreadyAddedMessage();
+    }
+  }
+
+  function userAddedMessage() {
+    setUserAdded(true);
+    setTimeout(() => {
+      setUserAdded(false);
+    }, 4000);
+  }
+
+  function userAlreadyAddedMessage() {
+    setUserAlreadyAdded(true);
+    setTimeout(() => {
+      setUserAlreadyAdded(false);
+    }, 4000);
   }
 
   return (
@@ -53,6 +90,14 @@ function Invite(props) {
               <Form.Text className="text-muted">
                 Sorry, we can't find that user
               </Form.Text>
+            )}
+            {userAlreadyAdded && (
+              <Form.Text className="text-muted">
+                That user is already a member
+              </Form.Text>
+            )}
+            {userAdded && (
+              <Form.Text style={{ color: "green" }}>User added!</Form.Text>
             )}
           </Form.Group>
           <Button variant="primary" type="submit" disabled={!userName}>

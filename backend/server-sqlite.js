@@ -10,12 +10,13 @@ function getHash(password) {
 
 module.exports = function (app) {
   const sqlite = require("sqlite3");
+
   // öppnar och ansluter till databasen
   const db = new sqlite.Database("./database/travel.db");
+
   // vi gör om metoderna all och run till promise-metoder så att vi kan använda async/await för att vänta på databasen
   const util = require("util");
   db.all = util.promisify(db.all);
-  //  db.run = util.promisify(db.run);
 
   // REST routes (endpoints)
   app.get("/rest/users", async (req, res) => {
@@ -40,8 +41,8 @@ module.exports = function (app) {
         null,
         user.username,
         encryptedPassword,
-        null,
-        null,
+        "",
+        "",
       ]);
       response.json(result);
     } catch (e) {
@@ -133,7 +134,7 @@ module.exports = function (app) {
     });
   });
 
-  app.patch("/api/user/:id", (req, res) => {
+  app.patch("/api/user/joinedgroup/:id", (req, res) => {
     var data = {
       joinedGroups: req.body.groupIds,
     };
@@ -142,6 +143,31 @@ module.exports = function (app) {
            joinedGroups = COALESCE(?,joinedGroups)
            WHERE id = ?`,
       [data.joinedGroups, req.params.id],
+      function (err, result) {
+        if (err) {
+          res.status(400).json({ error: res.message });
+          return;
+        }
+        res.json({
+          message: "success",
+          data: data,
+          changes: this.changes,
+        });
+      }
+    );
+  });
+
+  app.patch("/api/user/createdgroup/:id", (req, res) => {
+    var data = {
+      createdGroups: req.body.createdGroupIds,
+      joinedGroups: req.body.joinedGroupIds,
+    };
+    db.run(
+      `UPDATE users set 
+           createdGroups = COALESCE(?,createdGroups),
+           joinedGroups = COALESCE(?,joinedGroups)
+           WHERE id = ?`,
+      [data.createdGroups, data.joinedGroups, req.params.id],
       function (err, result) {
         if (err) {
           res.status(400).json({ error: res.message });
@@ -165,12 +191,14 @@ module.exports = function (app) {
   app.post("/rest/groups", (req, res) => {
     const newGroup = req.body;
     const sql =
-      "INSERT INTO groups (creatorUserId, groupName, groupAccess, commentIds) VALUES (?, ?, ?, ?)";
+      "INSERT INTO groups (creatorUserId, groupName, groupAccess, commentIds, groupMembers, groupModerators) VALUES (?, ?, ?, ?, ?, ?)";
     const params = [
       newGroup.creatorUserId,
       newGroup.groupName,
       newGroup.groupAccess,
       newGroup.commentIds,
+      newGroup.groupMembers,
+      newGroup.groupModerators,
     ];
 
     if (
@@ -208,6 +236,29 @@ module.exports = function (app) {
         data: row,
       });
     });
+  });
+
+  app.patch("/api/groups/:id", (req, res) => {
+    var data = {
+      groupMembers: req.body.userIds,
+    };
+    db.run(
+      `UPDATE groups set 
+           groupMembers = COALESCE(?,groupMembers)
+           WHERE id = ?`,
+      [data.groupMembers, req.params.id],
+      function (err, result) {
+        if (err) {
+          res.status(400).json({ error: res.message });
+          return;
+        }
+        res.json({
+          message: "success",
+          data: data,
+          changes: this.changes,
+        });
+      }
+    );
   });
 
   app.post("/rest/comments", (req, res) => {

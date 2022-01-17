@@ -32,10 +32,14 @@ function Group() {
     setComments(commentArray);
   }
 
-  const toggleInviteModal = () => { 
+  const toggleInviteModal = () => {
     let boolean = showInviteModal ? false : true;
-    setShowInviteModal(boolean)
-  }
+    setShowInviteModal(boolean);
+  };
+
+  const updateGroup = async () => {
+    await getAndSetGroup();
+  };
 
   return (
     <div>
@@ -73,7 +77,12 @@ function Group() {
           </Spinner>
         </div>
       )}
-      <Invite showModal={toggleInviteModal} show={showInviteModal} group={group}/>
+      <Invite
+        showModal={toggleInviteModal}
+        show={showInviteModal}
+        group={group}
+        updateGroup={updateGroup}
+      />
     </div>
   );
 }
