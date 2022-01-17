@@ -230,7 +230,8 @@ module.exports = function (app) {
              response.status(400).send("Bad request");
            }
          } else {
-           res.status(204).send("No content");
+            let emptyArr = [];
+            res.json(emptyArr);
          }
        } catch (e) {
          console.error(e);
@@ -274,7 +275,8 @@ module.exports = function (app) {
             response.status(400).send("Bad request");
           }
         } else {
-          res.status(204).send("No content");
+          let emptyArr=[]
+          res.json(emptyArr);
         }
       } catch (e) {
         console.error(e);
