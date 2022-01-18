@@ -38,7 +38,7 @@ const UserContextProvider = (props) => {
       setCurrentUser(user);
     }
     console.log("current user is ", user);
-    return res;
+    return user;
   };
 
   const logout = async () => {
@@ -96,6 +96,7 @@ const UserContextProvider = (props) => {
     getUserByUserName,
     addGroupIdToJoinedGroupIds,
     addGroupToJoinedGroupsAndCreatedGroups,
+    getCurrentUser,
   };
 
   return (

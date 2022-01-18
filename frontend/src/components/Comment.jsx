@@ -1,6 +1,10 @@
-import { Container, Row, Col} from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 
 function Comment(props) {
+
+  function formatting() {
+    return props.commentObject.date
+  }
   return (
     <Container style={styles.commentContainer}>
       <div style={styles.commentHeader}>
@@ -9,7 +13,7 @@ function Comment(props) {
       </div>
       <Row>
         <Col>
-          <p>{props.commentObject.content}</p>
+          <p dangerouslySetInnerHTML={{ __html: props.commentObject.content }}>{ }</p>
         </Col>
       </Row>
     </Container>

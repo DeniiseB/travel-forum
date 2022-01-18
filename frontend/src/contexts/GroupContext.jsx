@@ -85,6 +85,34 @@ const GroupProvider = (props) => {
     }
   };
 
+  const getCreatedGroups = async (userId) => {
+    let res = await fetch("/rest/created-groups/" + userId);
+    return res;
+  };
+
+  const getJoinedGroups = async (userId) => {
+    let res = await fetch("/rest/joined-groups/" + userId);
+    return res;
+  };
+
+  const getJoinedAndCreatedGroups = async (userId) => {
+    let createdRes = await getCreatedGroups(userId);
+    let joinedRes = await getJoinedGroups(userId);
+    let arr = [];
+    if (createdRes.status === 200) {
+      createdRes = await createdRes.json();
+      console.log(createdRes);
+      arr.push(createdRes);
+    }
+    if (joinedRes.status === 200) {
+      joinedRes = await joinedRes.json();
+
+      arr.push(joinedRes);
+    }
+    console.log(arr);
+    return arr;
+  };
+
   const values = {
     groups,
     fetchGroupById,
@@ -92,6 +120,7 @@ const GroupProvider = (props) => {
     fetchCommentById,
     postNewComment,
     addUserIdToGroupMembers,
+    getJoinedAndCreatedGroups,
   };
 
   return (
