@@ -267,11 +267,14 @@ module.exports = function (app) {
                  groupdId,
                ]);
                group = group[0]
+               console.log("group is", group)
                let categoryName = await db.all(
                  "SELECT name from categories INNER JOIN groupsXcategories ON groupsXcategories.groupId=? AND groupsXcategories.categoryId=categories.id",
-                 [group.id]
+                 [group.id.toString()]
                );
+                 console.log("name is ", categoryName[0]);
                group.category = categoryName[0].name;
+             
                createdGroupsArr.push(group);
              }
              res.json(createdGroupsArr);
@@ -314,7 +317,7 @@ module.exports = function (app) {
               group = group[0]
               let categoryName = await db.all(
                 "SELECT name from categories INNER JOIN groupsXcategories ON groupsXcategories.groupId=? AND groupsXcategories.categoryId=categories.id",
-                [group.id]
+                [group.id.toString()]
               );
               group.category = categoryName[0].name;
               joinedGroupsArr.push(group);
