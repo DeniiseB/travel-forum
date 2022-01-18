@@ -1,13 +1,13 @@
-
-
+import "./App.css";
 import Login from './pages/Login';
 import Register from './pages/Register';
 import UserContextProvider from './contexts/UserContext';
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
+import CreateComment from './pages/CreateComment'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CreateGroup from "./pages/CreateGroup.jsx";
-import "./App.css";
+import Group from "./pages/Group.jsx";
 import GroupProvider from "./contexts/GroupContext";
 import MyGroups from './pages/MyGroups';
 import CategoryContextProvider from './contexts/CategoryContext';
@@ -26,7 +26,9 @@ function App() {
                   <Route path="/login" exact component={Login} />
                   <Route path="/" exact component={Home} />
                   <Route exact path="/create-group" component={CreateGroup} />
-                  <Route exact path="/my-groups" component={MyGroups} />
+                  <Route exact path="/create-comment" component={CreateComment} />
+                  <Route exact path="/group/:groupid" component={Group} />
+      <Route exact path="/my-groups" component={MyGroups} />
                 </Switch>
               </main>
             </Router>

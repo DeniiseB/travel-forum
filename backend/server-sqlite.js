@@ -176,26 +176,7 @@ module.exports = function (app) {
     });
   });
 
-  //Get specific group
-  app.get("/rest/groups/:id", async (req, res) => {
-    let group;
-
-    try {
-      group = await db.all("SELECT * FROM groups WHERE id = ?", [
-        req.params.id,
-      ]);
-      group = group[0];
-      if (group != undefined) {
-        res.json(group);
-      } else {
-        res.status(204).send("No content");
-      }
-    } catch (e) {
-      console.error(e);
-      response.status(400).send("Bad request");
-    }
-  });
-
+ 
   //Get created groups of user
   app.get("/rest/created-groups/:userId", async (req, res) => {
     let group;
@@ -208,7 +189,7 @@ module.exports = function (app) {
          user = user[0];
 
          if (user.createdGroups !== "") {
-           let groupsIdsArr = user.createdGroups.split(",");
+           let groupsIdsArr = user.createdGroups.split(" ");
 
            let createdGroupsArr = [];
            try {
@@ -253,7 +234,7 @@ module.exports = function (app) {
         user = user[0];
 
         if (user.joinedGroups !== "") {
-          let groupsIdsArr = user.joinedGroups.split(",");
+          let groupsIdsArr = user.joinedGroups.split(" ");
 
           let joinedGroupsArr = [];
           try {
@@ -289,12 +270,38 @@ module.exports = function (app) {
   
 
 
+  app.get("/rest/groups/:id", (req, res) => {
+    const query = "SELECT * FROM groups WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
   app.post("/rest/comments", (req, res) => {
     const newComment = req.body;
-    const sql = "INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)";
-    const params = [newComment.userId, newComment.date, newComment.content];
+    const sql =
+      "INSERT INTO comments (userId, date, content, author) VALUES (?, ?, ?, ?)";
+    const params = [
+      newComment.userId,
+      newComment.date,
+      newComment.content,
+      newComment.author,
+    ];
 
-    if (!newComment.userId || !newComment.date || !newComment.content.trim()) {
+    if (
+      !newComment.userId ||
+      !newComment.date ||
+      !newComment.content.trim() ||
+      !newComment.author.trim()
+    ) {
       res.json({ error: "No empty fields allowed" });
       return;
     }
@@ -307,6 +314,21 @@ module.exports = function (app) {
       res.json({
         message: "Returning comment ID",
         id: this.lastID,
+      });
+    });
+  });
+
+  app.get("/rest/comments/:id", (req, res) => {
+    const query = "SELECT * FROM comments WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
       });
     });
   });

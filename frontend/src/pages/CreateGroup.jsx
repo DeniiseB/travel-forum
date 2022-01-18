@@ -1,4 +1,6 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
+import ReactQuill from "react-quill"; // ES6
+import "react-quill/dist/quill.snow.css"; // ES6
 import { useState, useContext } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
 import { useHistory } from "react-router-dom";
@@ -47,15 +49,16 @@ function CreateGroup() {
     setCategory("Sweden");
     setAccess("Public");
     setComment("");
-    history.push("/");
+    history.push("/group/" + newGroupObjectId);
   }
 
   async function postComment() {
     const date = new Date().toISOString().slice(0, 19).replace("T", " ");
     const firstComment = {
-      userId: 8,
+      userId: currentUser.id,
       date: date,
       content: comment,
+      author: currentUser.username,
     };
     let res = await postNewComment(firstComment);
     return res;
@@ -80,7 +83,9 @@ function CreateGroup() {
     let res = await postToGroupsXCategories(newRow);
     return res;
   }
-
+  const handleChange = (value) => {
+    setComment(value);
+  };
   return (
     <div className="m-2">
       <div>
@@ -134,22 +139,14 @@ function CreateGroup() {
 
           <Form.Group className="mt-2" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Comment</Form.Label>
-            <Form.Control
-              value={comment}
-              onChange={(e) => {
-                setComment(e.target.value);
-              }}
-              as="textarea"
-              rows={3}
-              maxLength="1000"
-            />
+            <ReactQuill value={comment || ""} onChange={handleChange} />
           </Form.Group>
 
           <Button
             className="mt-3"
             variant="primary"
             type="submit"
-            // disabled={!title || !comment}
+            disabled={!title || !comment}
           >
             Create Group
           </Button>
