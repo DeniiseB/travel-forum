@@ -85,6 +85,21 @@ const GroupProvider = (props) => {
     }
   };
 
+  const putCommentInGroup = async (commentId, group) => {
+    let string = group.commentIds + " " + commentId;
+    let newString = { str: string };
+    try {
+      let res = await fetch("/rest/groups/" + group.id, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(newString),
+      });
+      return await res.json();
+    } catch {
+      console.log("Posting comment failed");
+    }
+  };
+
   const getCreatedGroups = async (userId) => {
     let res = await fetch("/rest/created-groups/" + userId);
     return res;
@@ -120,6 +135,7 @@ const GroupProvider = (props) => {
     fetchCommentById,
     postNewComment,
     addUserIdToGroupMembers,
+    putCommentInGroup,
     getJoinedAndCreatedGroups,
   };
 

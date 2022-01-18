@@ -50,3 +50,10 @@ Content-Type: application/json
 }
 
 ###
+
+PATCH http://localhost:8000/rest/groups/44
+Content-Type: application/json
+
+{
+  "str": "1,4,5,8,9",
+}

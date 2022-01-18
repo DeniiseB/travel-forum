@@ -1,12 +1,17 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, CardTitle, CardText, Row, Col } from 'reactstrap';
+import { useHistory } from "react-router-dom";
 
 function CategoryCard(props) {
-  
+  const history = useHistory();
+
+  function redirect (){
+    history.push("/inside-category")
+  }
   return (
     <Col sm="6">
-      <Card body style={styles.card}>
+      <Card onClick={redirect} body style={styles.card}>
         <div style={styles.cardCategory}>
           <CardTitle >{props.props.name}</CardTitle>
         </div>

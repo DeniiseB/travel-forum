@@ -4,6 +4,7 @@ import { useGroupContext } from "../contexts/GroupContext";
 import Comment from "../components/Comment";
 import Invite from "../components/Invite";
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 function Group() {
   const { groupid } = useParams();
@@ -11,6 +12,7 @@ function Group() {
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     getAndSetGroup();
@@ -41,6 +43,10 @@ function Group() {
     await getAndSetGroup();
   };
 
+  function redirectToCommentPage() {
+    history.push("/create-comment/" + groupid);
+  }
+
   return (
     <div>
       {group && comments && (
@@ -59,7 +65,7 @@ function Group() {
                 <Button>Members</Button>
               </Col>
               <Col>
-                <Button>Comment</Button>
+                <Button onClick={redirectToCommentPage}>Comment</Button>
               </Col>
             </Row>
           </Container>

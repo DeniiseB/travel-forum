@@ -2,22 +2,46 @@ import React from "react";
 import CategoryCard from "../components/CatergoryCard";
 import { CategoryContext } from "../contexts/CategoryContext";
 import { useContext } from "react";
+import MyGroups from "./MyGroups";
+import { UserContext } from "../contexts/UserContext"
 
 function Home() {
   const { categoriesWithGroups } = useContext(CategoryContext);
+  const { currentUser } = useContext(UserContext)
 
   return (
     <div className="Home">
-      <h2 style={styles.catergoryTitle}>Categories</h2>
-      <h5 style={styles.groupAmountTitle}>Groups</h5>
-      {!categoriesWithGroups ? (
-        <div></div>
+      {currentUser === null ? (
+         <div>
+         <h2 style={styles.catergoryTitle}>Categories</h2>
+         <h5 style={styles.groupAmountTitle}>Groups</h5>
+         {!categoriesWithGroups ? (
+           <div></div>
+         ) : (
+           <div style={styles.list}>
+             {categoriesWithGroups.map((item, index) => (
+               <CategoryCard props={item} key={index} />
+             ))}
+           </div>
+         )}
+         </div>
       ) : (
-        <div style={styles.list}>
-          {categoriesWithGroups.map((item, index) => (
-            <CategoryCard props={item} key={index} />
-          ))}
-        </div>
+        <div>
+        <div><MyGroups/></div>
+        <div>
+         <h2 style={styles.catergoryTitle}>Categories</h2>
+         <h5 style={styles.groupAmountTitle}>Groups</h5>
+         {!categoriesWithGroups ? (
+           <div></div>
+         ) : (
+           <div style={styles.list}>
+             {categoriesWithGroups.map((item, index) => (
+               <CategoryCard props={item} key={index} />
+             ))}
+           </div>
+         )}
+         </div>
+      </div>
       )}
     </div>
   );

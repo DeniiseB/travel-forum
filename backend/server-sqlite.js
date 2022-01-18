@@ -216,16 +216,19 @@ module.exports = function (app) {
         res.status(400).json({ error: err.message });
         return;
       }
-      res.json({ success: "Post group to db succeeded", id: this.lastID });
+      res.json({
+        success: "Post group to db succeeded",
+        id: this.lastID,
+      });
     });
   });
 
   app.post("/rest/comments", (req, res) => {
     const newComment = req.body;
-    const sql = "INSERT INTO comments (userId, date, content) VALUES (?, ?, ?)";
-    const params = [newComment.userId, newComment.date, newComment.content];
+    const sql = "INSERT INTO comments (userId, date, content, author) VALUES (?, ?, ?, ?)";
+    const params = [newComment.userId, newComment.date, newComment.content, newComment.author];
 
-    if (!newComment.userId || !newComment.date || !newComment.content.trim()) {
+    if (!newComment.userId || !newComment.date || !newComment.content.trim() || !newComment.author) {
       res.json({ error: "No empty fields allowed" });
       return;
     }
@@ -453,6 +456,29 @@ module.exports = function (app) {
     let query = "SELECT * from categories";
     let result = await db.all(query);
     res.json(result);
+  });
+
+  app.patch("/rest/groups/:id", async (req, res) => {
+  try{
+    let data = await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?",[
+      req.body.str,
+      req.params.id
+    ])
+    if (!req.body.str || !req.params.id){
+      res.json({ error: "No empty fields allowed" });
+      return;
+    }
+    if (res.error) {
+      res.status(400).json({ error: res.error.message });
+      return;
+    }
+
+    res.json({
+      message: "PUT into groups.commentId Success",
+    });
+  }catch(e){
+    console.log(e)
+  }
   });
 
   return db;

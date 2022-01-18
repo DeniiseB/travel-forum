@@ -30,7 +30,9 @@
     ]
   },
   {
-    "path": "/rest/groups*",
-    "roles": [{ "role": "*", "methods": ["GET"] }]
+    "path": "/rest/groups/*",
+    "roles": [
+     {"role": "*","methods": ["PATCH", "GET"]}
+    ]
   }
 ]
