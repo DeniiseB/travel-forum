@@ -216,7 +216,7 @@ module.exports = function (app) {
         res.status(400).json({ error: err.message });
         return;
       }
-      res.json({ success: "Post group to db succeeded" });
+      res.json({ success: "Post group to db succeeded", id: this.lastID });
     });
   });
 
