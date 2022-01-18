@@ -74,7 +74,7 @@ function CreateGroup() {
       groupAccess: access,
       commentIds: commentId,
       groupMembers: currentUser.id.toString(),
-      groupModerators: currentUser.id.toString(),
+      groupModerators: "",
     };
     let res = await postNewGroup(newGroup);
     return res;
