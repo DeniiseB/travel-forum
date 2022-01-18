@@ -253,7 +253,7 @@ module.exports = function (app) {
     res.json(result);
   });
 
-  app.put("/rest/groups/:id", async (req, res) => {
+  app.patch("/rest/groups/:id", async (req, res) => {
   try{
     let data = await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?",[
       req.body.str,
@@ -263,13 +263,13 @@ module.exports = function (app) {
       res.json({ error: "No empty fields allowed" });
       return;
     }
-    if (err) {
-      res.status(400).json({ error: err.message });
+    if (res.error) {
+      res.status(400).json({ error: res.error.message });
       return;
     }
+
     res.json({
       message: "PUT into groups.commentId Success",
-      res,
     });
   }catch(e){
     console.log(e)

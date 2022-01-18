@@ -73,11 +73,11 @@ const GroupProvider = (props) => {
   };
 
   const putCommentInGroup = async (commentId , group) => {
-    let string = group.commentIds+','+commentId
+    let string = group.commentIds+' '+commentId
     let newString = {"str": string}
     try {
       let res = await fetch("/rest/groups/" + group.id, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(newString),
       });
