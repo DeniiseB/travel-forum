@@ -31,7 +31,7 @@ function App() {
                   <Route exact path="/create-group" component={CreateGroup} />
                   <Route exact path="/create-comment/:groupid" component={CreateComment} />
                   <Route exact path="/group/:groupid" component={Group} />
-      <Route exact path="/my-groups" component={MyGroups} />
+                  <Route exact path="/my-groups" component={MyGroups} />
                 </Switch>
               </main>
             </Router>
