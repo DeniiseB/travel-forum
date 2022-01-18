@@ -55,7 +55,10 @@ function InsideCategory() {
             <tbody>
               {groups.map((group) => (
                 <tr key={group.id}>
-                  <th scope="row">{group.groupName}</th>
+                  <Link style={styles.link2} to={"/group/" + group.id}>
+                    {" "}
+                    <th scope="row">{group.groupName}</th>
+                  </Link>
                 </tr>
               ))}
             </tbody>
@@ -64,7 +67,7 @@ function InsideCategory() {
       )}
       {!category && (
         <div>
-          <Spinner animation="grow" variant="dark"/>
+          <Spinner animation="grow" variant="dark" />
         </div>
       )}
     </div>
@@ -86,6 +89,9 @@ const styles = {
     textDecoration: "none",
     color: "black",
     marginLeft: "15rem",
-    
-  }
+  },
+  link2: {
+    textDecoration: "none",
+    color: "black",
+  },
 };
