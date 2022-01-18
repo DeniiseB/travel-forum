@@ -42,6 +42,8 @@ function CreateGroup() {
       setWarning(false);
     }
 
+   
+
     let newGroupObjectId = newGroupObject.id.toString();
     await postGroupsXCategories(newGroupObjectId);
 
