@@ -2,8 +2,15 @@
   {
     "path": "/rest/*",
     "roles": [
-      { "role": "*", "methods": ["GET", "POST"] },
-      { "role": "admin", "methods": ["GET", "PUT", "DELETE"] }
+      { "role": "*", "methods": ["GET", "POST", "PUT"] },
+      { "role": "admin", "methods": ["GET", "DELETE"] }
+    ]
+  },
+    {
+    "path": "/api/*",
+    "roles": [
+      { "role": "*", "methods": ["GET", "POST", "PATCH"] },
+      { "role": "admin", "methods": ["GET", "DELETE"] }
     ]
   },
   {
@@ -20,6 +27,12 @@
       { "role": "admin", "methods": ["GET", "DELETE"] },
       { "role": "groupAdmin", "methods": ["GET", "DELETE"] },
       { "role": "groupModerator", "methods": ["GET", "DELETE"] }
+    ]
+  },
+  {
+    "path": "/rest/groups/*",
+    "roles": [
+     {"role": "*","methods": ["PATCH", "GET"]}
     ]
   }
 ]

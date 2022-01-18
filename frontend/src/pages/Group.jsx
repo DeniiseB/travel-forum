@@ -2,13 +2,17 @@ import { useParams } from "react-router-dom";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import Comment from "../components/Comment";
+import Invite from "../components/Invite";
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 function Group() {
   const { groupid } = useParams();
   const { fetchGroupById, fetchCommentById } = useGroupContext();
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     getAndSetGroup();
@@ -30,6 +34,19 @@ function Group() {
     setComments(commentArray);
   }
 
+  const toggleInviteModal = () => {
+    let boolean = showInviteModal ? false : true;
+    setShowInviteModal(boolean);
+  };
+
+  const updateGroup = async () => {
+    await getAndSetGroup();
+  };
+
+  function redirectToCommentPage() {
+    history.push("/create-comment/" + groupid);
+  }
+
   return (
     <div>
       {group && comments && (
@@ -42,10 +59,13 @@ function Group() {
             </Row>
             <Row>
               <Col>
+                <Button onClick={toggleInviteModal}>Invite</Button>
+              </Col>
+              <Col>
                 <Button>Members</Button>
               </Col>
               <Col>
-                <Button>Comment</Button>
+                <Button onClick={redirectToCommentPage}>Comment</Button>
               </Col>
             </Row>
           </Container>
@@ -63,6 +83,12 @@ function Group() {
           </Spinner>
         </div>
       )}
+      <Invite
+        showModal={toggleInviteModal}
+        show={showInviteModal}
+        group={group}
+        updateGroup={updateGroup}
+      />
     </div>
   );
 }

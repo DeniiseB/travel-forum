@@ -8,15 +8,16 @@ import { UserContext } from "../contexts/UserContext";
 import { CategoryContext } from "../contexts/CategoryContext";
 
 function CreateGroup() {
+  const history = useHistory();
   const { postNewGroup, postNewComment } = useGroupContext();
+  const { currentUser, addGroupToJoinedGroupsAndCreatedGroups } =
+    useContext(UserContext);
+  const { categories, postToGroupsXCategories } = useContext(CategoryContext);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(1);
   const [access, setAccess] = useState("Public");
   const [comment, setComment] = useState("");
   const [warning, setWarning] = useState(false);
-  const history = useHistory();
-  const { currentUser } = useContext(UserContext);
-  const { categories, postToGroupsXCategories } = useContext(CategoryContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -42,11 +43,15 @@ function CreateGroup() {
       setWarning(false);
     }
 
+   
+
     let newGroupObjectId = newGroupObject.id.toString();
     await postGroupsXCategories(newGroupObjectId);
 
+    await addGroupToUser(newGroupObjectId);
+
     setTitle("");
-    setCategory("Sweden");
+    setCategory("Afganistan");
     setAccess("Public");
     setComment("");
     history.push("/group/" + newGroupObjectId);
@@ -70,6 +75,8 @@ function CreateGroup() {
       groupName: title,
       groupAccess: access,
       commentIds: commentId,
+      groupMembers: currentUser.id.toString(),
+      groupModerators: "",
     };
     let res = await postNewGroup(newGroup);
     return res;
@@ -83,9 +90,27 @@ function CreateGroup() {
     let res = await postToGroupsXCategories(newRow);
     return res;
   }
+
+  async function addGroupToUser(groupId) {
+    let userCreatedGroupIds = currentUser.createdGroups.split(" ");
+    let userJoinedGroupIds = currentUser.joinedGroups.split(" ");
+
+    userCreatedGroupIds.push(groupId);
+    userJoinedGroupIds.push(groupId);
+
+    let groupObject = {
+      userId: currentUser.id,
+      createdGroupIds: userCreatedGroupIds.join(" "),
+      joinedGroupIds: userCreatedGroupIds.join(" "),
+    };
+
+    await addGroupToJoinedGroupsAndCreatedGroups(groupObject);
+  }
+
   const handleChange = (value) => {
     setComment(value);
   };
+
   return (
     <div className="m-2">
       <div>

@@ -46,4 +46,18 @@ GET http://localhost:8000/rest/comments/20
 
 ###
 
-GET http://localhost:8000/rest/groupsxcategories/187
+PATCH http://localhost:8000/api/user/2
+Content-Type: application/json
+
+{
+  "groupIds": 32
+}
+
+###
+
+PATCH http://localhost:8000/rest/groups/44
+Content-Type: application/json
+
+{
+  "str": "1,4,5,8,9",
+}

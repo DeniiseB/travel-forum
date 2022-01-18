@@ -12,7 +12,7 @@ const GroupProvider = (props) => {
   const fetchAllGroups = async () => {
     try {
       let res = await fetch("/rest/groups");
-      console.log(res)
+      console.log(res);
       let data = await res.json();
       setGroups(data);
     } catch {
@@ -72,12 +72,71 @@ const GroupProvider = (props) => {
     }
   };
 
+  const addUserIdToGroupMembers = async (groupObject) => {
+    try {
+      let res = await fetch("/api/groups/" + groupObject.groupId, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ userIds: groupObject.userIds }),
+      });
+      return await res.json();
+    } catch {
+      console.log("Updating groupMembers failed");
+    }
+  };
+
+  const putCommentInGroup = async (commentId, group) => {
+    let string = group.commentIds + " " + commentId;
+    let newString = { str: string };
+    try {
+      let res = await fetch("/rest/groups/" + group.id, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(newString),
+      });
+      return await res.json();
+    } catch {
+      console.log("Posting comment failed");
+    }
+  };
+
+  const getCreatedGroups = async (userId) => {
+    let res = await fetch("/rest/created-groups/" + userId);
+    return res;
+  };
+
+  const getJoinedGroups = async (userId) => {
+    let res = await fetch("/rest/joined-groups/" + userId);
+    return res;
+  };
+
+  const getJoinedAndCreatedGroups = async (userId) => {
+    let createdRes = await getCreatedGroups(userId);
+    let joinedRes = await getJoinedGroups(userId);
+    let arr = [];
+    if (createdRes.status === 200) {
+      createdRes = await createdRes.json();
+      console.log(createdRes);
+      arr.push(createdRes);
+    }
+    if (joinedRes.status === 200) {
+      joinedRes = await joinedRes.json();
+
+      arr.push(joinedRes);
+    }
+    console.log(arr);
+    return arr;
+  };
+
   const values = {
     groups,
     fetchGroupById,
     postNewGroup,
     fetchCommentById,
     postNewComment,
+    addUserIdToGroupMembers,
+    putCommentInGroup,
+    getJoinedAndCreatedGroups,
   };
 
   return (

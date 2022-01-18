@@ -1,15 +1,29 @@
 import React from "react";
 import ReactQuill from "react-quill"; // ES6
 import "react-quill/dist/quill.snow.css"; // ES6
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useGroupContext } from "../contexts/GroupContext";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
+import { useParams } from "react-router-dom";
+
 function CreateComment() {
   const [text, setText] = useState();
-  const { postNewComment } = useGroupContext();
+  const { postNewComment,fetchGroupById, putCommentInGroup } = useGroupContext();
   const history = useHistory();
   const { currentUser } = useContext(UserContext);
+  const [group , setGroup ] = useState({});
+  const { groupid } = useParams();
+
+
+  useEffect(() => {
+    getAndSetGroup();
+  }, [groupid]);
+
+  async function getAndSetGroup() {
+    const fetchedGroup = await fetchGroupById(groupid);
+    setGroup(fetchedGroup);
+  }
 
   async function postComment() {
     let commentContent = text;
@@ -22,9 +36,8 @@ function CreateComment() {
     };
     let res = await postNewComment(firstComment);
     let commentObject = res;
-    console.log(commentObject.id);
-    //commentObject is the id to pass to group.commentId
-    //then use history to go back to group page? or start page?
+    await putCommentInGroup(commentObject.id, group);
+    history.push("/group/"+group.id)
   }
 
   const handleChange = (value) => {
@@ -37,7 +50,7 @@ function CreateComment() {
         <ReactQuill value={text || ""} onChange={handleChange} />
       </div>
       <div>
-        <button onClick={postComment}>Post Comment</button>
+        <button onClick={postComment} >Post Comment</button>
       </div>
     </div>
   );
