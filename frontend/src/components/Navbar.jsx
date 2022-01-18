@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'reactstrap';
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
+import { Link, useHistory } from "react-router-dom";
 
 
 
@@ -39,7 +40,8 @@ function Navbar() {
         <div>
           <div style={styles.logoutButton}>
             <Button color="dark" size="sm" onClick={logout}>
-              Logout
+              <a href="/" style={styles.href}>Logout</a>
+              
             </Button>
           </div>
           <div>

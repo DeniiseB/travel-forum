@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CreateGroup from "./pages/CreateGroup.jsx";
 import Group from "./pages/Group.jsx";
 import GroupProvider from "./contexts/GroupContext";
+import MyGroups from './pages/MyGroups';
 import CategoryContextProvider from './contexts/CategoryContext';
 import { createBrowserHistory } from "history";
 
@@ -30,6 +31,7 @@ function App() {
                   <Route exact path="/create-group" component={CreateGroup} />
                   <Route exact path="/create-comment/:groupid" component={CreateComment} />
                   <Route exact path="/group/:groupid" component={Group} />
+      <Route exact path="/my-groups" component={MyGroups} />
                 </Switch>
               </main>
             </Router>

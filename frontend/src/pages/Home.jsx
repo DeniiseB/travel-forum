@@ -13,7 +13,7 @@ function Home() {
       {!categoriesWithGroups ? (
         <div></div>
       ) : (
-        <div>
+        <div style={styles.list}>
           {categoriesWithGroups.map((item, index) => (
             <CategoryCard props={item} key={index} />
           ))}
@@ -37,4 +37,7 @@ const styles = {
     marginLeft: "250px",
     marginRight: "5vw",
   },
+  list: {
+    marginTop:"8vh"
+  }
 };
