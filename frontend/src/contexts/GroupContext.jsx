@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 const GroupContext = createContext("");
 
@@ -9,16 +9,24 @@ export const useGroupContext = () => {
 const GroupProvider = (props) => {
   const [groups, setGroups] = useState([]);
 
-  // useEffect(() => {
-  //   fetchAllGroups();
-  // }, []);
-
   const fetchAllGroups = async () => {
     try {
       let res = await fetch("/rest/groups");
-      setGroups(await res.json());
+      console.log(res)
+      let data = await res.json();
+      setGroups(data);
     } catch {
       console.log("Fetching all groups failed");
+    }
+  };
+
+  const fetchGroupById = async (groupId) => {
+    try {
+      let res = await fetch("/rest/groups/" + groupId);
+      let resJson = await res.json();
+      return resJson.data;
+    } catch {
+      console.log("Fetching group by ID failed");
     }
   };
 
@@ -38,6 +46,16 @@ const GroupProvider = (props) => {
     }
   };
 
+  const fetchCommentById = async (commentId) => {
+    try {
+      let res = await fetch("/rest/comments/" + commentId);
+      let resJson = await res.json();
+      return resJson.data;
+    } catch {
+      console.log("Fetching comment by ID failed");
+    }
+  };
+
   const postNewComment = async (commentToPost) => {
     try {
       let res = await fetch("/rest/comments", {
@@ -47,6 +65,21 @@ const GroupProvider = (props) => {
           Accept: "application/json",
         },
         body: JSON.stringify(commentToPost),
+      });
+      return await res.json();
+    } catch {
+      console.log("Posting comment failed");
+    }
+  };
+
+  const putCommentInGroup = async (commentId , group) => {
+    let string = group.commentIds+' '+commentId
+    let newString = {"str": string}
+    try {
+      let res = await fetch("/rest/groups/" + group.id, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(newString),
       });
       return await res.json();
     } catch {
@@ -90,8 +123,11 @@ const GroupProvider = (props) => {
 
   const values = {
     groups,
+    fetchGroupById,
     postNewGroup,
+    fetchCommentById,
     postNewComment,
+    putCommentInGroup,
     getJoinedAndCreatedGroups,
   };
 
