@@ -17,10 +17,10 @@ function Group() {
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [groupMembers, setGroupMembers] = useState([]);
-
+  const [testBool, setTestBool] = useState(false);
   useEffect(() => {
     getAndSetGroup();
-   
+
 
   }, [groupid]);
 
@@ -29,6 +29,13 @@ function Group() {
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
+    console.log(currentUser.id, fetchedGroup.creatorUserId)
+    if (currentUser.id == fetchedGroup.creatorUserId) {
+      setTestBool(true);
+    }
+    else {
+      setTestBool(false);
+    }
   }
 
   async function getAndSetComments(group) {
@@ -45,7 +52,7 @@ function Group() {
     const groupMemberIds = group.groupMembers.split(" ");
     const groupMemberArray = []
 
-    for (let id of groupMemberIds) { 
+    for (let id of groupMemberIds) {
       let fetchedUser = await getUserById(id)
       groupMemberArray.push(fetchedUser)
     }
@@ -87,9 +94,11 @@ function Group() {
             </Row>
 
             <Row>
-              <Col>
-                <Button onClick={toggleInviteModal}>Invite</Button>
-              </Col>
+              {testBool &&
+                <Col>
+                  <Button onClick={toggleInviteModal}>Invite</Button>
+                </Col>
+              }
               <Col>
                 <Members groupMembers={groupMembers} />
               </Col>
@@ -112,12 +121,14 @@ function Group() {
           </Spinner>
         </div>
       )}
+
       <Invite
         showModal={toggleInviteModal}
         show={showInviteModal}
         group={group}
         updateGroup={updateGroup}
       />
+
     </div>
   );
 }
@@ -130,6 +141,6 @@ const styles = {
   },
   delete: {
     marginTop: "5vh",
-    paddingBottom:"4vh"
+    paddingBottom: "4vh"
   }
 };
