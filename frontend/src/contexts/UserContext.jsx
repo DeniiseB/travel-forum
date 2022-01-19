@@ -34,6 +34,7 @@ const UserContextProvider = (props) => {
   const getCurrentUser = async () => {
     let res = await fetch("/rest/login");
     let user = await res.json();
+    console.log("role is ", user.role)
     if (user.username) {
       setCurrentUser(user);
     }

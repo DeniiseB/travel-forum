@@ -12,7 +12,7 @@ function Group() {
   const history = useHistory();
   const { groupid } = useParams();
   const { fetchGroupById, fetchCommentById } = useGroupContext();
-  const { getUserById } = useContext(UserContext);
+  const { getUserById, currentUser, getCurrentUser } = useContext(UserContext);
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -20,6 +20,8 @@ function Group() {
 
   useEffect(() => {
     getAndSetGroup();
+   
+
   }, [groupid]);
 
   async function getAndSetGroup() {
@@ -68,11 +70,22 @@ function Group() {
       {group && comments && (
         <div className="m-2">
           <Container>
+            {currentUser && currentUser.role === "admin" ? (
+              <div style={styles.delete}>
+                <Row>
+                  <Col>
+                    <Button>Delete group</Button>
+                  </Col>
+                </Row>
+              </div>
+            ) : null}
+
             <Row>
               <Col>
                 <h2>{group.groupName}</h2>
               </Col>
             </Row>
+
             <Row>
               <Col>
                 <Button onClick={toggleInviteModal}>Invite</Button>
@@ -115,4 +128,8 @@ const styles = {
   spinnerDiv: {
     marginTop: "10rem",
   },
+  delete: {
+    marginTop: "5vh",
+    paddingBottom:"4vh"
+  }
 };
