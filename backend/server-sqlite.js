@@ -25,6 +25,23 @@ module.exports = function (app) {
     res.json(result);
   });
 
+  //Deleting user from db
+  app.delete("/rest/users/:id", async (req, res) => {
+    try {
+         await db.all("DELETE FROM users WHERE users.id = ?",[req.params.id]);
+       res.json({
+         deleted: "true",
+       });
+    }
+    catch (e) {
+      console.log(e)
+      res.json({
+        error: "Something went wrong"
+      })
+    }
+      
+    });
+
   // Registrering
   app.post("/rest/users", async (request, response) => {
     let user = request.body;
