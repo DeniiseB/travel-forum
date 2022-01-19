@@ -119,6 +119,21 @@ module.exports = function (app) {
     });
   });
 
+  app.get("/rest/users/:id", (req, res) => {
+    const query = "SELECT * FROM users WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
   app.get("/rest/users/:username", (req, res) => {
     const query = "SELECT * FROM users WHERE username = ?";
     const params = [req.params.username];
@@ -225,10 +240,21 @@ module.exports = function (app) {
 
   app.post("/rest/comments", (req, res) => {
     const newComment = req.body;
-    const sql = "INSERT INTO comments (userId, date, content, author) VALUES (?, ?, ?, ?)";
-    const params = [newComment.userId, newComment.date, newComment.content, newComment.author];
+    const sql =
+      "INSERT INTO comments (userId, date, content, author) VALUES (?, ?, ?, ?)";
+    const params = [
+      newComment.userId,
+      newComment.date,
+      newComment.content,
+      newComment.author,
+    ];
 
-    if (!newComment.userId || !newComment.date || !newComment.content.trim() || !newComment.author) {
+    if (
+      !newComment.userId ||
+      !newComment.date ||
+      !newComment.content.trim() ||
+      !newComment.author
+    ) {
       res.json({ error: "No empty fields allowed" });
       return;
     }
@@ -245,53 +271,51 @@ module.exports = function (app) {
     });
   });
 
- 
   //Get created groups of user
   app.get("/rest/created-groups/:userId", async (req, res) => {
     let group;
 
     if (req.params.userId !== undefined) {
-       try {
-         user = await db.all("SELECT * FROM users WHERE id = ?", [
-           req.params.userId,
-         ]);
-         user = user[0];
+      try {
+        user = await db.all("SELECT * FROM users WHERE id = ?", [
+          req.params.userId,
+        ]);
+        user = user[0];
 
-         if (user.createdGroups !== "") {
-           let groupsIdsArr = user.createdGroups.split(" ");
+        if (user.createdGroups !== "") {
+          let groupsIdsArr = user.createdGroups.split(" ");
 
-           let createdGroupsArr = [];
-           try {
-             for (let groupdId of groupsIdsArr) {
-               group = await db.all("SELECT * FROM groups WHERE id = ?", [
-                 groupdId,
-               ]);
-               group = group[0]
-               console.log("group is", group)
-               let categoryName = await db.all(
-                 "SELECT name from categories INNER JOIN groupsXcategories ON groupsXcategories.groupId=? AND groupsXcategories.categoryId=categories.id",
-                 [group.id.toString()]
-               );
-                 console.log("name is ", categoryName[0]);
-               group.category = categoryName[0].name;
-             
-               createdGroupsArr.push(group);
-             }
-             res.json(createdGroupsArr);
-           } catch (e) {
-             console.log(e);
-             response.status(400).send("Bad request");
-           }
-         } else {
-            let emptyArr = [];
-            res.json(emptyArr);
-         }
-       } catch (e) {
-         console.error(e);
-         response.status(400).send("Bad request");
-       }
+          let createdGroupsArr = [];
+          try {
+            for (let groupdId of groupsIdsArr) {
+              group = await db.all("SELECT * FROM groups WHERE id = ?", [
+                groupdId,
+              ]);
+              group = group[0];
+              console.log("group is", group);
+              let categoryName = await db.all(
+                "SELECT name from categories INNER JOIN groupsXcategories ON groupsXcategories.groupId=? AND groupsXcategories.categoryId=categories.id",
+                [group.id.toString()]
+              );
+              console.log("name is ", categoryName[0]);
+              group.category = categoryName[0].name;
+
+              createdGroupsArr.push(group);
+            }
+            res.json(createdGroupsArr);
+          } catch (e) {
+            console.log(e);
+            response.status(400).send("Bad request");
+          }
+        } else {
+          let emptyArr = [];
+          res.json(emptyArr);
+        }
+      } catch (e) {
+        console.error(e);
+        response.status(400).send("Bad request");
+      }
     }
-   
   });
 
   //Get created groups of user
@@ -314,7 +338,7 @@ module.exports = function (app) {
               group = await db.all("SELECT * FROM groups WHERE id = ?", [
                 groupdId,
               ]);
-              group = group[0]
+              group = group[0];
               let categoryName = await db.all(
                 "SELECT name from categories INNER JOIN groupsXcategories ON groupsXcategories.groupId=? AND groupsXcategories.categoryId=categories.id",
                 [group.id.toString()]
@@ -328,7 +352,7 @@ module.exports = function (app) {
             response.status(400).send("Bad request");
           }
         } else {
-          let emptyArr=[]
+          let emptyArr = [];
           res.json(emptyArr);
         }
       } catch (e) {
@@ -336,11 +360,7 @@ module.exports = function (app) {
         response.status(400).send("Bad request");
       }
     }
-    
   });
-
-  
-
 
   app.get("/rest/groups/:id", (req, res) => {
     const query = "SELECT * FROM groups WHERE id = ?";
@@ -462,8 +482,8 @@ module.exports = function (app) {
   });
 
   app.get("/rest/categories/:id", (req, res) => {
-    const query = "SELECT * FROM categories WHERE id = ?"
-    const params = [req.params.id]
+    const query = "SELECT * FROM categories WHERE id = ?";
+    const params = [req.params.id];
     db.get(query, params, (error, row) => {
       if (error) {
         res.status(400).json({ error: error.message });
@@ -475,40 +495,36 @@ module.exports = function (app) {
         data: row,
       });
     });
-  })
-
+  });
 
   app.get("/rest/groupsxcategories/:id", async (req, res) => {
-    const query = "SELECT groupId FROM groupsXcategories WHERE categoryId = ?" 
+    const query = "SELECT groupId FROM groupsXcategories WHERE categoryId = ?";
     const params = [req.params.id];
     let result = await db.all(query, params);
     res.json(result);
-  })
+  });
   app.patch("/rest/groups/:id", async (req, res) => {
-  try{
-    let data = await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?",[
-      req.body.str,
-      req.params.id
-    ])
-    if (!req.body.str || !req.params.id){
-      res.json({ error: "No empty fields allowed" });
-      return;
-    }
-    if (res.error) {
-      res.status(400).json({ error: res.error.message });
-      return;
-    }
+    try {
+      let data = await db.all(
+        "UPDATE groups SET commentIds = ? WHERE groups.id = ?",
+        [req.body.str, req.params.id]
+      );
+      if (!req.body.str || !req.params.id) {
+        res.json({ error: "No empty fields allowed" });
+        return;
+      }
+      if (res.error) {
+        res.status(400).json({ error: res.error.message });
+        return;
+      }
 
-    res.json({
-      message: "PUT into groups.commentId Success",
-    });
-  }catch(e){
-    console.log(e)
-  }
+      res.json({
+        message: "PUT into groups.commentId Success",
+      });
+    } catch (e) {
+      console.log(e);
+    }
   });
 
   return db;
 };
-
-
-
