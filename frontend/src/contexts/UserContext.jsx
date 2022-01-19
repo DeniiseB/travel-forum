@@ -106,7 +106,7 @@ const UserContextProvider = (props) => {
         headers: { "content-type": "application/json" }
       });
       console.log(await res.json());
-      return await res.json();
+      return res
     };
 
   const values = {

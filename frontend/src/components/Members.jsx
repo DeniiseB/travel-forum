@@ -6,8 +6,11 @@ function Members(props) {
   const { currentUser, deleteUser } = useContext(UserContext);
 
   async function deleteGroupMember(e, memberId) {
-    e.preventDefault()
-    await deleteUser(memberId)
+    e.stopPropagation()
+    let res = await deleteUser(memberId)
+    if (res.status === 200) {
+      props.func(true)
+    }
     
   }
 

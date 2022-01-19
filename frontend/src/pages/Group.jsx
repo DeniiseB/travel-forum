@@ -65,6 +65,12 @@ function Group() {
     history.push("/create-comment/" + groupid);
   }
 
+  const pull_data = async (bool) => {
+    if (bool) {
+     await getAndSetGroup()
+   }
+  };
+
   return (
     <div>
       {group && comments && (
@@ -91,7 +97,7 @@ function Group() {
                 <Button onClick={toggleInviteModal}>Invite</Button>
               </Col>
               <Col>
-                <Members groupMembers={groupMembers} />
+                <Members groupMembers={groupMembers} func={pull_data} />
               </Col>
               <Col>
                 <Button onClick={redirectToCommentPage}>Comment</Button>
