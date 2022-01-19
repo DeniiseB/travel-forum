@@ -2,13 +2,13 @@ import React from "react";
 import CategoryCard from "../components/CatergoryCard";
 import { CategoryContext } from "../contexts/CategoryContext";
 import { useContext } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import MyGroups from "./MyGroups";
-import { UserContext } from "../contexts/UserContext"
+import { UserContext } from "../contexts/UserContext";
 
 function Home() {
   const { categoriesWithGroups } = useContext(CategoryContext);
-  const { currentUser } = useContext(UserContext)
+  const { currentUser } = useContext(UserContext);
 
   return (
     <div className="Home">
@@ -58,12 +58,12 @@ export default Home;
 
 const styles = {
   list: {
-    marginTop:"2vh"
+    marginTop: "2vh",
   },
   titlesContainer: {
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "space-between",
-    margin: "2rem"
-  }
+    margin: "2rem",
+  },
 };
