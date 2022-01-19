@@ -28,42 +28,72 @@ module.exports = function (app) {
   //Deleting user from db
   app.delete("/rest/users/:id", async (req, res) => {
     try {
-     await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
+      await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
       let allGroups = await db.all("SELECT * FROM groups");
-      for (let group of allGroups)
-      {
-        let joinedMembersArr = group.groupMembers.split(" ")
+      for (let group of allGroups) {
+        let joinedMembersArr = group.groupMembers.split(" ");
         if (joinedMembersArr.includes(req.params.id)) {
-         
-          joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1)
+          joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1);
           if (joinedMembersArr.length > 0) {
-           
-            await db.all("UPDATE groups SET groupMembers = ? WHERE groups.id = ?", [joinedMembersArr.join(" "), group.id]);
-          }
-          else {
-             await db.all("UPDATE groups SET groupMembers = ? WHERE groups.id = ?", ["", group.id]);
+            await db.all(
+              "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
+              [joinedMembersArr.join(" "), group.id]
+            );
+          } else {
+            await db.all(
+              "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
+              ["", group.id]
+            );
           }
         }
       }
-      
 
-
-        res.json({
-         deleted: "true",
-       });
-       
-      
-      
-      
-    }
-    catch (e) {
-      console.log(e)
       res.json({
-        error: "Something went wrong"
-      })
+        deleted: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
     }
-      
-    });
+  });
+
+  //Blocking user
+   app.patch("/rest/users/:id", async (req, res) => {
+     try {
+       await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [true, req.params.id]);
+       let allGroups = await db.all("SELECT * FROM groups");
+       for (let group of allGroups) {
+         let joinedMembersArr = group.groupMembers.split(" ");
+         if (joinedMembersArr.includes(req.params.id)) {
+           joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1);
+           if (joinedMembersArr.length > 0) {
+             await db.all(
+               "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
+               [joinedMembersArr.join(" "), group.id]
+             );
+           } else {
+             await db.all(
+               "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
+               ["", group.id]
+             );
+           }
+         }
+       }
+
+       res.json({
+         blocked: "true",
+       });
+     } catch (e) {
+       console.log(e);
+       res.json({
+         error: "Something went wrong",
+       });
+     }
+   });
+  
+  
 
   // Registrering
   app.post("/rest/users", async (request, response) => {
@@ -83,7 +113,7 @@ module.exports = function (app) {
         encryptedPassword,
         "",
         "",
-        false
+        false,
       ]);
       response.json(result);
     } catch (e) {
@@ -121,20 +151,27 @@ module.exports = function (app) {
     user = user[0];
 
     if (user && user.username) {
-       roleName = await db.all(
-         "SELECT roleName FROM rolesXusers WHERE userId= ?",
-         [user.id]
-       );
-       roleName = roleName[0].roleName;
-      
+      if (user.blocked) {
+        response.status(403);
+        response.json({blocked: true})
+      }
+      else {
+          roleName = await db.all(
+        "SELECT roleName FROM rolesXusers WHERE userId= ?",
+        [user.id]
+      );
+      roleName = roleName[0].roleName;
+
       request.session.user = user;
-     
-      console.log(request.session.user)
+
+      console.log(request.session.user);
       request.session.passwordAttempts = 0;
       user.loggedIn = true;
-      user.role=roleName
-     // user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
+      user.role = roleName;
+      // user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
       response.json({ loggedIn: true });
+      }
+    
     } else {
       request.session.passwordAttempts++;
       response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
@@ -159,8 +196,8 @@ module.exports = function (app) {
         "SELECT roleName FROM rolesXusers WHERE userId= ?",
         [user.id]
       );
-      roleName = roleName[0].roleName
-      user.role=roleName
+      roleName = roleName[0].roleName;
+      user.role = roleName;
       response.json(user);
     } else {
       response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes

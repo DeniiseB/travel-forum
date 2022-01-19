@@ -7,7 +7,8 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [badCredentials, setBadCredentials] = useState(false);
-  const [tooManyAttempts, setTooManyAttempts]=useState(false)
+  const [tooManyAttempts, setTooManyAttempts] = useState(false)
+    const [blocked, setBlocked] = useState(false);
   const { login } = useContext(UserContext);
   const history = useHistory();
 
@@ -29,14 +30,20 @@ function Login() {
     setTooManyAttempts(true)
      setTimeout(function () {
        setTooManyAttempts(false);
-     }, 8000);
+     }, 5000);
     }
     
+  else if (res.status === 403) {
+    setBlocked(true)
+    setTimeout(function () {
+      setBlocked(false);
+    }, 5000);
+    }
     else {
       setBadCredentials(true);
       setTimeout(function () {
         setBadCredentials(false);
-      }, 8000);
+      }, 5000);
     }
     setUsername("");
     setPassword(""); 
@@ -62,7 +69,11 @@ function Login() {
             style={styles.input}
           />
 
-          <button onClick={loginUser} style={styles.button} disabled={tooManyAttempts}>
+          <button
+            onClick={loginUser}
+            style={styles.button}
+            disabled={tooManyAttempts}
+          >
             Log in
           </button>
 
@@ -73,7 +84,18 @@ function Login() {
             Bad credentials
           </p>
 
-          <p className="warning" style={tooManyAttempts ? styles.attempts : styles.unvisable}>Too many attempts, please try again later</p>
+          <p
+            className="warning"
+            style={tooManyAttempts ? styles.attempts : styles.unvisable}
+          >
+            Too many attempts, please try again later
+          </p>
+          <p
+            className="warning"
+            style={blocked ? styles.attempts : styles.unvisable}
+          >
+            Your account has been blocked by administrators
+          </p>
         </div>
 
         <div className="register" style={styles.register}>

@@ -107,6 +107,15 @@ const UserContextProvider = (props) => {
       });
       console.log(await res.json());
       return res
+  };
+  
+    const blockUser = async (userId) => {
+      let res = await fetch("/rest/users/" + userId, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+      });
+      console.log(await res.json());
+      return res;
     };
 
   const values = {
@@ -120,6 +129,7 @@ const UserContextProvider = (props) => {
     addGroupToJoinedGroupsAndCreatedGroups,
     getCurrentUser,
     deleteUser,
+    blockUser,
   };
 
   return (

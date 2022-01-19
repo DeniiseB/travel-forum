@@ -3,7 +3,7 @@ import { Dropdown, Button } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
 
 function Members(props) {
-  const { currentUser, deleteUser } = useContext(UserContext);
+  const { currentUser, deleteUser, blockUser } = useContext(UserContext);
 
   async function deleteGroupMember(e, memberId) {
     e.stopPropagation()
@@ -11,8 +11,17 @@ function Members(props) {
     if (res.status === 200) {
       props.func(true)
     }
-    
   }
+
+
+   async function blockGroupMember(e, memberId) {
+     e.stopPropagation();
+     let res = await blockUser(memberId);
+     if (res.status === 200) {
+       props.func(true);
+     }
+   }
+
 
   return (
     <div>
@@ -27,11 +36,19 @@ function Members(props) {
                 {member.username} {"  "}
                 {currentUser && currentUser.role === "admin" ? (
                   <div>
-                    <Button>
+                    <Button
+                      onClick={(e) => {
+                        blockGroupMember(e, member.id);
+                      }}
+                    >
                       <i className="bi bi-x-octagon-fill" color="white"></i>
                     </Button>
                     {"  "}
-                    <Button onClick={(e) => {deleteGroupMember(e, member.id)}}>
+                    <Button
+                      onClick={(e) => {
+                        deleteGroupMember(e, member.id);
+                      }}
+                    >
                       <i className="bi bi-trash-fill" color="white"></i>
                     </Button>
                   </div>
