@@ -110,13 +110,22 @@ const UserContextProvider = (props) => {
   };
   
     const blockUser = async (userId) => {
-      let res = await fetch("/rest/users/" + userId, {
+      let res = await fetch("/rest/users/block/" + userId, {
         method: "PATCH",
         headers: { "content-type": "application/json" },
       });
       console.log(await res.json());
       return res;
-    };
+  };
+  
+   const unblockUser = async (userId) => {
+     let res = await fetch("/rest/users/unblock/" + userId, {
+       method: "PATCH",
+       headers: { "content-type": "application/json" },
+     });
+     console.log(await res.json());
+     return res;
+   };
 
   const values = {
     register,
@@ -130,6 +139,7 @@ const UserContextProvider = (props) => {
     getCurrentUser,
     deleteUser,
     blockUser,
+    unblockUser,
   };
 
   return (

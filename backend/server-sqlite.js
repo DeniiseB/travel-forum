@@ -60,28 +60,12 @@ module.exports = function (app) {
   });
 
   //Blocking user
-   app.patch("/rest/users/:id", async (req, res) => {
+   app.patch("/rest/users/block/:id", async (req, res) => {
      try {
-       await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [true, req.params.id]);
-       let allGroups = await db.all("SELECT * FROM groups");
-       for (let group of allGroups) {
-         let joinedMembersArr = group.groupMembers.split(" ");
-         if (joinedMembersArr.includes(req.params.id)) {
-           joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1);
-           if (joinedMembersArr.length > 0) {
-             await db.all(
-               "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
-               [joinedMembersArr.join(" "), group.id]
-             );
-           } else {
-             await db.all(
-               "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
-               ["", group.id]
-             );
-           }
-         }
-       }
-
+       await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
+         true,
+         req.params.id,
+       ]);
        res.json({
          blocked: "true",
        });
@@ -93,6 +77,24 @@ module.exports = function (app) {
      }
    });
   
+  
+  //Unblock user
+   app.patch("/rest/users/unblock/:id/", async (req, res) => {
+     try {
+       await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
+         false,
+         req.params.id,
+       ]);
+       res.json({
+         unblocked: "true",
+       });
+     } catch (e) {
+       console.log(e);
+       res.json({
+         error: "Something went wrong",
+       });
+     }
+   });
   
 
   // Registrering

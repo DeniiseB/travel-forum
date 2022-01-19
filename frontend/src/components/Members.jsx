@@ -3,7 +3,8 @@ import { Dropdown, Button } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
 
 function Members(props) {
-  const { currentUser, deleteUser, blockUser } = useContext(UserContext);
+  const { currentUser, deleteUser, blockUser, unblockUser } =
+    useContext(UserContext);
 
   async function deleteGroupMember(e, memberId) {
     e.stopPropagation()
@@ -22,6 +23,14 @@ function Members(props) {
      }
    }
 
+  
+    async function unblockGroupMember(e, memberId) {
+      e.stopPropagation();
+      let res = await unblockUser(memberId);
+      if (res.status === 200) {
+        props.func(true);
+      }
+    }
 
   return (
     <div>
@@ -35,14 +44,29 @@ function Members(props) {
               <p>
                 {member.username} {"  "}
                 {currentUser && currentUser.role === "admin" ? (
-                  <div>
-                    <Button
-                      onClick={(e) => {
-                        blockGroupMember(e, member.id);
-                      }}
-                    >
-                      <i className="bi bi-x-octagon-fill" color="white"></i>
-                    </Button>
+                  <div style={styles.buttons}>
+                    {member.blocked ? (
+                      <div>
+                        <Button
+                          onClick={(e) => {
+                            unblockGroupMember(e, member.id);
+                          }}
+                        >
+                          <i class="bi bi-arrow-clockwise" color="white"></i>
+                        </Button>
+                      </div>
+                    ) : (
+                      <div>
+                        <Button
+                          onClick={(e) => {
+                            blockGroupMember(e, member.id);
+                          }}
+                        >
+                          <i className="bi bi-x-octagon-fill" color="white"></i>
+                        </Button>
+                      </div>
+                    )}
+
                     {"  "}
                     <Button
                       onClick={(e) => {
@@ -63,3 +87,11 @@ function Members(props) {
 }
 
 export default Members;
+
+const styles = {
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    gap:"1vh"
+  }
+}
