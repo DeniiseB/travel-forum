@@ -1,18 +1,22 @@
 import { useParams } from "react-router-dom";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
+import { UserContext } from "../contexts/UserContext";
 import Comment from "../components/Comment";
 import Invite from "../components/Invite";
-import { useEffect, useState } from "react";
+import Members from "../components/Members";
+import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
 function Group() {
+  const history = useHistory();
   const { groupid } = useParams();
   const { fetchGroupById, fetchCommentById } = useGroupContext();
+  const { getUserById } = useContext(UserContext);
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const history = useHistory();
+  const [groupMembers, setGroupMembers] = useState([]);
 
   useEffect(() => {
     getAndSetGroup();
@@ -21,7 +25,8 @@ function Group() {
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
     setGroup(fetchedGroup);
-    getAndSetComments(fetchedGroup);
+    await getAndSetComments(fetchedGroup);
+    await getAndSetGroupMembers(fetchedGroup);
   }
 
   async function getAndSetComments(group) {
@@ -32,6 +37,17 @@ function Group() {
       commentArray.push(comment);
     }
     setComments(commentArray);
+  }
+
+  async function getAndSetGroupMembers(group) {
+    const groupMemberIds = group.groupMembers.split(" ");
+    const groupMemberArray = []
+
+    for (let id of groupMemberIds) { 
+      let fetchedUser = await getUserById(id)
+      groupMemberArray.push(fetchedUser)
+    }
+    setGroupMembers(groupMemberArray);
   }
 
   const toggleInviteModal = () => {
@@ -62,7 +78,7 @@ function Group() {
                 <Button onClick={toggleInviteModal}>Invite</Button>
               </Col>
               <Col>
-                <Button>Members</Button>
+                <Members groupMembers={groupMembers} />
               </Col>
               <Col>
                 <Button onClick={redirectToCommentPage}>Comment</Button>

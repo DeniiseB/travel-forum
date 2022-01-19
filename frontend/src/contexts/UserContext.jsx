@@ -49,6 +49,16 @@ const UserContextProvider = (props) => {
     return res;
   };
 
+  const getUserById = async (id) => {
+    try {
+      let res = await fetch("/rest/users/" + id);
+      let resJson = await res.json();
+      return resJson.data;
+    } catch {
+      console.log("Fetching user failed");
+    }
+  };
+
   const getUserByUserName = async (userName) => {
     try {
       let res = await fetch("/rest/users/" + userName);
@@ -93,6 +103,7 @@ const UserContextProvider = (props) => {
     login,
     currentUser,
     logout,
+    getUserById,
     getUserByUserName,
     addGroupIdToJoinedGroupIds,
     addGroupToJoinedGroupsAndCreatedGroups,
