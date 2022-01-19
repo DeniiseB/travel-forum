@@ -99,6 +99,16 @@ const UserContextProvider = (props) => {
     }
   };
 
+
+    const deleteUser = async (userId) => {
+      let res = await fetch("/rest/users/"+ userId, {
+        method: "DELETE",
+        headers: { "content-type": "application/json" }
+      });
+      console.log(await res.json());
+      return await res.json();
+    };
+
   const values = {
     register,
     login,
@@ -109,6 +119,7 @@ const UserContextProvider = (props) => {
     addGroupIdToJoinedGroupIds,
     addGroupToJoinedGroupsAndCreatedGroups,
     getCurrentUser,
+    deleteUser,
   };
 
   return (

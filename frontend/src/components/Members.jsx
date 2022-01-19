@@ -3,7 +3,13 @@ import { Dropdown, Button } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
 
 function Members(props) {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, deleteUser } = useContext(UserContext);
+
+  async function deleteGroupMember(e, memberId) {
+    e.preventDefault()
+    await deleteUser(memberId)
+    
+  }
 
   return (
     <div>
@@ -22,7 +28,7 @@ function Members(props) {
                       <i className="bi bi-x-octagon-fill" color="white"></i>
                     </Button>
                     {"  "}
-                    <Button>
+                    <Button onClick={(e) => {deleteGroupMember(e, member.id)}}>
                       <i className="bi bi-trash-fill" color="white"></i>
                     </Button>
                   </div>

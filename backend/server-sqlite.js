@@ -28,10 +28,33 @@ module.exports = function (app) {
   //Deleting user from db
   app.delete("/rest/users/:id", async (req, res) => {
     try {
-         await db.all("DELETE FROM users WHERE users.id = ?",[req.params.id]);
-       res.json({
+     await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
+      let allGroups = await db.all("SELECT * FROM groups");
+      for (let group of allGroups)
+      {
+        let joinedMembersArr = group.groupMembers.split(" ")
+        if (joinedMembersArr.includes(req.params.id)) {
+         
+          joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1)
+          if (joinedMembersArr.length > 0) {
+            console.log(joinedMembersArr.toString)
+            await db.all("UPDATE groups SET groupMembers = ? WHERE groups.id = ?", [joinedMembersArr.join(" "), group.id]);
+          }
+          else {
+             await db.all("UPDATE groups SET groupMembers = ? WHERE groups.id = ?", ["", group.id]);
+          }
+        }
+      }
+      
+
+
+        res.json({
          deleted: "true",
        });
+       
+      
+      
+      
     }
     catch (e) {
       console.log(e)
