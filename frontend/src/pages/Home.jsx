@@ -13,38 +13,42 @@ function Home() {
   return (
     <div className="Home">
       {currentUser === null ? (
-         <div>
-         <h2 style={styles.catergoryTitle}>Categories</h2>
-         <h5 style={styles.groupAmountTitle}>Groups</h5>
-         {!categoriesWithGroups ? (
-           <div></div>
-         ) : (
-           <div style={styles.list}>
-             {categoriesWithGroups.map((item, index) => (
-              <Link to={"/inside-category/"+ item.id}>
-               <CategoryCard props={item} key={index} />
-               </Link>
-             ))}
-           </div>
-         )}
-         </div>
+        <div>
+          <div style={styles.titlesContainer}>
+            <h2>Categories</h2>
+            <h5>Groups</h5>
+          </div>
+          {!categoriesWithGroups ? (
+            <div></div>
+          ) : (
+            <div style={styles.list}>
+              {categoriesWithGroups.map((item, index) => (
+                <Link to={"/inside-category/" + item.id}>
+                  <CategoryCard props={item} key={index} />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       ) : (
         <div>
-        <div><MyGroups/></div>
-        <div>
-         <h2 style={styles.catergoryTitle}>Categories</h2>
-         <h5 style={styles.groupAmountTitle}>Groups</h5>
-         {!categoriesWithGroups ? (
-           <div></div>
-         ) : (
-           <div style={styles.list}>
-             {categoriesWithGroups.map((item, index) => (
-               <CategoryCard props={item} key={index} />
-             ))}
-           </div>
-         )}
-         </div>
-      </div>
+          <div>
+            <MyGroups />
+          </div>
+          <div>
+            <h2 style={styles.catergoryTitle}>Categories</h2>
+            <h5 style={styles.groupAmountTitle}>Groups</h5>
+            {!categoriesWithGroups ? (
+              <div></div>
+            ) : (
+              <div style={styles.list}>
+                {categoriesWithGroups.map((item, index) => (
+                  <CategoryCard props={item} key={index} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
@@ -53,18 +57,13 @@ function Home() {
 export default Home;
 
 const styles = {
-  catergoryTitle: {
-    marginTop: "2vh",
-    display: "flex",
-    flexDirection: "row",
-    position: "absolute",
-  },
-  groupAmountTitle: {
-    marginTop: "2vh",
-    marginLeft: "250px",
-    marginRight: "5vw",
-  },
   list: {
-    marginTop:"8vh"
+    marginTop:"2vh"
+  },
+  titlesContainer: {
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    margin: "2rem"
   }
 };
