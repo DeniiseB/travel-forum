@@ -81,6 +81,7 @@ module.exports = function (app) {
 
     if (user && user.username) {
       request.session.user = user;
+      console.log(request.session.user)
       request.session.passwordAttempts = 0;
       user.loggedIn = true;
       user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
@@ -105,6 +106,12 @@ module.exports = function (app) {
     if (user && user.username) {
       user.loggedIn = true;
       delete user.password; // skicka aldrig password till frontend
+      roleName = await db.all(
+        "SELECT roleName FROM rolesXusers WHERE userId= ?",
+        [user.id]
+      );
+      roleName = roleName[0].roleName
+      user.role=roleName
       response.json(user);
     } else {
       response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
