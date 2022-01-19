@@ -3,12 +3,12 @@ const accessList = require("./access-list.json");
 module.exports = function (req, res, next) {
   let roles = [];
 
-  if (req.session?.user?.roles)
+  if (req.session?.user?.role)
   {
-    for (let userRole of req.session.user.roles)
-    {
-      roles.push(userRole);
-    }
+    //for (let userRole of req.session.user.roles)
+    //{
+      roles.push(req.session.user.role);
+    //}
   }
   else {
     roles = ["anonymous"];
@@ -16,6 +16,7 @@ module.exports = function (req, res, next) {
 
 
   roles.push("*");
+
 
   console.log({
     "req.path": req.path,
