@@ -17,7 +17,7 @@ function Group() {
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [groupMembers, setGroupMembers] = useState([]);
-  const [testBool, setTestBool] = useState(false);
+  const [isCreator, setIsCreator] = useState(false);
   useEffect(() => {
     getAndSetGroup();
 
@@ -31,10 +31,10 @@ function Group() {
     await getAndSetGroupMembers(fetchedGroup);
     console.log(currentUser.id, fetchedGroup.creatorUserId)
     if (currentUser.id == fetchedGroup.creatorUserId) {
-      setTestBool(true);
+      setIsCreator(true);
     }
     else {
-      setTestBool(false);
+      setIsCreator(false);
     }
   }
 
@@ -94,7 +94,7 @@ function Group() {
             </Row>
 
             <Row>
-              {testBool &&
+              {isCreator &&
                 <Col>
                   <Button onClick={toggleInviteModal}>Invite</Button>
                 </Col>
@@ -110,7 +110,8 @@ function Group() {
           <Container className="mt-2">
             {comments.map((commentObject) => (
               <Comment key={commentObject.id} commentObject={commentObject} />
-            ))}
+              ))}
+              <Button>Remove</Button>
           </Container>
         </div>
       )}
