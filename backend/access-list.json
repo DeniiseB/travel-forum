@@ -9,7 +9,7 @@
   {
     "path": "/rest/users*",
     "roles": [
-      { "role": "anonymous", "methods": ["POST", "DELETE"] },
+      { "role": "anonymous", "methods": ["POST"] },
       { "role": "admin", "methods": ["GET", "DELETE"] }
     ]
   },

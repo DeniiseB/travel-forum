@@ -37,7 +37,7 @@ module.exports = function (app) {
          
           joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1)
           if (joinedMembersArr.length > 0) {
-            console.log(joinedMembersArr.toString)
+           
             await db.all("UPDATE groups SET groupMembers = ? WHERE groups.id = ?", [joinedMembersArr.join(" "), group.id]);
           }
           else {
