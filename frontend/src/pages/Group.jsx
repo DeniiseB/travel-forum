@@ -29,7 +29,8 @@ function Group() {
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
-    console.log(currentUser.id, fetchedGroup.creatorUserId)
+
+    await console.log(getCurrentUser())
     if (currentUser.id == fetchedGroup.creatorUserId) {
       setIsCreator(true);
     }
@@ -37,6 +38,7 @@ function Group() {
       setIsCreator(false);
     }
   }
+
 
   async function getAndSetComments(group) {
     const commentIdArray = group.commentIds.split(" ");
@@ -107,11 +109,10 @@ function Group() {
               </Col>
             </Row>
           </Container>
-          <Container className="mt-2">
+          <Container className="mt-2" styles={styles.commentContainer}>
             {comments.map((commentObject) => (
-              <Comment key={commentObject.id} commentObject={commentObject} />
-              ))}
-              <Button>Remove</Button>
+              <Comment key={commentObject.id} commentObject={commentObject} groupId={groupid} />
+            ))}
           </Container>
         </div>
       )}
@@ -143,5 +144,8 @@ const styles = {
   delete: {
     marginTop: "5vh",
     paddingBottom: "4vh"
+  },
+  commentContainer: {
+    float: "left",
   }
 };

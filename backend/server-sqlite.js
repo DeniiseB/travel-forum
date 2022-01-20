@@ -111,7 +111,7 @@ module.exports = function (app) {
         [user.id]
       );
       roleName = roleName[0].roleName
-      user.role=roleName
+      user.role = roleName
       response.json(user);
     } else {
       response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
@@ -125,6 +125,19 @@ module.exports = function (app) {
       response.json({ loggedIn: false });
     });
   });
+
+  app.delete("/rest/comments/:id", async (req, res) => {
+
+    const query = "DELETE FROM comments WHERE id = ?";
+    const comment = [req.params.id];
+    console.log(comment, "comment inside server sqlite")
+    db.run(query, comment, function (err) {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log(`Row(s) deleted ${this.changes}`);
+    });
+  })
 
   app.get("/rest/users/:id", (req, res) => {
     const query = "SELECT * FROM users WHERE id = ?";

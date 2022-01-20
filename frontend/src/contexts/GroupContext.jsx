@@ -72,6 +72,21 @@ const GroupProvider = (props) => {
     }
   };
 
+  const removeCommentById = async (commentToRemove) => {
+    try {
+      let res = await fetch("/rest/comments/" + commentToRemove, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+
+      });
+      return await res.json();
+    } catch {
+      console.log("Remove comment failed");
+    }
+  };
   const addUserIdToGroupMembers = async (groupObject) => {
     try {
       let res = await fetch("/api/groups/" + groupObject.groupId, {
@@ -137,6 +152,7 @@ const GroupProvider = (props) => {
     addUserIdToGroupMembers,
     putCommentInGroup,
     getJoinedAndCreatedGroups,
+    removeCommentById
   };
 
   return (

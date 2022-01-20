@@ -1,14 +1,41 @@
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { useGroupContext } from "../contexts/GroupContext";
 import { UserContext } from "../contexts/UserContext";
 import { useEffect, useState, useContext } from "react";
 
 function Comment(props) {
+  const { fetchGroupById, fetchCommentById, removeCommentById } = useGroupContext();
+  const { currentUser } = useContext(UserContext);
+  const [group, setGroup] = useState();
+  const [isCreator, setIsCreator] = useState(false);
+  const groupId = props.groupId
+  useEffect(() => {
+    checkRole()
 
-    const { currentUser } = useContext(UserContext);
+  }, []);
 
+  async function checkRole() {
+    const fetchedGroup = await fetchGroupById(groupId);
+    if (currentUser.id == fetchedGroup.creatorUserId) {
+      setIsCreator(true);
+    }
+    else {
+      setIsCreator(false);
+    }
+    console.log(groupId, "This is inside comment and groupid")
+    console.log(fetchedGroup, "This is inside comment")
+  }
   function formatting() {
     return props.commentObject.date
   }
+  async function removeComment() {
+    //remove comment
+    let id = props.commentObject.id;
+
+    await removeCommentById(id);
+    console.log(id, "commentId in remove comment")
+  }
+
   return (
     <Container style={styles.commentContainer}>
       {(currentUser && currentUser.role) === "admin" ? (
@@ -24,10 +51,17 @@ function Comment(props) {
       <Row>
         <Col>
           <p dangerouslySetInnerHTML={{ __html: props.commentObject.content }}>
-            {}
+            { }
           </p>
         </Col>
       </Row>
+      {isCreator &&
+        <Row>
+          <Col>
+            <Button onClick={removeComment}>X</Button>
+          </Col>
+        </Row>
+      }
     </Container>
   );
 }
@@ -36,7 +70,7 @@ export default Comment;
 
 const styles = {
   commentContainer: {
-    width: "20rem",
+    width: "15rem",
     border: "solid lightGrey 1px",
     borderRadius: "4px",
     marginBottom: "0.5rem"
@@ -49,6 +83,6 @@ const styles = {
   },
   delete: {
     position: "absolute",
-    right:"8vh"
+    right: "8vh"
   }
 };

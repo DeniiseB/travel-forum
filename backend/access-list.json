@@ -32,5 +32,37 @@
       { "role": "groupAdmin", "methods": ["DELETE", "PATCH"] },
       { "role": "groupModerator", "methods": ["POST", "PATCH"] }
     ]
+  },{
+    "path": "/rest/comments*",
+    "roles": [
+      {
+        "role": "*",
+        "methods": [
+          "GET"
+        ]
+      },
+      {
+        "role": "member",
+        "methods": [
+          "POST",
+          "PATCH"
+        ]
+      },
+      {
+        "role": "groupAdmin",
+        "methods": [
+          "DELETE",
+          "PATCH"
+        ]
+      },
+      {
+        "role": "groupModerator",
+        "methods": [
+          "POST",
+          "PATCH",
+          "DELETE"
+        ]
+      }
+    ]
   }
 ]
