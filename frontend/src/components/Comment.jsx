@@ -1,14 +1,10 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 
 function Comment(props) {
+  const { currentUser } = useContext(UserContext);
 
-    const { currentUser } = useContext(UserContext);
-
-  function formatting() {
-    return props.commentObject.date
-  }
   return (
     <Container style={styles.commentContainer}>
       {(currentUser && currentUser.role) === "admin" ? (
@@ -39,16 +35,16 @@ const styles = {
     width: "20rem",
     border: "solid lightGrey 1px",
     borderRadius: "4px",
-    marginBottom: "0.5rem"
+    marginBottom: "0.5rem",
   },
   commentHeader: {
     display: "flex",
     alignItems: "flex-start",
     flexDirection: "column",
-    fontSize: "small"
+    fontSize: "small",
   },
   delete: {
     position: "absolute",
-    right:"8vh"
-  }
+    right: "8vh",
+  },
 };

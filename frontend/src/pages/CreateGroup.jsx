@@ -103,7 +103,7 @@ function CreateGroup() {
     let groupObject = {
       userId: currentUser.id,
       createdGroupIds: userCreatedGroupIds.join(" "),
-      joinedGroupIds: userCreatedGroupIds.join(" "),
+      joinedGroupIds: userJoinedGroupIds.join(" "),
     };
 
     await addGroupToJoinedGroupsAndCreatedGroups(groupObject);

@@ -33,7 +33,16 @@
     ]
   },
   {
-    "path": "/rest/groups*",
+    "path": "/rest/groups/*",
+    "roles": [
+      { "role": "*", "methods": ["GET"] },
+      { "role": "member", "methods": ["POST", "PATCH"] },
+      { "role": "groupAdmin", "methods": ["DELETE", "PATCH"] },
+      { "role": "groupModerator", "methods": ["POST", "PATCH"] }
+    ]
+  },
+    {
+    "path": "/rest/group/*",
     "roles": [
       { "role": "*", "methods": ["GET"] },
       { "role": "member", "methods": ["POST", "PATCH"] },
