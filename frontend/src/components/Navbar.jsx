@@ -1,18 +1,11 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button } from 'reactstrap';
-import { useState, useContext } from "react";
+import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Button } from "reactstrap";
+import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { Link, useHistory } from "react-router-dom";
-
-
 
 function Navbar() {
-
   const { currentUser, logout } = useContext(UserContext);
-
-
-
 
   return (
     <nav className="navbar navbar-dark" style={styles.navbar}>
@@ -40,8 +33,9 @@ function Navbar() {
         <div>
           <div style={styles.logoutButton}>
             <Button color="dark" size="sm" onClick={logout}>
-              <a href="/" style={styles.href}>Logout</a>
-              
+              <a href="/" style={styles.href}>
+                Logout
+              </a>
             </Button>
           </div>
           <div>
@@ -51,7 +45,6 @@ function Navbar() {
       )}
     </nav>
   );
-
 }
 
 export default Navbar;
@@ -60,6 +53,10 @@ const styles = {
   navbar: {
     backgroundColor: "#C4C4C4",
     padding: "5vw 2vw 5vw 3vw",
+    position: "fixed",
+    width: "100%",
+    height: "5rem",
+    top: "0"
   },
   loginButtons: {
     fontFamily: "Montserrat, sans-serif",
@@ -72,9 +69,7 @@ const styles = {
     marginLeft: "10px",
     marginRight: "5vw",
   },
-  loginButton: {
-    
-  },
+  loginButton: {},
 
   ul: {
     fontSize: "1.2em",
@@ -91,6 +86,6 @@ const styles = {
   },
   href: {
     color: "white",
-    textDecoration:"none"
-  }
+    textDecoration: "none",
+  },
 };

@@ -12,44 +12,46 @@ function Home() {
 
   return (
     <div className="Home">
-      {currentUser === null ? (
-        <div>
-          <div style={styles.titlesContainer}>
-            <h2>Categories</h2>
-            <h5>Groups</h5>
-          </div>
-          {!categoriesWithGroups ? (
-            <div></div>
-          ) : (
-            <div style={styles.list}>
-              {categoriesWithGroups.map((item, index) => (
-                <Link to={"/inside-category/" + item.id}>
-                  <CategoryCard props={item} key={index} />
-                </Link>
-              ))}
+      <div>
+        {currentUser === null ? (
+          <div>
+            <div style={styles.titlesContainer}>
+              <h2>Categories</h2>
+              <h5>Groups</h5>
             </div>
-          )}
-        </div>
-      ) : (
-        <div>
-          <div>
-            <MyGroups />
-          </div>
-          <div>
-            <h2 style={styles.catergoryTitle}>Categories</h2>
-            <h5 style={styles.groupAmountTitle}>Groups</h5>
             {!categoriesWithGroups ? (
               <div></div>
             ) : (
               <div style={styles.list}>
                 {categoriesWithGroups.map((item, index) => (
-                  <CategoryCard props={item} key={index} />
+                  <Link to={"/inside-category/" + item.id}>
+                    <CategoryCard props={item} key={index} />
+                  </Link>
                 ))}
               </div>
             )}
           </div>
-        </div>
-      )}
+        ) : (
+          <div>
+            <div>
+              <MyGroups />
+            </div>
+            <div>
+              <h2 style={styles.catergoryTitle}>Categories</h2>
+              <h5 style={styles.groupAmountTitle}>Groups</h5>
+              {!categoriesWithGroups ? (
+                <div></div>
+              ) : (
+                <div style={styles.list}>
+                  {categoriesWithGroups.map((item, index) => (
+                    <CategoryCard props={item} key={index} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -64,6 +66,6 @@ const styles = {
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "space-between",
-    margin: "2rem",
   },
+  homeContainer: {}
 };
