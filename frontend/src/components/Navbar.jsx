@@ -71,6 +71,7 @@ const styles = {
     fontStyle: "italic",
     fontWeight: "600",
     fontSize: "1em",
+    backgroundColor: "#d99e74",
   },
   registerButton: {
     marginLeft: "10px",
@@ -79,13 +80,14 @@ const styles = {
     fontStyle: "italic",
     fontWeight: "600",
     fontSize: "1em",
+    backgroundColor: "#d99e74",
   },
   logoutButton: {
     fontFamily: "Montserrat, sans-serif",
     fontStyle: "italic",
     fontWeight: "600",
     fontSize: "1em",
-    marginLeft: "0.2rem"
+    marginLeft: "0.2rem",
   },
   loggedIn: {
     display: "flex",

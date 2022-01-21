@@ -115,74 +115,86 @@ function CreateGroup() {
 
   return (
     <div className="m-2">
-      <div>
-        <h2 className="mt-5">Create New Group</h2>
-
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mt-3" controlId="formGridAddress1">
-            <Form.Label>Group Title</Form.Label>
-            <Form.Control
-              placeholder="ex. Travelbuddy to Finland"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </Form.Group>
-
-          <Row className="mt-2">
-            <Form.Group as={Col} controlId="formGridState">
-              <Form.Label>Category</Form.Label>
-              <Form.Select onChange={(e) => setCategory(e.target.value)}>
-                {categories &&
-                  categories.map((category) => (
-                    <option value={category.id} key={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-              </Form.Select>
+      <div style={styles.mainContainer}>
+        <div style={styles.title}>
+          <p className="mt-3">Create New Group</p>
+        </div>
+        <div style={styles.formContainer}>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mt-2" controlId="formGridAddress1">
+              <Form.Label>Group Title</Form.Label>
+              <Form.Control
+                placeholder="ex. Travelbuddy to Finland"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </Form.Group>
-          </Row>
 
-          <Form.Group className="mt-2">
-            <Form.Label>Group access</Form.Label>
-            <Container
-              style={styles.accessContainer}
-              onChange={(e) => setAccess(e.target.value)}
+            <Row className="mt-2">
+              <Form.Group as={Col} controlId="formGridState">
+                <Form.Label>Category</Form.Label>
+                <Form.Select onChange={(e) => setCategory(e.target.value)}>
+                  {categories &&
+                    categories.map((category) => (
+                      <option
+                        style={styles.option}
+                        value={category.id}
+                        key={category.id}
+                      >
+                        {category.name}
+                      </option>
+                    ))}
+                </Form.Select>
+              </Form.Group>
+            </Row>
+
+            <Form.Group className="mt-2">
+              <Form.Label>Group access</Form.Label>
+              <Container
+                style={styles.accessContainer}
+                onChange={(e) => setAccess(e.target.value)}
+              >
+                <Form.Check
+                  defaultChecked
+                  type="radio"
+                  name="access"
+                  label="Public"
+                  value="Public"
+                />
+                <Form.Check
+                  type="radio"
+                  name="access"
+                  label="Private"
+                  value="Private"
+                />
+              </Container>
+            </Form.Group>
+
+            <Form.Group
+              className="mt-2"
+              controlId="exampleForm.ControlTextarea1"
             >
-              <Form.Check
-                defaultChecked
-                type="radio"
-                name="access"
-                label="Public"
-                value="Public"
-              />
-              <Form.Check
-                type="radio"
-                name="access"
-                label="Private"
-                value="Private"
-              />
-            </Container>
-          </Form.Group>
+              <Form.Label>Comment</Form.Label>
+              <div style={styles.reactQuillContainer}>
+                <ReactQuill value={comment || ""} onChange={handleChange} />
+              </div>
+            </Form.Group>
 
-          <Form.Group className="mt-2" controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Comment</Form.Label>
-            <ReactQuill value={comment || ""} onChange={handleChange} />
-          </Form.Group>
-
-          <Button
-            className="mt-3"
-            variant="primary"
-            type="submit"
-            disabled={!title || !comment}
-          >
-            Create Group
-          </Button>
-          <div>
-            {(!title || !comment || warning) && (
-              <p>Please fill out all fields</p>
-            )}
-          </div>
-        </Form>
+            <Button
+              className="mt-3"
+              variant="primary"
+              type="submit"
+              disabled={!title || !comment}
+            >
+              Create Group
+            </Button>
+            <div>
+              {(!title || !comment || warning) && (
+                <p>Please fill out all fields</p>
+              )}
+            </div>
+          </Form>
+        </div>
       </div>
     </div>
   );
@@ -191,9 +203,36 @@ function CreateGroup() {
 export default CreateGroup;
 
 const styles = {
+  mainContainer: {
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+    color: "white",
+    margin: "1rem",
+  },
+  formContainer: {
+    backgroundColor: "#424242c9",
+    padding: "1rem",
+    borderRadius: "4px",
+  },
   accessContainer: {
     width: "8rem",
     border: "solid lightGrey 1px",
     borderRadius: "4px",
+  },
+  reactQuillContainer: {
+    backgroundColor: "white",
+    borderRadius: "4px",
+    color: "black",
+  },
+  title: {
+    fontWeight: "600",
+    fontSize: "1.4em",
+    textDecoration: "underline",
+    color: "#424242",
+    height: "4rem",
+    paddingTop: "1px",
+  },
+  option: {
+    fontSize: "12px",
   },
 };
