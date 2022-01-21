@@ -7,6 +7,13 @@
     ]
   },
   {
+    "path": "/api/*",
+    "roles": [
+      { "role": "*", "methods": ["GET", "PATCH"] },
+      { "role": "admin", "methods": ["GET", "PUT", "DELETE"] }
+    ]
+  },
+  {
     "path": "/rest/users*",
     "roles": [
       { "role": "anonymous", "methods": ["POST"] },
@@ -17,7 +24,8 @@
   {
     "path": "/rest/login",
     "roles": [
-      { "role": "anonymous", "methods": ["POST"] },
+      { "role": "*", "methods": ["GET", "POST"] },
+      { "role": "anonymous", "methods": ["POST", "GET"] },
       { "role": "member", "methods": ["GET", "DELETE"] },
       { "role": "admin", "methods": ["GET", "DELETE"] },
       { "role": "groupAdmin", "methods": ["GET", "DELETE"] },
@@ -25,44 +33,31 @@
     ]
   },
   {
-    "path": "/rest/groups*",
+    "path": "/rest/groups/*",
     "roles": [
       { "role": "*", "methods": ["GET"] },
       { "role": "member", "methods": ["POST", "PATCH"] },
       { "role": "groupAdmin", "methods": ["DELETE", "PATCH"] },
       { "role": "groupModerator", "methods": ["POST", "PATCH"] }
     ]
-  },{
-    "path": "/rest/comments*",
+  },
+  {
+    "path": "/rest/group/*",
     "roles": [
-      {
-        "role": "*",
-        "methods": [
-          "GET"
-        ]
-      },
-      {
-        "role": "member",
-        "methods": [
-          "POST",
-          "PATCH"
-        ]
-      },
-      {
-        "role": "groupAdmin",
-        "methods": [
-          "DELETE",
-          "PATCH"
-        ]
-      },
-      {
-        "role": "groupModerator",
-        "methods": [
-          "POST",
-          "PATCH",
-          "DELETE"
-        ]
-      }
+      { "role": "*", "methods": ["GET"] },
+      { "role": "member", "methods": ["POST", "PATCH"] },
+      { "role": "groupAdmin", "methods": ["DELETE", "PATCH"] },
+      { "role": "groupModerator", "methods": ["POST", "PATCH"] }
+    ]
+  },
+  {
+    "path": "/rest/comments/*",
+    "roles": [
+      { "role": "*", "methods": ["GET"] },
+      { "role": "member", "methods": ["POST", "PATCH", "GET"] },
+      { "role": "groupAdmin", "methods": ["DELETE", "PATCH", "POST", "GET"] },
+      { "role": "groupModerator", "methods": ["POST", "PATCH", "DELETE", "GET"] },
+      { "role": "admin", "methods": ["POST", "PATCH", "DELETE", "GET"]}
     ]
   }
 ]

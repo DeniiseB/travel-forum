@@ -43,8 +43,6 @@ function CreateGroup() {
       setWarning(false);
     }
 
-   
-
     let newGroupObjectId = newGroupObject.id.toString();
     await postGroupsXCategories(newGroupObjectId);
 
@@ -92,8 +90,12 @@ function CreateGroup() {
   }
 
   async function addGroupToUser(groupId) {
-    let userCreatedGroupIds = currentUser.createdGroups.split(" ");
-    let userJoinedGroupIds = currentUser.joinedGroups.split(" ");
+    let userCreatedGroupIds = currentUser.createdGroups.length
+      ? currentUser.createdGroups.split(" ")
+      : [];
+    let userJoinedGroupIds = currentUser.joinedGroups.length
+      ? currentUser.joinedGroups.split(" ")
+      : [];
 
     userCreatedGroupIds.push(groupId);
     userJoinedGroupIds.push(groupId);
@@ -101,7 +103,7 @@ function CreateGroup() {
     let groupObject = {
       userId: currentUser.id,
       createdGroupIds: userCreatedGroupIds.join(" "),
-      joinedGroupIds: userCreatedGroupIds.join(" "),
+      joinedGroupIds: userJoinedGroupIds.join(" "),
     };
 
     await addGroupToJoinedGroupsAndCreatedGroups(groupObject);

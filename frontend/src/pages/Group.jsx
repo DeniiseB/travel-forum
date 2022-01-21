@@ -12,7 +12,7 @@ function Group() {
   const history = useHistory();
   const { groupid } = useParams();
   const { fetchGroupById, fetchCommentById } = useGroupContext();
-  const { getUserById, currentUser, getCurrentUser } = useContext(UserContext);
+  const { getUserById, currentUser } = useContext(UserContext);
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -20,8 +20,6 @@ function Group() {
   const [isCreator, setIsCreator] = useState(false);
   useEffect(() => {
     getAndSetGroup();
-
-
   }, [groupid]);
 
   async function getAndSetGroup() {
@@ -52,11 +50,11 @@ function Group() {
 
   async function getAndSetGroupMembers(group) {
     const groupMemberIds = group.groupMembers.split(" ");
-    const groupMemberArray = []
+    const groupMemberArray = [];
 
     for (let id of groupMemberIds) {
-      let fetchedUser = await getUserById(id)
-      groupMemberArray.push(fetchedUser)
+      let fetchedUser = await getUserById(id);
+      groupMemberArray.push(fetchedUser);
     }
     setGroupMembers(groupMemberArray);
   }

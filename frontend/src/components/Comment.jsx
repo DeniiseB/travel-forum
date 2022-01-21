@@ -1,7 +1,7 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import { UserContext } from "../contexts/UserContext";
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 
 function Comment(props) {
   const { fetchGroupById, fetchCommentById, removeCommentById } = useGroupContext();
@@ -71,13 +71,13 @@ const styles = {
     width: "15rem",
     border: "solid lightGrey 1px",
     borderRadius: "4px",
-    marginBottom: "0.5rem"
+    marginBottom: "0.5rem",
   },
   commentHeader: {
     display: "flex",
     alignItems: "flex-start",
     flexDirection: "column",
-    fontSize: "small"
+    fontSize: "small",
   },
   delete: {
     position: "absolute",
