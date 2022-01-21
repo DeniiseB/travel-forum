@@ -3,8 +3,8 @@ import { UserContext } from "../contexts/UserContext";
 import { useGroupContext } from "../contexts/GroupContext";
 import { useEffect, useState, useContext } from "react";
 
-function Comment(props) {
 
+function Comment(props) {
   const { currentUser } = useContext(UserContext);
    const { deleteSpecificComment } = useGroupContext();
 
@@ -55,16 +55,16 @@ const styles = {
     width: "20rem",
     border: "solid lightGrey 1px",
     borderRadius: "4px",
-    marginBottom: "0.5rem"
+    marginBottom: "0.5rem",
   },
   commentHeader: {
     display: "flex",
     alignItems: "flex-start",
     flexDirection: "column",
-    fontSize: "small"
+    fontSize: "small",
   },
   delete: {
     position: "absolute",
-    right:"8vh"
-  }
+    right: "8vh",
+  },
 };

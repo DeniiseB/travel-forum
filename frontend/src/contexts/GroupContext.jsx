@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext } from "react";
 
 const GroupContext = createContext("");
 
@@ -7,19 +7,6 @@ export const useGroupContext = () => {
 };
 
 const GroupProvider = (props) => {
-  const [groups, setGroups] = useState([]);
-
-  const fetchAllGroups = async () => {
-    try {
-      let res = await fetch("/rest/groups");
-      console.log(res);
-      let data = await res.json();
-      setGroups(data);
-    } catch {
-      console.log("Fetching all groups failed");
-    }
-  };
-
   const fetchGroupById = async (groupId) => {
     try {
       let res = await fetch("/rest/groups/" + groupId);
@@ -124,7 +111,7 @@ const GroupProvider = (props) => {
 
       arr.push(joinedRes);
     }
-    console.log(arr);
+    
     return arr;
   };
 
@@ -156,7 +143,6 @@ const GroupProvider = (props) => {
      };
   
   const values = {
-    groups,
     fetchGroupById,
     postNewGroup,
     fetchCommentById,

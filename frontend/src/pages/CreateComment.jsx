@@ -8,13 +8,17 @@ import { UserContext } from "../contexts/UserContext";
 import { useParams } from "react-router-dom";
 
 function CreateComment() {
-  const [text, setText] = useState();
-  const { postNewComment,fetchGroupById, putCommentInGroup } = useGroupContext();
   const history = useHistory();
-  const { currentUser } = useContext(UserContext);
-  const [group , setGroup ] = useState({});
   const { groupid } = useParams();
-
+  const {
+    postNewComment,
+    fetchGroupById,
+    putCommentInGroup,
+    addUserIdToGroupMembers,
+  } = useGroupContext();
+  const { currentUser, addGroupIdToJoinedGroupIds } = useContext(UserContext);
+  const [text, setText] = useState();
+  const [group, setGroup] = useState({});
 
   useEffect(() => {
     getAndSetGroup();
@@ -37,8 +41,52 @@ function CreateComment() {
     let res = await postNewComment(firstComment);
     let commentObject = res;
     await putCommentInGroup(commentObject.id, group);
-    history.push("/group/"+group.id)
+    if (!groupContainsMember()) {
+      await updateUserJoinedGroups();
+      await updateGroupsGroupMembers();
+    }
+    history.push("/group/" + group.id);
   }
+
+  async function updateUserJoinedGroups() {
+    let userJoinedGroupIds = currentUser.joinedGroups.length
+      ? currentUser.joinedGroups.split(" ")
+      : [];
+
+    userJoinedGroupIds.push(groupid);
+
+    let groupObject = {
+      userId: currentUser.id,
+      groupIds: userJoinedGroupIds.join(" "),
+    };
+
+    await addGroupIdToJoinedGroupIds(groupObject);
+  }
+
+  async function updateGroupsGroupMembers() {
+    let groupMemberIds = group.groupMembers.length
+      ? group.groupMembers.split(" ")
+      : [];
+
+    groupMemberIds.push(currentUser.id.toString());
+
+    let groupObject = {
+      groupId: groupid,
+      userIds: groupMemberIds.join(" "),
+    };
+
+    await addUserIdToGroupMembers(groupObject);
+  }
+
+  const groupContainsMember = () => {
+    const groupMemberIds = group.groupMembers.split(" ");
+    for (let id of groupMemberIds) {
+      if (id === currentUser.id.toString()) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   const handleChange = (value) => {
     setText(value);
@@ -50,7 +98,7 @@ function CreateComment() {
         <ReactQuill value={text || ""} onChange={handleChange} />
       </div>
       <div>
-        <button onClick={postComment} >Post Comment</button>
+        <button onClick={postComment}>Post Comment</button>
       </div>
     </div>
   );

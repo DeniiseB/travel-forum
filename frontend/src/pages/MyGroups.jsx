@@ -1,39 +1,30 @@
-
 import React from "react";
 import { useState, useContext, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useGroupContext } from "../contexts/GroupContext";
 import { UserContext } from "../contexts/UserContext";
 
-
-
 function MyGroups() {
-
-  const {  getJoinedAndCreatedGroups } =
-    useGroupContext();
+  const { getJoinedAndCreatedGroups } = useGroupContext();
   const { currentUser, getCurrentUser } = useContext(UserContext);
-  const [allCreatedGroups, setAllCreatedGroups] = useState([])
-  const [allJoinedGroups, setAllJoinedGroups]=useState([])
-   const history = useHistory();
+  const [allCreatedGroups, setAllCreatedGroups] = useState([]);
+  const [allJoinedGroups, setAllJoinedGroups] = useState([]);
+  const history = useHistory();
   useEffect(async () => {
-
     let user = await getCurrentUser();
-    if (user !== null) {
-      let res=await getJoinedAndCreatedGroups(user.id)
-
     
-    setAllCreatedGroups(res[0]);
-    setAllJoinedGroups(res[1])
-    }
+    let res = await getJoinedAndCreatedGroups(user.id);
+   
+      setAllCreatedGroups(res[0]);
+    setAllJoinedGroups(res[1]);
+    
     
   }, []);
 
-
   function redirect(e, groupId) {
-    e.preventDefault()
-    history.push("/group/"+groupId)
+    e.preventDefault();
+    history.push("/group/" + groupId);
   }
- 
 
   return (
     <div className="wrapper">
@@ -53,7 +44,7 @@ function MyGroups() {
       </div>
 
       <div className="createdGroups" style={styles.createdGroups}>
-        {allCreatedGroups !== undefined &&
+        {allCreatedGroups &&
         allCreatedGroups.length > 0 &&
         currentUser.id ? (
           allCreatedGroups.map((group) => (
@@ -125,7 +116,7 @@ const styles = {
   },
   name: {
     marginTop: "5vh",
-    paddingBottom:"1vh"
+    paddingBottom: "1vh",
   },
   groupItem: {
     display: "flex",
@@ -133,15 +124,13 @@ const styles = {
     justifyContent: "center",
     gap: "10vh",
     alignItems: "center",
-    paddingTop:"1vh"
-    
-   
+    paddingTop: "1vh",
   },
   hide: {
     display: "none",
   },
   nameJoined: {
     marginTop: "8vh",
-    paddingBottom:"3vh"
-  }
+    paddingBottom: "3vh",
+  },
 };
