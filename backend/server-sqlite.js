@@ -29,6 +29,10 @@ module.exports = function (app) {
   app.delete("/rest/users/:id", async (req, res) => {
     try {
       await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
+       await db.all("DELETE FROM rolesXusers WHERE rolesXusers.userId = ?", [
+         req.params.id,
+       ]);
+
       let allGroups = await db.all("SELECT * FROM groups");
       for (let group of allGroups) {
         let joinedMembersArr = group.groupMembers.split(" ");
