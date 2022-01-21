@@ -14,6 +14,7 @@ module.exports = function (req, res, next) {
   roles.push("*");
   // roles.push("member");
 
+
   console.log({
     "req.path": req.path,
     "req.method": req.method,

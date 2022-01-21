@@ -5,9 +5,10 @@ import { useGroupContext } from "../contexts/GroupContext";
 
 function Members(props) {
   const { fetchGroupById } = useGroupContext();
-  const { currentUser } = useContext(UserContext);
   const [isCreator, setIsCreator] = useState(false);
   const groupId = props.groupId
+  const { currentUser, deleteUser, blockUser, unblockUser } =
+    useContext(UserContext);
 
   useEffect(() => {
     checkRole()
@@ -24,6 +25,32 @@ function Members(props) {
     }
   }
 
+  async function deleteGroupMember(e, memberId) {
+    e.stopPropagation()
+    let res = await deleteUser(memberId)
+    if (res.status === 200) {
+      props.func(true)
+    }
+  }
+
+
+   async function blockGroupMember(e, memberId) {
+     e.stopPropagation();
+     let res = await blockUser(memberId);
+     if (res.status === 200) {
+       props.func(true);
+     }
+   }
+
+  
+    async function unblockGroupMember(e, memberId) {
+      e.stopPropagation();
+      let res = await unblockUser(memberId);
+      if (res.status === 200) {
+        props.func(true);
+      }
+    }
+
   return (
     <div>
       <Dropdown>
@@ -38,12 +65,35 @@ function Members(props) {
                 Username:{"  "}{member.username} {"  "}
                 </div>
                 {currentUser && currentUser.role === "admin" ? (
-                  <div>
-                    <Button>
-                      <i className="bi bi-x-octagon-fill" color="white"></i>
-                    </Button>
+                  <div style={styles.buttons}>
+                    {member.blocked ? (
+                      <div>
+                        <Button
+                          onClick={(e) => {
+                            unblockGroupMember(e, member.id);
+                          }}
+                        >
+                          <i class="bi bi-arrow-clockwise" color="white"></i>
+                        </Button>
+                      </div>
+                    ) : (
+                      <div>
+                        <Button
+                          onClick={(e) => {
+                            blockGroupMember(e, member.id);
+                          }}
+                        >
+                          <i className="bi bi-x-octagon-fill" color="white"></i>
+                        </Button>
+                      </div>
+                    )}
+
                     {"  "}
-                    <Button>
+                    <Button
+                      onClick={(e) => {
+                        deleteGroupMember(e, member.id);
+                      }}
+                    >
                       <i className="bi bi-trash-fill" color="white"></i>
                     </Button>
                   </div>
@@ -87,5 +137,10 @@ const styles = {
   removeButton:{
     float: "left",
     marginRight: "5vh"
+  },
+buttons: {
+    display: "flex",
+    flexDirection: "row",
+    gap:"1vh"
   }
-};
+}

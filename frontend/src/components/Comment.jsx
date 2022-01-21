@@ -1,45 +1,51 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import { UserContext } from "../contexts/UserContext";
-import { useContext, useState, useEffect } from "react";
+import { useGroupContext } from "../contexts/GroupContext";
+import { useEffect, useState, useContext } from "react";
+
 
 function Comment(props) {
   const { fetchGroupById, fetchCommentById, removeCommentById } = useGroupContext();
   const { currentUser } = useContext(UserContext);
-  const [group, setGroup] = useState();
-  const [isCreator, setIsCreator] = useState(false);
-  const groupId = props.groupId
-
-  useEffect(() => {
-    checkRole()
-
-  }, []);
-
-  async function checkRole() {
-    const fetchedGroup = await fetchGroupById(groupId);
-    if (currentUser.id == fetchedGroup.creatorUserId) {
-      setIsCreator(true);
+  const { deleteSpecificComment } = useGroupContext();
+  
+    useEffect(() => {
+      checkRole()
+  
+    }, []);
+  
+    async function checkRole() {
+      const fetchedGroup = await fetchGroupById(groupId);
+      if (currentUser.id == fetchedGroup.creatorUserId) {
+        setIsCreator(true);
+      }
+      else {
+        setIsCreator(false);
+      }
     }
-    else {
-      setIsCreator(false);
-    }
-  }
   function formatting() {
     return props.commentObject.date
   }
-  async function removeComment() {
-    //remove comment
-    let id = props.commentObject.id;
 
-    await removeCommentById(id);
-    console.log(id, "commentId in remove comment")
+
+  async function deleteThisComment(commentId) {
+    let res = await deleteSpecificComment(commentId)
+    if (res.status === 200) {
+      props.func(true);
+    }
   }
 
   return (
     <Container style={styles.commentContainer}>
       {(currentUser && currentUser.role) === "admin" ? (
         <div>
-          <p style={styles.delete}>X</p>
+          <p
+            style={styles.delete}
+            onClick={(e) => deleteThisComment(props.commentObject.id)}
+          >
+            X
+          </p>
         </div>
       ) : null}
 

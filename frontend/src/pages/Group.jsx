@@ -11,8 +11,10 @@ import { useHistory } from "react-router-dom";
 function Group() {
   const history = useHistory();
   const { groupid } = useParams();
-  const { fetchGroupById, fetchCommentById } = useGroupContext();
-  const { getUserById, currentUser, getCurrentUser } = useContext(UserContext);
+  const { fetchGroupById, fetchCommentById, deleteSpecificGroup } =
+    useGroupContext();
+  const { getUserById, currentUser, getCurrentUser} =
+    useContext(UserContext);
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -37,6 +39,12 @@ function Group() {
     }
   }
 
+  async function deleteThisGroup() {
+    let res = await deleteSpecificGroup(groupid);
+    if (res.status === 200) {
+      history.push("/")
+    }
+  }
 
   async function getAndSetComments(group) {
     const commentIdArray = group.commentIds.split(" ");
@@ -72,6 +80,12 @@ function Group() {
     history.push("/create-comment/" + groupid);
   }
 
+  const pull_data = async (bool) => {
+    if (bool) {
+     await getAndSetGroup()
+   }
+  };
+
   return (
     <div>
       {group && comments && (
@@ -81,7 +95,13 @@ function Group() {
               <div style={styles.delete}>
                 <Row>
                   <Col>
-                    <Button>Delete group</Button>
+                    <Button
+                      onClick={(e) => {
+                        deleteThisGroup();
+                      }}
+                    >
+                      Delete group
+                    </Button>
                   </Col>
                 </Row>
               </div>
@@ -100,7 +120,10 @@ function Group() {
                 </Col>
               }
               <Col>
-                <Members groupMembers={groupMembers} groupId={groupid} />
+                <Button onClick={toggleInviteModal}>Invite</Button>
+              </Col>
+              <Col>
+                <Members groupMembers={groupMembers} func={pull_data} />
               </Col>
               <Col>
                 <Button onClick={redirectToCommentPage}>Comment</Button>
@@ -109,7 +132,11 @@ function Group() {
           </Container>
           <Container className="mt-2" styles={styles.commentContainer}>
             {comments.map((commentObject) => (
-              <Comment key={commentObject.id} commentObject={commentObject} groupId={groupid} />
+              <Comment
+                key={commentObject.id}
+                commentObject={commentObject}
+                func={pull_data}
+              />
             ))}
           </Container>
         </div>
