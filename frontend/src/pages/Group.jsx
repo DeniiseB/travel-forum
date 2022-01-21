@@ -102,7 +102,7 @@ function Group() {
                 </Col>
               }
               <Col>
-                <Members groupMembers={groupMembers} />
+                <Members groupMembers={groupMembers} groupId={groupid} />
               </Col>
               <Col>
                 <Button onClick={redirectToCommentPage}>Comment</Button>
