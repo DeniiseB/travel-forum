@@ -1,15 +1,16 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import { UserContext } from "../contexts/UserContext";
-import { useGroupContext } from "../contexts/GroupContext";
 import { useEffect, useState, useContext } from "react";
 
 
 function Comment(props) {
-  const { fetchGroupById, fetchCommentById, removeCommentById } = useGroupContext();
+  const { fetchGroupById, deleteSpecificComment } = useGroupContext();
   const { currentUser } = useContext(UserContext);
-  const { deleteSpecificComment } = useGroupContext();
-  
+  const [isCreator, setIsCreator] = useState();
+
+  const groupId = props.groupId;
+
     useEffect(() => {
       checkRole()
   
@@ -38,7 +39,7 @@ function Comment(props) {
 
   return (
     <Container style={styles.commentContainer}>
-      {(currentUser && currentUser.role) === "admin" ? (
+      {(currentUser && currentUser.role ) === "admin" || isCreator ? (
         <div>
           <p
             style={styles.delete}
@@ -60,13 +61,6 @@ function Comment(props) {
           </p>
         </Col>
       </Row>
-      {isCreator &&
-        <Row>
-          <Col>
-            <Button onClick={removeComment}><i className="bi bi-x-octagon-fill" color="white"></i></Button>
-          </Col>
-        </Row>
-      }
     </Container>
   );
 }

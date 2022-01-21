@@ -120,10 +120,7 @@ function Group() {
                 </Col>
               }
               <Col>
-                <Button onClick={toggleInviteModal}>Invite</Button>
-              </Col>
-              <Col>
-                <Members groupMembers={groupMembers} func={pull_data} />
+                <Members groupMembers={groupMembers} func={pull_data} groupId={groupid} />
               </Col>
               <Col>
                 <Button onClick={redirectToCommentPage}>Comment</Button>
@@ -136,6 +133,7 @@ function Group() {
                 key={commentObject.id}
                 commentObject={commentObject}
                 func={pull_data}
+                groupId={groupid}
               />
             ))}
           </Container>
