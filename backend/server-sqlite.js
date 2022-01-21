@@ -138,6 +138,34 @@ module.exports = function (app) {
     }
   });
 
+
+  //Deleting comment from a group
+  app.delete("/rest/comments/:id", async (req, res) => {
+    try {
+     await db.all("DELETE FROM comments WHERE comments.id = ?", [req.params.id]);
+
+      let allGroups = await db.all("SELECT * FROM groups");
+      for (let group of allGroups) {
+        let commentsArr = group.commentIds.split(" ")
+
+        if (commentsArr.includes(req.params.id)) {
+          commentsArr.splice(commentsArr.indexOf(req.params.id), 1)
+           await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?",[commentsArr.join(" ").toString(), group.id]);
+        }
+      }
+      res.json({
+        deleted: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+
+
   // Registrering
   app.post("/rest/users", async (request, response) => {
     let user = request.body;

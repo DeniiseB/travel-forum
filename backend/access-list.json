@@ -33,5 +33,14 @@
       { "role": "groupModerator", "methods": ["POST", "PATCH"] },
       { "role": "admin", "methods": ["GET", "DELETE", "PATCH"] }
     ]
-  }
+  },
+   {
+     "path": "/rest/comments*",
+     "roles": [
+       { "role": "*", "methods": ["GET", "POST"] },
+      { "role": "admin", "methods": ["GET", "DELETE", "POST"] }
+
+       
+     ]
+   }
 ]
