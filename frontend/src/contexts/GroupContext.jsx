@@ -111,7 +111,7 @@ const GroupProvider = (props) => {
 
       arr.push(joinedRes);
     }
-    console.log(arr);
+    
     return arr;
   };
 

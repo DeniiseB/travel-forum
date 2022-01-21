@@ -80,11 +80,17 @@ module.exports = function (app) {
     user = user[0];
 
     if (user && user.username) {
+       roleName = await db.all(
+         "SELECT roleName FROM rolesXusers WHERE userId= ?",
+         [user.id]
+       );
+       roleName = roleName[0].roleName;
       request.session.user = user;
       console.log(request.session.user)
       request.session.passwordAttempts = 0;
       user.loggedIn = true;
-      user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
+       user.role = roleName;
+      //user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
       response.json({ loggedIn: true });
     } else {
       request.session.passwordAttempts++;

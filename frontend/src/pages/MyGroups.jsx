@@ -10,13 +10,15 @@ function MyGroups() {
   const [allCreatedGroups, setAllCreatedGroups] = useState([]);
   const [allJoinedGroups, setAllJoinedGroups] = useState([]);
   const history = useHistory();
-  useEffect(() => {
-    let user = getCurrentUser();
-    if (user !== null) {
-      let res = getJoinedAndCreatedGroups(user.id);
+  useEffect(async () => {
+    let user = await getCurrentUser();
+    
+    let res = await getJoinedAndCreatedGroups(user.id);
+   
       setAllCreatedGroups(res[0]);
-      setAllJoinedGroups(res[1]);
-    }
+    setAllJoinedGroups(res[1]);
+    
+    
   }, []);
 
   function redirect(e, groupId) {
@@ -42,7 +44,7 @@ function MyGroups() {
       </div>
 
       <div className="createdGroups" style={styles.createdGroups}>
-        {allCreatedGroups !== undefined &&
+        {allCreatedGroups &&
         allCreatedGroups.length > 0 &&
         currentUser.id ? (
           allCreatedGroups.map((group) => (
