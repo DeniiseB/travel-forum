@@ -16,8 +16,8 @@ function Home() {
         {currentUser === null ? (
           <div>
             <div style={styles.titlesContainer}>
-              <h2>Categories</h2>
-              <h5>Groups</h5>
+              <p>Categories</p>
+              <p>Groups</p>
             </div>
             {!categoriesWithGroups ? (
               <div></div>
@@ -37,12 +37,14 @@ function Home() {
               <MyGroups />
             </div>
             <div>
-              <h2 style={styles.catergoryTitle}>Categories</h2>
-              <h5 style={styles.groupAmountTitle}>Groups</h5>
+                <div style={styles.titlesContainer}>
+              <div>Categories</div>
+              <div>Groups</div>                 
+              </div>
               {!categoriesWithGroups ? (
                 <div></div>
               ) : (
-                <div style={styles.list}>
+                <div>
                   {categoriesWithGroups.map((item, index) => (
                     <CategoryCard props={item} key={index} />
                   ))}
@@ -59,14 +61,17 @@ function Home() {
 export default Home;
 
 const styles = {
-  list: {
-    marginTop: "2vh",
-  },
   titlesContainer: {
-    margin: "1rem",
+    margin: "1.5rem 1rem 0 1rem",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+    fontWeight: "700",
+    fontSize: "1.2em",
+    textDecoration: "underline",
+    color: "#424242",
   },
   homeContainer: {
     marginTop: "2rem",

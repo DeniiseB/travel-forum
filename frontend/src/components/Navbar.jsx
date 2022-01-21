@@ -51,12 +51,12 @@ export default Navbar;
 
 const styles = {
   navbar: {
-    backgroundColor: "#C4C4C4",
+    backgroundColor: "#424242",
     padding: "5vw 2vw 5vw 3vw",
     position: "fixed",
     width: "100%",
     height: "5rem",
-    top: "0"
+    top: "0",
   },
   loginButtons: {
     fontFamily: "Montserrat, sans-serif",
@@ -77,8 +77,11 @@ const styles = {
   },
   mainName: {
     fontFamily: "Montserrat, sans-serif",
-    fontSize: "1.0em",
-    color: "black",
+    fontStyle: "italic",
+    fontWeight: "700",
+    fontSize: "1.3em",
+    color: "white",
+    textDecoration: "none",
   },
 
   hide: {
