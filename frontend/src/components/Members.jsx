@@ -22,8 +22,6 @@ function Members(props) {
     else {
       setIsCreator(false);
     }
-    console.log(groupId, "This is inside comment and groupid")
-    console.log(fetchedGroup, "This is inside comment")
   }
 
   return (

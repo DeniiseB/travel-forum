@@ -22,8 +22,6 @@ function Comment(props) {
     else {
       setIsCreator(false);
     }
-    console.log(groupId, "This is inside comment and groupid")
-    console.log(fetchedGroup, "This is inside comment")
   }
   function formatting() {
     return props.commentObject.date
@@ -58,7 +56,7 @@ function Comment(props) {
       {isCreator &&
         <Row>
           <Col>
-            <Button onClick={removeComment}>X</Button>
+            <Button onClick={removeComment}><i className="bi bi-x-octagon-fill" color="white"></i></Button>
           </Col>
         </Row>
       }
