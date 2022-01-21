@@ -12,7 +12,7 @@ function Home() {
 
   return (
     <div className="Home">
-      <div>
+      <div style={styles.homeContainer}>
         {currentUser === null ? (
           <div>
             <div style={styles.titlesContainer}>
@@ -63,9 +63,14 @@ const styles = {
     marginTop: "2vh",
   },
   titlesContainer: {
+    margin: "1rem",
     display: "flex",
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "space-between",
   },
-  homeContainer: {}
+  homeContainer: {
+    marginTop: "2rem",
+    display: "flex",
+    justifyContent: "center",
+  },
 };
