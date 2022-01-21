@@ -96,7 +96,7 @@ function Group() {
             </Row>
 
             <Row>
-              {isCreator &&
+              {(isCreator && group.groupAccess == "Private") &&
                 <Col>
                   <Button onClick={toggleInviteModal}>Invite</Button>
                 </Col>
@@ -124,13 +124,14 @@ function Group() {
         </div>
       )}
 
-      <Invite
-        showModal={toggleInviteModal}
-        show={showInviteModal}
-        group={group}
-        updateGroup={updateGroup}
-      />
-
+      
+        <Invite
+          showModal={toggleInviteModal}
+          show={showInviteModal}
+          group={group}
+          updateGroup={updateGroup}
+        />
+      
     </div>
   );
 }
