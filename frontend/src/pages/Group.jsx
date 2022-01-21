@@ -12,7 +12,7 @@ function Group() {
   const history = useHistory();
   const { groupid } = useParams();
   const { fetchGroupById, fetchCommentById } = useGroupContext();
-  const { getUserById, currentUser } = useContext(UserContext);
+  const { getUserById, currentUser, getCurrentUser } = useContext(UserContext);
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);

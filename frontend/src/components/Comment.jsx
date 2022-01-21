@@ -1,7 +1,7 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import { UserContext } from "../contexts/UserContext";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 
 function Comment(props) {
   const { fetchGroupById, fetchCommentById, removeCommentById } = useGroupContext();
@@ -9,6 +9,7 @@ function Comment(props) {
   const [group, setGroup] = useState();
   const [isCreator, setIsCreator] = useState(false);
   const groupId = props.groupId
+
   useEffect(() => {
     checkRole()
 
