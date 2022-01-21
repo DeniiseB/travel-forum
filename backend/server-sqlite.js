@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const { join } = require("path");
 const salt = "öoaheriaheithfd".toString("hex");
 function getHash(password) {
   // utility att skapa kryperade lösenord
@@ -29,9 +30,9 @@ module.exports = function (app) {
   app.delete("/rest/users/:id", async (req, res) => {
     try {
       await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
-       await db.all("DELETE FROM rolesXusers WHERE rolesXusers.userId = ?", [
-         req.params.id,
-       ]);
+      await db.all("DELETE FROM rolesXusers WHERE rolesXusers.userId = ?", [
+        req.params.id,
+      ]);
 
       let allGroups = await db.all("SELECT * FROM groups");
       for (let group of allGroups) {
@@ -64,42 +65,78 @@ module.exports = function (app) {
   });
 
   //Blocking user
-   app.patch("/rest/users/block/:id", async (req, res) => {
-     try {
-       await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
-         true,
-         req.params.id,
-       ]);
-       res.json({
-         blocked: "true",
-       });
-     } catch (e) {
-       console.log(e);
-       res.json({
-         error: "Something went wrong",
-       });
-     }
-   });
-  
-  
+  app.patch("/rest/users/block/:id", async (req, res) => {
+    try {
+      await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
+        true,
+        req.params.id,
+      ]);
+      res.json({
+        blocked: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
   //Unblock user
-   app.patch("/rest/users/unblock/:id/", async (req, res) => {
-     try {
-       await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
-         false,
-         req.params.id,
-       ]);
-       res.json({
-         unblocked: "true",
-       });
-     } catch (e) {
-       console.log(e);
+  app.patch("/rest/users/unblock/:id/", async (req, res) => {
+    try {
+      await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
+        false,
+        req.params.id,
+      ]);
+      res.json({
+        unblocked: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+  //Deleting group 
+  app.delete("/rest/groups/:id", async (req, res) => {
+    try {
+      
+     await db.all("DELETE FROM groups WHERE groups.id = ?", [req.params.id]);
+     await db.all("DELETE FROM groupsXcategories WHERE groupsXcategories.groupId = ?", [req.params.id]);
+      
+      let allUsers = await db.all("SELECT * FROM users");
+      
+      for (let user of allUsers) {
+        let createdGroupsArr = user.createdGroups.split(" ")
+        let joinedGroupsArr = user.joinedGroups.split(" ")
+        if (createdGroupsArr.includes(req.params.id)) {
+         
+          createdGroupsArr.splice(createdGroupsArr.indexOf(req.params.id), 1)
+          
+           await db.all("UPDATE users SET createdGroups = ? WHERE users.id = ?", [createdGroupsArr.join(" ").toString(), user.id,]);
+          console.log("includes created!")
+        }
+        if (joinedGroupsArr.includes(req.params.id)) {
+         
+         joinedGroupsArr.splice(joinedGroupsArr.indexOf(req.params.id), 1)
+         await db.all("UPDATE users SET joinedGroups = ? WHERE users.id = ?", [joinedGroupsArr.join(" ").toString(), user.id,]);
+          
+        }
+      }
+      res.json({
+        deleted: "true"
+      })
+    }
+    catch (e) {
+      console.log(e)
        res.json({
          error: "Something went wrong",
        });
-     }
-   });
-  
+    }
+  });
 
   // Registrering
   app.post("/rest/users", async (request, response) => {
@@ -159,25 +196,23 @@ module.exports = function (app) {
     if (user && user.username) {
       if (user.blocked) {
         response.status(403);
-        response.json({blocked: true})
-      }
-      else {
-          roleName = await db.all(
-        "SELECT roleName FROM rolesXusers WHERE userId= ?",
-        [user.id]
-      );
-      roleName = roleName[0].roleName;
+        response.json({ blocked: true });
+      } else {
+        roleName = await db.all(
+          "SELECT roleName FROM rolesXusers WHERE userId= ?",
+          [user.id]
+        );
+        roleName = roleName[0].roleName;
 
-      request.session.user = user;
+        request.session.user = user;
 
-      console.log(request.session.user);
-      request.session.passwordAttempts = 0;
-      user.loggedIn = true;
-      user.role = roleName;
-      // user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
-      response.json({ loggedIn: true });
+        console.log(request.session.user);
+        request.session.passwordAttempts = 0;
+        user.loggedIn = true;
+        user.role = roleName;
+        // user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
+        response.json({ loggedIn: true });
       }
-    
     } else {
       request.session.passwordAttempts++;
       response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes

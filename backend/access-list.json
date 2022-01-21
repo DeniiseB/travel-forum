@@ -30,7 +30,8 @@
       { "role": "*", "methods": ["GET"] },
       { "role": "member", "methods": ["POST", "PATCH"] },
       { "role": "groupAdmin", "methods": ["DELETE", "PATCH"] },
-      { "role": "groupModerator", "methods": ["POST", "PATCH"] }
+      { "role": "groupModerator", "methods": ["POST", "PATCH"] },
+      { "role": "admin", "methods": ["GET", "DELETE", "PATCH"] }
     ]
   }
 ]
