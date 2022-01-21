@@ -14,16 +14,16 @@ function Navbar() {
       </a>
       {currentUser === null ? (
         <div style={styles.loginButtons}>
-          <div style={styles.loginButton}>
-            <Button color="dark" size="sm">
-              <a href="/login" style={styles.href}>
+          <div>
+            <Button style={styles.loginButton}>
+              <a href="/login" style={{ color: "white" }}>
                 Login
               </a>
             </Button>
           </div>
-          <div style={styles.registerButton}>
-            <Button color="dark" size="sm">
-              <a href="/register" style={styles.href}>
+          <div>
+            <Button style={styles.registerButton}>
+              <a href="/register" style={{ color: "white" }}>
                 Register
               </a>
             </Button>
@@ -31,15 +31,17 @@ function Navbar() {
         </div>
       ) : (
         <div>
-          <div style={styles.logoutButton}>
-            <Button color="dark" size="sm" onClick={logout}>
-              <a href="/" style={styles.href}>
-                Logout
-              </a>
-            </Button>
-          </div>
-          <div>
-            <h3>{currentUser.username}</h3>
+          <div style={styles.loggedIn}>
+            <div>
+              <p>{currentUser.username}</p>
+            </div>
+            <div>
+              <Button onClick={logout} style={styles.logoutButton}>
+                <a href="/" style={{ color: "white" }}>
+                  Logout
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -59,18 +61,42 @@ const styles = {
     top: "0",
   },
   loginButtons: {
-    fontFamily: "Montserrat, sans-serif",
     display: "flex",
     flexDirection: "row",
     position: "absolute",
     right: "0",
   },
+  loginButton: {
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+    fontWeight: "600",
+    fontSize: "1em",
+  },
   registerButton: {
     marginLeft: "10px",
     marginRight: "5vw",
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+    fontWeight: "600",
+    fontSize: "1em",
   },
-  loginButton: {},
-
+  logoutButton: {
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+    fontWeight: "600",
+    fontSize: "1em",
+    marginLeft: "0.2rem"
+  },
+  loggedIn: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "baseline",
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+    fontWeight: "600",
+    fontSize: "1em",
+    color: "white",
+  },
   ul: {
     fontSize: "1.2em",
     paddingLeft: "5vw",
@@ -86,9 +112,5 @@ const styles = {
 
   hide: {
     display: "none",
-  },
-  href: {
-    color: "white",
-    textDecoration: "none",
   },
 };

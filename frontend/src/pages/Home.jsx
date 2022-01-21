@@ -37,9 +37,9 @@ function Home() {
               <MyGroups />
             </div>
             <div>
-                <div style={styles.titlesContainer}>
-              <div>Categories</div>
-              <div>Groups</div>                 
+              <div style={styles.titlesContainer}>
+                <div>Categories</div>
+                <div>Groups</div>
               </div>
               {!categoriesWithGroups ? (
                 <div></div>
