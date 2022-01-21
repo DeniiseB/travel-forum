@@ -141,6 +141,19 @@ const GroupProvider = (props) => {
       console.log("Deleting group failed");
     }
   };
+
+     const deleteSpecificComment = async (commentId) => {
+       try {
+         let res = await fetch("/rest/comments/" + commentId, {
+           method: "DELETE",
+           headers: { "content-type": "application/json" },
+         });
+         console.log(await res.json());
+         return res;
+       } catch {
+         console.log("Deleting group failed");
+       }
+     };
   
   const values = {
     groups,
@@ -152,6 +165,7 @@ const GroupProvider = (props) => {
     putCommentInGroup,
     getJoinedAndCreatedGroups,
     deleteSpecificGroup,
+    deleteSpecificComment,
   };
 
   return (

@@ -1,19 +1,35 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
+import { useGroupContext } from "../contexts/GroupContext";
 import { useEffect, useState, useContext } from "react";
 
 function Comment(props) {
 
-    const { currentUser } = useContext(UserContext);
+  const { currentUser } = useContext(UserContext);
+   const { deleteSpecificComment } = useGroupContext();
 
   function formatting() {
     return props.commentObject.date
   }
+
+
+  async function deleteThisComment(commentId) {
+    let res = await deleteSpecificComment(commentId)
+    if (res.status === 200) {
+      props.func(true);
+    }
+  }
+
   return (
     <Container style={styles.commentContainer}>
       {(currentUser && currentUser.role) === "admin" ? (
         <div>
-          <p style={styles.delete}>X</p>
+          <p
+            style={styles.delete}
+            onClick={(e) => deleteThisComment(props.commentObject.id)}
+          >
+            X
+          </p>
         </div>
       ) : null}
 

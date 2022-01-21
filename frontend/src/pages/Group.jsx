@@ -89,7 +89,13 @@ function Group() {
               <div style={styles.delete}>
                 <Row>
                   <Col>
-                    <Button onClick={(e) => {deleteThisGroup()}}>Delete group</Button>
+                    <Button
+                      onClick={(e) => {
+                        deleteThisGroup();
+                      }}
+                    >
+                      Delete group
+                    </Button>
                   </Col>
                 </Row>
               </div>
@@ -115,7 +121,11 @@ function Group() {
           </Container>
           <Container className="mt-2">
             {comments.map((commentObject) => (
-              <Comment key={commentObject.id} commentObject={commentObject} />
+              <Comment
+                key={commentObject.id}
+                commentObject={commentObject}
+                func={pull_data}
+              />
             ))}
           </Container>
         </div>
