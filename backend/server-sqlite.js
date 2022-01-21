@@ -117,7 +117,7 @@ module.exports = function (app) {
           createdGroupsArr.splice(createdGroupsArr.indexOf(req.params.id), 1)
           
            await db.all("UPDATE users SET createdGroups = ? WHERE users.id = ?", [createdGroupsArr.join(" ").toString(), user.id,]);
-          console.log("includes created!")
+          
         }
         if (joinedGroupsArr.includes(req.params.id)) {
          

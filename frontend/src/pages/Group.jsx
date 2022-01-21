@@ -11,8 +11,10 @@ import { useHistory } from "react-router-dom";
 function Group() {
   const history = useHistory();
   const { groupid } = useParams();
-  const { fetchGroupById, fetchCommentById } = useGroupContext();
-  const { getUserById, currentUser, getCurrentUser } = useContext(UserContext);
+  const { fetchGroupById, fetchCommentById, deleteSpecificGroup } =
+    useGroupContext();
+  const { getUserById, currentUser, getCurrentUser} =
+    useContext(UserContext);
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -29,6 +31,13 @@ function Group() {
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
+  }
+
+  async function deleteThisGroup() {
+    let res = await deleteSpecificGroup(groupid);
+    if (res.status === 200) {
+      history.push("/")
+    }
   }
 
   async function getAndSetComments(group) {
@@ -80,7 +89,7 @@ function Group() {
               <div style={styles.delete}>
                 <Row>
                   <Col>
-                    <Button>Delete group</Button>
+                    <Button onClick={(e) => {deleteThisGroup()}}>Delete group</Button>
                   </Col>
                 </Row>
               </div>

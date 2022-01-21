@@ -128,6 +128,20 @@ const GroupProvider = (props) => {
     return arr;
   };
 
+
+   const deleteSpecificGroup = async (groupId) => {
+    try {
+      let res = await fetch("/rest/groups/" + groupId, {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+      });
+      console.log(await res.json())
+      return  res;
+    } catch {
+      console.log("Deleting group failed");
+    }
+  };
+  
   const values = {
     groups,
     fetchGroupById,
@@ -137,6 +151,7 @@ const GroupProvider = (props) => {
     addUserIdToGroupMembers,
     putCommentInGroup,
     getJoinedAndCreatedGroups,
+    deleteSpecificGroup,
   };
 
   return (
