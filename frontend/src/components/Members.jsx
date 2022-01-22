@@ -1,27 +1,10 @@
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Dropdown, Button } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
-import { useGroupContext } from "../contexts/GroupContext";
 
 function Members(props) {
-  const { fetchGroupById } = useGroupContext();
-  const [isCreator, setIsCreator] = useState(false);
-  const groupId = props.groupId;
   const { currentUser, deleteUser, blockUser, unblockUser } =
     useContext(UserContext);
-
-  useEffect(() => {
-    checkRole();
-  }, []);
-
-  async function checkRole() {
-    const fetchedGroup = await fetchGroupById(groupId);
-    if (currentUser.id == fetchedGroup.creatorUserId) {
-      setIsCreator(true);
-    } else {
-      setIsCreator(false);
-    }
-  }
 
   async function deleteGroupMember(e, memberId) {
     e.stopPropagation();
@@ -48,69 +31,73 @@ function Members(props) {
   }
 
   return (
-    <div>
+    <div style={styles.membersContainer}>
       <Dropdown>
         <Dropdown.Toggle variant="primary" id="dropdown-basic">
           Members
         </Dropdown.Toggle>
-        <Dropdown.Menu style={styles.dropDown}>
+        <Dropdown.Menu>
           {props.groupMembers.map((member) => (
             <Dropdown.Item key={member.id}>
-              <p>
+              <div style={styles.memberContainer}>
                 <div style={styles.userName}>{member.username}</div>
                 {currentUser && currentUser.role === "admin" ? (
                   <div style={styles.buttons}>
                     {member.blocked ? (
                       <div>
                         <Button
+                          className="m-1"
+                          size="sm"
                           onClick={(e) => {
                             unblockGroupMember(e, member.id);
                           }}
                         >
-                          <i class="bi bi-arrow-clockwise" color="white"></i>
+                          Unblock
                         </Button>
                       </div>
                     ) : (
                       <div>
                         <Button
+                          className="m-1"
+                          size="sm"
+                          variant="warning"
                           onClick={(e) => {
                             blockGroupMember(e, member.id);
                           }}
                         >
-                          <i className="bi bi-x-octagon-fill" color="white"></i>
+                          Block
                         </Button>
                       </div>
                     )}
 
                     {"  "}
                     <Button
+                      size="sm"
+                      variant="danger"
                       onClick={(e) => {
                         deleteGroupMember(e, member.id);
                       }}
                     >
-                      <i className="bi bi-trash-fill" color="white"></i>
+                      Delete
                     </Button>
                   </div>
                 ) : null}
-                {isCreator ? (
+                {props.isCreator ? (
                   <div>
-                    <div style={styles.removeButton}>
-                      <Button>
-                        <i className="bi bi-x-octagon-fill" color="white"></i>
+                    <div>
+                      <Button className="m-1" size="sm" variant="danger">
+                        Remove
                       </Button>
-                      <p>Remove</p>
                     </div>
                     {"  "}
                     <div>
-                      <Button>
-                        <i className="bi bi-plus-circle" color="white"></i>
+                      <Button className="m-1" size="sm">
+                        Make Moderator
                       </Button>
-                      <p>Make Moderator</p>
                     </div>
-                    <div>-------------------------------</div>
                   </div>
                 ) : null}
-              </p>
+              </div>
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>
@@ -123,18 +110,19 @@ export default Members;
 
 const styles = {
   dropDown: {
-    width: "50vh",
+    width: "20rem",
+  },
+  memberContainer: {
+    display: "flex",
+    alignItems: "center",
+    border: "solid 1px lightgrey",
+    borderRadius: "4px",
+    padding: "0.2rem",
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
   },
   userName: {
-    fontWeight: "bold",
-  },
-  removeButton: {
-    float: "left",
-    marginRight: "5vh",
-  },
-  buttons: {
-    display: "flex",
-    flexDirection: "row",
-    gap: "1vh",
+    fontWeight: "500",
+    margin: "0.2rem",
   },
 };

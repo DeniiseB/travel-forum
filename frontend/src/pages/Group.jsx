@@ -13,24 +13,34 @@ function Group() {
   const { groupid } = useParams();
   const { fetchGroupById, fetchCommentById, deleteSpecificGroup } =
     useGroupContext();
-  const { getUserById, currentUser, getCurrentUser } = useContext(UserContext);
+  const { getUserById, currentUser } = useContext(UserContext);
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [groupMembers, setGroupMembers] = useState([]);
   const [isCreator, setIsCreator] = useState(false);
+
   useEffect(() => {
     getAndSetGroup();
   }, [groupid]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+    checkGroupCreator();
+  }, [currentUser]);
 
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
+    checkGroupCreator();
+  }
 
-    await console.log(getCurrentUser());
-    if (currentUser.id == fetchedGroup.creatorUserId) {
+  async function checkGroupCreator() {
+    if (currentUser.id == group.creatorUserId) {
       setIsCreator(true);
     } else {
       setIsCreator(false);
@@ -125,6 +135,7 @@ function Group() {
                     groupMembers={groupMembers}
                     func={pull_data}
                     groupId={groupid}
+                    isCreator={isCreator}
                   />
                 </Col>
                 <Col>

@@ -22,6 +22,10 @@ function CreateGroup() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    if (!currentUser) { 
+      history.push("/")
+    }
+
     let commentObject = await postComment();
 
     if (commentObject.error) {
