@@ -31,19 +31,9 @@ function MyGroups() {
       <h5 className="name" style={styles.name}>
         Created groups
       </h5>
-      <div
-        className="header"
-        style={
-          allCreatedGroups && allCreatedGroups.length > 0
-            ? styles.header
-            : styles.hide
-        }
-      >
-        <p>Topics</p>
-        <p>Group name</p>
-      </div>
 
-      <div className="createdGroups" style={styles.createdGroups}>
+
+      <div className="createdGroups" style={styles.groups}>
         {allCreatedGroups &&
         allCreatedGroups.length > 0 &&
         currentUser.id ? (
@@ -54,8 +44,8 @@ function MyGroups() {
               key={group.id}
               onClick={(e) => redirect(e, group.id)}
             >
-              <p>{group.category}</p>
-              <p>{group.groupName}</p>
+              <div>{group.category}</div>
+              <div>{group.groupName}</div>
             </div>
           ))
         ) : (
@@ -64,7 +54,7 @@ function MyGroups() {
       </div>
 
       <h5 style={styles.nameJoined}>Joined groups</h5>
-      <div className="joinedGroups" style={styles.joinedGroups}>
+      <div className="joinedGroups" style={styles.groups}>
         {allJoinedGroups !== undefined &&
         allJoinedGroups.length > 0 &&
         currentUser.id ? (
@@ -75,8 +65,8 @@ function MyGroups() {
               key={group.id}
               onClick={(e) => redirect(e, group.id)}
             >
-              <p>{group.category}</p>
-              <p>{group.groupName}</p>
+              <div>{group.category}</div>
+              <div>{group.groupName}</div>
             </div>
           ))
         ) : (
@@ -94,29 +84,18 @@ const styles = {
     fontFamily: "Montserrat, sans-serif",
     fontStyle: "italic",
   },
-  createdGroups: {
+  groups: {
     display: "flex",
     flexDirection: "column",
     paddingTop: "2vh",
     paddingRight: "2vh",
     paddingLeft: "2vh",
     overflowY: "scroll",
-    height: "25vh",
-  },
-  joinedGroups: {
-    display: "flex",
-    flexDirection: "column",
-    paddingTop: "2vh",
-    paddingRight: "2vh",
-    paddingLeft: "2vh",
-    overflowY: "scroll",
-    height: "25vh",
+    height: "18vh",
   },
   header: {
     display: "flex",
-    justifyContent: "center",
-    gap: "20vw",
-    paddingTop: "3vh",
+    justifyContent: "space-around",
   },
   name: {
     paddingTop: "5vh",
@@ -125,16 +104,14 @@ const styles = {
   groupItem: {
     display: "flex",
     border: "1px solid black",
-    justifyContent: "center",
-    gap: "10vh",
-    alignItems: "center",
-    paddingTop: "1vh",
+    borderRadius: "4px",
+    justifyContent: "space-around",
+    padding: "0.2rem",
   },
   hide: {
     display: "none",
   },
   nameJoined: {
-    marginTop: "8vh",
-    paddingBottom: "3vh",
+    marginTop: "3vh",
   },
 };

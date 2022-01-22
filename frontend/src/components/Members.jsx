@@ -6,50 +6,46 @@ import { useGroupContext } from "../contexts/GroupContext";
 function Members(props) {
   const { fetchGroupById } = useGroupContext();
   const [isCreator, setIsCreator] = useState(false);
-  const groupId = props.groupId
+  const groupId = props.groupId;
   const { currentUser, deleteUser, blockUser, unblockUser } =
     useContext(UserContext);
 
   useEffect(() => {
-    checkRole()
-
+    checkRole();
   }, []);
 
   async function checkRole() {
     const fetchedGroup = await fetchGroupById(groupId);
     if (currentUser.id == fetchedGroup.creatorUserId) {
       setIsCreator(true);
-    }
-    else {
+    } else {
       setIsCreator(false);
     }
   }
 
   async function deleteGroupMember(e, memberId) {
-    e.stopPropagation()
-    let res = await deleteUser(memberId)
+    e.stopPropagation();
+    let res = await deleteUser(memberId);
     if (res.status === 200) {
-      props.func(true)
+      props.func(true);
     }
   }
 
-
-   async function blockGroupMember(e, memberId) {
-     e.stopPropagation();
-     let res = await blockUser(memberId);
-     if (res.status === 200) {
-       props.func(true);
-     }
-   }
-
-  
-    async function unblockGroupMember(e, memberId) {
-      e.stopPropagation();
-      let res = await unblockUser(memberId);
-      if (res.status === 200) {
-        props.func(true);
-      }
+  async function blockGroupMember(e, memberId) {
+    e.stopPropagation();
+    let res = await blockUser(memberId);
+    if (res.status === 200) {
+      props.func(true);
     }
+  }
+
+  async function unblockGroupMember(e, memberId) {
+    e.stopPropagation();
+    let res = await unblockUser(memberId);
+    if (res.status === 200) {
+      props.func(true);
+    }
+  }
 
   return (
     <div>
@@ -61,9 +57,7 @@ function Members(props) {
           {props.groupMembers.map((member) => (
             <Dropdown.Item key={member.id}>
               <p>
-                <div style={styles.userName}>
-                Username:{"  "}{member.username} {"  "}
-                </div>
+                <div style={styles.userName}>{member.username}</div>
                 {currentUser && currentUser.role === "admin" ? (
                   <div style={styles.buttons}>
                     {member.blocked ? (
@@ -98,20 +92,20 @@ function Members(props) {
                     </Button>
                   </div>
                 ) : null}
-                 {isCreator ? (
+                {isCreator ? (
                   <div>
                     <div style={styles.removeButton}>
-                    <Button>
-                      <i className="bi bi-x-octagon-fill" color="white"></i>
-                    </Button>
-                    <p>Remove</p>
+                      <Button>
+                        <i className="bi bi-x-octagon-fill" color="white"></i>
+                      </Button>
+                      <p>Remove</p>
                     </div>
                     {"  "}
                     <div>
-                    <Button>
-                      <i className="bi bi-plus-circle" color="white"></i>
-                    </Button>
-                    <p>Make Moderator</p>
+                      <Button>
+                        <i className="bi bi-plus-circle" color="white"></i>
+                      </Button>
+                      <p>Make Moderator</p>
                     </div>
                     <div>-------------------------------</div>
                   </div>
@@ -131,16 +125,16 @@ const styles = {
   dropDown: {
     width: "50vh",
   },
-  userName:{
+  userName: {
     fontWeight: "bold",
   },
-  removeButton:{
+  removeButton: {
     float: "left",
-    marginRight: "5vh"
+    marginRight: "5vh",
   },
-buttons: {
+  buttons: {
     display: "flex",
     flexDirection: "row",
-    gap:"1vh"
-  }
-}
+    gap: "1vh",
+  },
+};

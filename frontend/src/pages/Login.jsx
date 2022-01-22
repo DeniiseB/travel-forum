@@ -90,12 +90,6 @@ function Login() {
             Your account has been blocked by administrators
           </p>
         </div>
-
-        <div className="register" style={styles.register}>
-          <p>
-            Not a member yet? <Link to="/register">Register</Link>
-          </p>
-        </div>
       </div>
     </div>
   );
