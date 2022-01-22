@@ -1,45 +1,27 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { useGroupContext } from "../contexts/GroupContext";
 import { UserContext } from "../contexts/UserContext";
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 
 function Comment(props) {
-  const { fetchGroupById, deleteSpecificComment } = useGroupContext();
+  const { deleteSpecificComment } = useGroupContext();
   const { currentUser } = useContext(UserContext);
-  const [isCreator, setIsCreator] = useState();
-
-  const groupId = props.groupId;
-
-  useEffect(() => {
-    checkRole();
-  }, []);
-
-  async function checkRole() {
-    const fetchedGroup = await fetchGroupById(groupId);
-    if (currentUser.id == fetchedGroup.creatorUserId) {
-      setIsCreator(true);
-    } else {
-      setIsCreator(false);
-    }
-  }
 
   async function deleteThisComment(commentId) {
     let res = await deleteSpecificComment(commentId);
     if (res.status === 200) {
-      props.func(true);
+      props.func();
     }
   }
 
   return (
     <Container style={styles.commentContainer}>
-      {(currentUser && currentUser.role) === "admin" || isCreator ? (
-        <div>
-          <p
-            style={styles.delete}
-            onClick={(e) => deleteThisComment(props.commentObject.id)}
-          >
-            X
-          </p>
+      {(currentUser && currentUser.role) === "admin" || props.isCreator ? (
+        <div
+          style={styles.delete}
+          onClick={(e) => deleteThisComment(props.commentObject.id)}
+        >
+          <i className="bi bi-trash-fill"></i>
         </div>
       ) : null}
 
@@ -75,6 +57,6 @@ const styles = {
   },
   delete: {
     position: "absolute",
-    right: "8vh",
+    right: "2rem",
   },
 };

@@ -21,26 +21,22 @@ function Group() {
   const [isCreator, setIsCreator] = useState(false);
 
   useEffect(() => {
-    getAndSetGroup();
-  }, [groupid]);
-
-  useEffect(() => {
     if (!currentUser) {
       return;
     }
-    checkGroupCreator();
-  }, [currentUser]);
+    getAndSetGroup();
+  }, [groupid, currentUser]);
 
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
-    checkGroupCreator();
+    checkGroupCreator(fetchedGroup);
   }
 
-  async function checkGroupCreator() {
-    if (currentUser.id == group.creatorUserId) {
+  async function checkGroupCreator(fetchedGroup) {
+    if (currentUser.id == fetchedGroup.creatorUserId) {
       setIsCreator(true);
     } else {
       setIsCreator(false);
@@ -88,12 +84,6 @@ function Group() {
     history.push("/create-comment/" + groupid);
   }
 
-  const pull_data = async (bool) => {
-    if (bool) {
-      await getAndSetGroup();
-    }
-  };
-
   return (
     <div>
       <div style={styles.groupContainer}>
@@ -115,7 +105,6 @@ function Group() {
                   </Row>
                 </div>
               ) : null}
-
               <Row>
                 <Col>
                   <div style={styles.title}>
@@ -123,9 +112,8 @@ function Group() {
                   </div>
                 </Col>
               </Row>
-
               <Row>
-                {isCreator && group.groupAccess == "Private" && (
+                {isCreator && (
                   <Col>
                     <Button onClick={toggleInviteModal}>Invite</Button>
                   </Col>
@@ -133,8 +121,7 @@ function Group() {
                 <Col>
                   <Members
                     groupMembers={groupMembers}
-                    func={pull_data}
-                    groupId={groupid}
+                    func={updateGroup}
                     isCreator={isCreator}
                   />
                 </Col>
@@ -148,8 +135,8 @@ function Group() {
                 <Comment
                   key={commentObject.id}
                   commentObject={commentObject}
-                  func={pull_data}
-                  groupId={groupid}
+                  func={updateGroup}
+                  isCreator={isCreator}
                 />
               ))}
             </Container>

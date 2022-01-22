@@ -10,7 +10,7 @@ function Members(props) {
     e.stopPropagation();
     let res = await deleteUser(memberId);
     if (res.status === 200) {
-      props.func(true);
+      props.func();
     }
   }
 
@@ -18,7 +18,7 @@ function Members(props) {
     e.stopPropagation();
     let res = await blockUser(memberId);
     if (res.status === 200) {
-      props.func(true);
+      props.func();
     }
   }
 
@@ -26,7 +26,7 @@ function Members(props) {
     e.stopPropagation();
     let res = await unblockUser(memberId);
     if (res.status === 200) {
-      props.func(true);
+      props.func();
     }
   }
 
