@@ -6,20 +6,23 @@ import { UserContext } from "../contexts/UserContext";
 
 function MyGroups() {
   const { getJoinedAndCreatedGroups } = useGroupContext();
-  const { currentUser, getCurrentUser } = useContext(UserContext);
+  const { currentUser } = useContext(UserContext);
   const [allCreatedGroups, setAllCreatedGroups] = useState([]);
   const [allJoinedGroups, setAllJoinedGroups] = useState([]);
   const history = useHistory();
-  useEffect(async () => {
-    let user = await getCurrentUser();
-    
-    let res = await getJoinedAndCreatedGroups(user.id);
-   
-      setAllCreatedGroups(res[0]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+    fetchAndSetGroups();
+  }, [currentUser]);
+
+  const fetchAndSetGroups = async () => {
+    let res = await getJoinedAndCreatedGroups(currentUser.id);
+    setAllCreatedGroups(res[0]);
     setAllJoinedGroups(res[1]);
-    
-    
-  }, []);
+  };
 
   function redirect(e, groupId) {
     e.preventDefault();
@@ -28,51 +31,50 @@ function MyGroups() {
 
   return (
     <div className="wrapper" style={styles.wrapper}>
-      <h5 className="name" style={styles.name}>
-        Created groups
-      </h5>
+      {currentUser && allCreatedGroups && (
+        <div>
+          <h5 className="name" style={styles.name}>
+            Created groups
+          </h5>
 
+          <div className="createdGroups" style={styles.groups}>
+            {allCreatedGroups.length > 0 ? (
+              allCreatedGroups.map((group) => (
+                <div
+                  className="groupItem"
+                  style={styles.groupItem}
+                  key={group.id}
+                  onClick={(e) => redirect(e, group.id)}
+                >
+                  <div>{group.category}</div>
+                  <div>{group.groupName}</div>
+                </div>
+              ))
+            ) : (
+              <p>You don't have any created groups yet</p>
+            )}
+          </div>
 
-      <div className="createdGroups" style={styles.groups}>
-        {allCreatedGroups &&
-        allCreatedGroups.length > 0 &&
-        currentUser.id ? (
-          allCreatedGroups.map((group) => (
-            <div
-              className="groupItem"
-              style={styles.groupItem}
-              key={group.id}
-              onClick={(e) => redirect(e, group.id)}
-            >
-              <div>{group.category}</div>
-              <div>{group.groupName}</div>
-            </div>
-          ))
-        ) : (
-          <p>You don't have any created groups yet</p>
-        )}
-      </div>
-
-      <h5 style={styles.nameJoined}>Joined groups</h5>
-      <div className="joinedGroups" style={styles.groups}>
-        {allJoinedGroups !== undefined &&
-        allJoinedGroups.length > 0 &&
-        currentUser.id ? (
-          allJoinedGroups.map((group) => (
-            <div
-              className="groupItem"
-              style={styles.groupItem}
-              key={group.id}
-              onClick={(e) => redirect(e, group.id)}
-            >
-              <div>{group.category}</div>
-              <div>{group.groupName}</div>
-            </div>
-          ))
-        ) : (
-          <p>You don't have any joined groups yet</p>
-        )}
-      </div>
+          <h5 style={styles.nameJoined}>Joined groups</h5>
+          <div className="joinedGroups" style={styles.groups}>
+            {allJoinedGroups.length > 0 ? (
+              allJoinedGroups.map((group) => (
+                <div
+                  className="groupItem"
+                  style={styles.groupItem}
+                  key={group.id}
+                  onClick={(e) => redirect(e, group.id)}
+                >
+                  <div>{group.category}</div>
+                  <div>{group.groupName}</div>
+                </div>
+              ))
+            ) : (
+              <p>You don't have any joined groups yet</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
