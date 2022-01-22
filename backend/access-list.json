@@ -6,7 +6,7 @@
       { "role": "admin", "methods": ["GET", "PUT", "DELETE"] }
     ]
   },
-    {
+  {
     "path": "/api/*",
     "roles": [
       { "role": "*", "methods": ["GET", "PATCH"] },
@@ -17,7 +17,7 @@
     "path": "/rest/users*",
     "roles": [
       { "role": "anonymous", "methods": ["POST"] },
-      { "role": "admin", "methods": ["GET", "DELETE"] }
+      { "role": "admin", "methods": ["GET", "DELETE", "PATCH"] }
     ]
   },
 
@@ -41,13 +41,24 @@
       { "role": "groupModerator", "methods": ["POST", "PATCH"] }
     ]
   },
-    {
+  {
     "path": "/rest/group/*",
     "roles": [
       { "role": "*", "methods": ["GET"] },
       { "role": "member", "methods": ["POST", "PATCH"] },
       { "role": "groupAdmin", "methods": ["DELETE", "PATCH"] },
-      { "role": "groupModerator", "methods": ["POST", "PATCH"] }
+      { "role": "groupModerator", "methods": ["POST", "PATCH"] },
+      { "role": "admin", "methods": ["GET", "DELETE", "PATCH"] }
+    ]
+  },
+  {
+    "path": "/rest/comments/*",
+    "roles": [
+      { "role": "*", "methods": ["GET"] },
+      { "role": "member", "methods": ["POST", "PATCH", "GET"] },
+      { "role": "groupAdmin", "methods": ["DELETE", "PATCH", "POST", "GET"] },
+      { "role": "groupModerator", "methods": ["POST", "PATCH", "DELETE", "GET"] },
+      { "role": "admin", "methods": ["POST", "PATCH", "DELETE", "GET"]}
     ]
   }
 ]

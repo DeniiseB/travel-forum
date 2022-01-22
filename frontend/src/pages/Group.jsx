@@ -11,13 +11,14 @@ import { useHistory } from "react-router-dom";
 function Group() {
   const history = useHistory();
   const { groupid } = useParams();
-  const { fetchGroupById, fetchCommentById } = useGroupContext();
-  const { getUserById, currentUser } = useContext(UserContext);
+  const { fetchGroupById, fetchCommentById, deleteSpecificGroup } =
+    useGroupContext();
+  const { getUserById, currentUser, getCurrentUser } = useContext(UserContext);
   const [group, setGroup] = useState({});
   const [comments, setComments] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [groupMembers, setGroupMembers] = useState([]);
-
+  const [isCreator, setIsCreator] = useState(false);
   useEffect(() => {
     getAndSetGroup();
   }, [groupid]);
@@ -27,6 +28,20 @@ function Group() {
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
+
+    await console.log(getCurrentUser());
+    if (currentUser.id == fetchedGroup.creatorUserId) {
+      setIsCreator(true);
+    } else {
+      setIsCreator(false);
+    }
+  }
+
+  async function deleteThisGroup() {
+    let res = await deleteSpecificGroup(groupid);
+    if (res.status === 200) {
+      history.push("/");
+    }
   }
 
   async function getAndSetComments(group) {
@@ -63,9 +78,15 @@ function Group() {
     history.push("/create-comment/" + groupid);
   }
 
+  const pull_data = async (bool) => {
+    if (bool) {
+      await getAndSetGroup();
+    }
+  };
+
   return (
     <div>
-      <div style={ styles.groupContainer }>
+      <div style={styles.groupContainer}>
         {group && comments && (
           <div className="m-2">
             <Container>
@@ -73,7 +94,13 @@ function Group() {
                 <div style={styles.delete}>
                   <Row>
                     <Col>
-                      <Button>Delete group</Button>
+                      <Button
+                        onClick={(e) => {
+                          deleteThisGroup();
+                        }}
+                      >
+                        Delete group
+                      </Button>
                     </Col>
                   </Row>
                 </div>
@@ -88,11 +115,17 @@ function Group() {
               </Row>
 
               <Row>
+                {isCreator && group.groupAccess == "Private" && (
+                  <Col>
+                    <Button onClick={toggleInviteModal}>Invite</Button>
+                  </Col>
+                )}
                 <Col>
-                  <Button onClick={toggleInviteModal}>Invite</Button>
-                </Col>
-                <Col>
-                  <Members groupMembers={groupMembers} />
+                  <Members
+                    groupMembers={groupMembers}
+                    func={pull_data}
+                    groupId={groupid}
+                  />
                 </Col>
                 <Col>
                   <Button onClick={redirectToCommentPage}>Comment</Button>
@@ -101,7 +134,12 @@ function Group() {
             </Container>
             <Container className="mt-2">
               {comments.map((commentObject) => (
-                <Comment key={commentObject.id} commentObject={commentObject} />
+                <Comment
+                  key={commentObject.id}
+                  commentObject={commentObject}
+                  func={pull_data}
+                  groupId={groupid}
+                />
               ))}
             </Container>
           </div>
@@ -145,5 +183,8 @@ const styles = {
   delete: {
     marginTop: "5vh",
     paddingBottom: "4vh",
+  },
+  commentContainer: {
+    float: "left",
   },
 };

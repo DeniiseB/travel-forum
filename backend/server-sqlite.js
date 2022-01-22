@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const { join } = require("path");
 const salt = "öoaheriaheithfd".toString("hex");
 function getHash(password) {
   // utility att skapa kryperade lösenord
@@ -25,6 +26,146 @@ module.exports = function (app) {
     res.json(result);
   });
 
+  //Deleting user from db
+  app.delete("/rest/users/:id", async (req, res) => {
+    try {
+      await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
+      await db.all("DELETE FROM rolesXusers WHERE rolesXusers.userId = ?", [
+        req.params.id,
+      ]);
+
+      let allGroups = await db.all("SELECT * FROM groups");
+      for (let group of allGroups) {
+        let joinedMembersArr = group.groupMembers.split(" ");
+        if (joinedMembersArr.includes(req.params.id)) {
+          joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1);
+          if (joinedMembersArr.length > 0) {
+            await db.all(
+              "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
+              [joinedMembersArr.join(" "), group.id]
+            );
+          } else {
+            await db.all(
+              "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
+              ["", group.id]
+            );
+          }
+        }
+      }
+
+      res.json({
+        deleted: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+  //Blocking user
+  app.patch("/rest/users/block/:id", async (req, res) => {
+    try {
+      await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
+        true,
+        req.params.id,
+      ]);
+      res.json({
+        blocked: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+  //Unblock user
+  app.patch("/rest/users/unblock/:id/", async (req, res) => {
+    try {
+      await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
+        false,
+        req.params.id,
+      ]);
+      res.json({
+        unblocked: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+  //Deleting group 
+  app.delete("/rest/groups/:id", async (req, res) => {
+    try {
+      
+     await db.all("DELETE FROM groups WHERE groups.id = ?", [req.params.id]);
+     await db.all("DELETE FROM groupsXcategories WHERE groupsXcategories.groupId = ?", [req.params.id]);
+      
+      let allUsers = await db.all("SELECT * FROM users");
+      
+      for (let user of allUsers) {
+        let createdGroupsArr = user.createdGroups.split(" ")
+        let joinedGroupsArr = user.joinedGroups.split(" ")
+        if (createdGroupsArr.includes(req.params.id)) {
+         
+          createdGroupsArr.splice(createdGroupsArr.indexOf(req.params.id), 1)
+          
+           await db.all("UPDATE users SET createdGroups = ? WHERE users.id = ?", [createdGroupsArr.join(" ").toString(), user.id,]);
+          
+        }
+        if (joinedGroupsArr.includes(req.params.id)) {
+         
+         joinedGroupsArr.splice(joinedGroupsArr.indexOf(req.params.id), 1)
+         await db.all("UPDATE users SET joinedGroups = ? WHERE users.id = ?", [joinedGroupsArr.join(" ").toString(), user.id,]);
+          
+        }
+      }
+      res.json({
+        deleted: "true"
+      })
+    }
+    catch (e) {
+      console.log(e)
+       res.json({
+         error: "Something went wrong",
+       });
+    }
+  });
+
+
+  //Deleting comment from a group
+  app.delete("/rest/comments/:id", async (req, res) => {
+    try {
+     await db.all("DELETE FROM comments WHERE comments.id = ?", [req.params.id]);
+
+      let allGroups = await db.all("SELECT * FROM groups");
+      for (let group of allGroups) {
+        let commentsArr = group.commentIds.split(" ")
+
+        if (commentsArr.includes(req.params.id)) {
+          commentsArr.splice(commentsArr.indexOf(req.params.id), 1)
+           await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?",[commentsArr.join(" ").toString(), group.id]);
+        }
+      }
+      res.json({
+        deleted: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+
+
   // Registrering
   app.post("/rest/users", async (request, response) => {
     let user = request.body;
@@ -37,12 +178,13 @@ module.exports = function (app) {
     userExists = userExists[0];
 
     try {
-      result = await db.all("INSERT INTO users VALUES(?,?,?,?,?)", [
+      result = await db.all("INSERT INTO users VALUES(?,?,?,?,?,?)", [
         null,
         user.username,
         encryptedPassword,
         "",
         "",
+        false,
       ]);
       response.json(result);
     } catch (e) {
@@ -80,12 +222,25 @@ module.exports = function (app) {
     user = user[0];
 
     if (user && user.username) {
-      request.session.user = user;
-      console.log(request.session.user)
-      request.session.passwordAttempts = 0;
-      user.loggedIn = true;
-      user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
-      response.json({ loggedIn: true });
+      if (user.blocked) {
+        response.status(403);
+        response.json({ blocked: true });
+      } else {
+        roleName = await db.all(
+          "SELECT roleName FROM rolesXusers WHERE userId= ?",
+          [user.id]
+        );
+        roleName = roleName[0].roleName;
+
+        request.session.user = user;
+
+        console.log(request.session.user);
+        request.session.passwordAttempts = 0;
+        user.loggedIn = true;
+        user.role = roleName;
+        // user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
+        response.json({ loggedIn: true });
+      }
     } else {
       request.session.passwordAttempts++;
       response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
@@ -110,8 +265,8 @@ module.exports = function (app) {
         "SELECT roleName FROM rolesXusers WHERE userId= ?",
         [user.id]
       );
-      roleName = roleName[0].roleName
-      user.role=roleName
+      roleName = roleName[0].roleName;
+      user.role = roleName;
       response.json(user);
     } else {
       response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
@@ -125,6 +280,19 @@ module.exports = function (app) {
       response.json({ loggedIn: false });
     });
   });
+
+  app.delete("/rest/comments/:id", async (req, res) => {
+
+    const query = "DELETE FROM comments WHERE id = ?";
+    const comment = [req.params.id];
+    console.log(comment, "comment inside server sqlite")
+    db.run(query, comment, function (err) {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log(`Row(s) deleted ${this.changes}`);
+    });
+  })
 
   app.get("/rest/users/:id", (req, res) => {
     const query = "SELECT * FROM users WHERE id = ?";

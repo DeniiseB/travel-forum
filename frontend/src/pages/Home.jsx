@@ -25,8 +25,8 @@ function Home() {
               <div style={styles.list}>
                 {categoriesWithGroups.map((item, index) => (
                   <Link to={"/inside-category/" + item.id}>
-                    <CategoryCard props={item} key={index} />
-                  </Link>
+                  <CategoryCard props={item} key={index} />
+                </Link>
                 ))}
               </div>
             )}
