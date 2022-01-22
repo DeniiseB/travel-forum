@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "react-bootstrap";
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { Link, useHistory } from "react-router-dom";
@@ -7,7 +8,7 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [badCredentials, setBadCredentials] = useState(false);
-  const [tooManyAttempts, setTooManyAttempts]=useState(false)
+  const [tooManyAttempts, setTooManyAttempts] = useState(false);
   const { login } = useContext(UserContext);
   const history = useHistory();
 
@@ -17,29 +18,22 @@ function Login() {
       password: password,
     };
     let res = await login(credentials);
-   
-    
-    
-  if (res.status === 200) {
+
+    if (res.status === 200) {
       history.push("/");
-    } 
-  
-    
-    else if (res.status === 500) {
-    setTooManyAttempts(true)
-     setTimeout(function () {
-       setTooManyAttempts(false);
-     }, 8000);
-    }
-    
-    else {
+    } else if (res.status === 500) {
+      setTooManyAttempts(true);
+      setTimeout(function () {
+        setTooManyAttempts(false);
+      }, 8000);
+    } else {
       setBadCredentials(true);
       setTimeout(function () {
         setBadCredentials(false);
       }, 8000);
     }
     setUsername("");
-    setPassword(""); 
+    setPassword("");
   }
 
   return (
@@ -62,9 +56,13 @@ function Login() {
             style={styles.input}
           />
 
-          <button onClick={loginUser} style={styles.button} disabled={tooManyAttempts}>
+          <Button
+            onClick={loginUser}
+            style={styles.button}
+            disabled={tooManyAttempts}
+          >
             Log in
-          </button>
+          </Button>
 
           <p
             className="warning"
@@ -73,12 +71,11 @@ function Login() {
             Bad credentials
           </p>
 
-          <p className="warning" style={tooManyAttempts ? styles.attempts : styles.unvisable}>Too many attempts, please try again later</p>
-        </div>
-
-        <div className="register" style={styles.register}>
-          <p>
-            Not a member yet? <Link to="/register">Register</Link>
+          <p
+            className="warning"
+            style={tooManyAttempts ? styles.attempts : styles.unvisable}
+          >
+            Too many attempts, please try again later
           </p>
         </div>
       </div>
@@ -90,50 +87,37 @@ export default Login;
 
 const styles = {
   loginWrapper: {
-    /*  width: "100%",
-    height: "100vh",
-    backgroundColor: "#f1e7e0",*/
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f1e7e0",
     height: "100vh",
   },
-
   container: {
     display: "grid",
     gridTemplateRows: "60% 40%",
   },
-
   inputs: {
-    
     display: "flex",
     flexDirection: "column",
     gap: "2vh",
     fontSize: "1.5em",
-   
     alignItems: "center",
-   
     justifyContent: "center",
-    borderBottom: "5px solid #f1e7e0",
   },
   input: {
     borderRadius: "5px",
     border: "none",
-    padding:"4px"
+    padding: "4px",
   },
   button: {
-     fontSize: "20px",
-    width: "38%", 
-  },
-  register: {
     fontSize: "20px",
+    width: "38%",
   },
   warning: {
-     fontSize: "20px",
+    fontSize: "20px",
     color: "red",
-    display: "block", 
-    padding:"2vh"
+    display: "block",
+    padding: "2vh",
   },
   hide: {
     color: "#f1e7e0",

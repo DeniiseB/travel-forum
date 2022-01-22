@@ -208,6 +208,7 @@ const styles = {
     fontStyle: "italic",
     color: "white",
     margin: "1rem",
+    paddingBottom: "8rem",
   },
   formContainer: {
     backgroundColor: "#424242c9",

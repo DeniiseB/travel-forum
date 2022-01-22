@@ -75,6 +75,7 @@ const styles = {
   },
   homeContainer: {
     marginTop: "2rem",
+    paddingBottom: "8rem",
     display: "flex",
     justifyContent: "center",
   },

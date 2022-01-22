@@ -25,7 +25,7 @@ function MyGroups() {
   }
 
   return (
-    <div className="wrapper">
+    <div className="wrapper" style={styles.wrapper}>
       <h5 className="name" style={styles.name}>
         Created groups
       </h5>
@@ -88,6 +88,10 @@ function MyGroups() {
 export default MyGroups;
 
 const styles = {
+  wrapper: {
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+  },
   createdGroups: {
     display: "flex",
     flexDirection: "column",
@@ -113,7 +117,7 @@ const styles = {
     paddingTop: "3vh",
   },
   name: {
-    marginTop: "5vh",
+    paddingTop: "5vh",
     paddingBottom: "1vh",
   },
   groupItem: {

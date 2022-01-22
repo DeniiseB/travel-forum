@@ -88,6 +88,7 @@ const styles = {
     marginTop: "3rem",
     backgroundColor: "#424242c9",
     color: "white",
+    paddingBottom: "8rem",
   },
   categoryName: {
     marginTop: "0.8rem",

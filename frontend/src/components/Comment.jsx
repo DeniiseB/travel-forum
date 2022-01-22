@@ -36,6 +36,7 @@ const styles = {
     border: "solid lightGrey 1px",
     borderRadius: "4px",
     marginBottom: "0.5rem",
+    backgroundColor: "#ffffffa8",
   },
   commentHeader: {
     display: "flex",

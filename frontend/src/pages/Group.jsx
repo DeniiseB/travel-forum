@@ -65,57 +65,61 @@ function Group() {
 
   return (
     <div>
-      {group && comments && (
-        <div className="m-2">
-          <Container>
-            {currentUser && currentUser.role === "admin" ? (
-              <div style={styles.delete}>
-                <Row>
-                  <Col>
-                    <Button>Delete group</Button>
-                  </Col>
-                </Row>
-              </div>
-            ) : null}
+      <div style={ styles.groupContainer }>
+        {group && comments && (
+          <div className="m-2">
+            <Container>
+              {currentUser && currentUser.role === "admin" ? (
+                <div style={styles.delete}>
+                  <Row>
+                    <Col>
+                      <Button>Delete group</Button>
+                    </Col>
+                  </Row>
+                </div>
+              ) : null}
 
-            <Row>
-              <Col>
-                <h2>{group.groupName}</h2>
-              </Col>
-            </Row>
+              <Row>
+                <Col>
+                  <div style={styles.title}>
+                    <p>{group.groupName}</p>
+                  </div>
+                </Col>
+              </Row>
 
-            <Row>
-              <Col>
-                <Button onClick={toggleInviteModal}>Invite</Button>
-              </Col>
-              <Col>
-                <Members groupMembers={groupMembers} />
-              </Col>
-              <Col>
-                <Button onClick={redirectToCommentPage}>Comment</Button>
-              </Col>
-            </Row>
-          </Container>
-          <Container className="mt-2">
-            {comments.map((commentObject) => (
-              <Comment key={commentObject.id} commentObject={commentObject} />
-            ))}
-          </Container>
-        </div>
-      )}
-      {!group && (
-        <div style={styles.spinnerDiv}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        </div>
-      )}
-      <Invite
-        showModal={toggleInviteModal}
-        show={showInviteModal}
-        group={group}
-        updateGroup={updateGroup}
-      />
+              <Row>
+                <Col>
+                  <Button onClick={toggleInviteModal}>Invite</Button>
+                </Col>
+                <Col>
+                  <Members groupMembers={groupMembers} />
+                </Col>
+                <Col>
+                  <Button onClick={redirectToCommentPage}>Comment</Button>
+                </Col>
+              </Row>
+            </Container>
+            <Container className="mt-2">
+              {comments.map((commentObject) => (
+                <Comment key={commentObject.id} commentObject={commentObject} />
+              ))}
+            </Container>
+          </div>
+        )}
+        {!group && (
+          <div style={styles.spinnerDiv}>
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          </div>
+        )}
+        <Invite
+          showModal={toggleInviteModal}
+          show={showInviteModal}
+          group={group}
+          updateGroup={updateGroup}
+        />
+      </div>
     </div>
   );
 }
@@ -123,6 +127,18 @@ function Group() {
 export default Group;
 
 const styles = {
+  groupContainer: {
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+    color: "#424242",
+    paddingBottom: "8rem",
+  },
+  title: {
+    fontWeight: "600",
+    fontSize: "1.4em",
+    textDecoration: "underline",
+    marginTop: "1rem",
+  },
   spinnerDiv: {
     marginTop: "10rem",
   },

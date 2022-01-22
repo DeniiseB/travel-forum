@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "react-bootstrap";
 import ReactQuill from "react-quill"; // ES6
 import "react-quill/dist/quill.snow.css"; // ES6
 import { useState, useContext, useEffect } from "react";
@@ -94,13 +95,34 @@ function CreateComment() {
 
   return (
     <div>
-      <div>
-        <ReactQuill value={text || ""} onChange={handleChange} />
-      </div>
-      <div>
-        <button onClick={postComment}>Post Comment</button>
+      <div style={styles.commentContainer}>
+        <div style={styles.quillContainer}>
+          <ReactQuill value={text || ""} onChange={handleChange} />
+        </div>
+        <div>
+          <Button onClick={postComment} style={{ marginTop: "1rem" }}>
+            Post Comment
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
 export default CreateComment;
+
+const styles = {
+  commentContainer: {
+    fontFamily: "Montserrat, sans-serif",
+    fontStyle: "italic",
+    color: "#424242",
+    display: "flex",
+    flexDirection: "column",
+    margin: "1rem",
+    paddingBottom: "8rem",
+  },
+  quillContainer: {
+    marginTop: "2rem",
+    backgroundColor: "#ffffffa8",
+    borderRadius: "4px",
+  },
+};

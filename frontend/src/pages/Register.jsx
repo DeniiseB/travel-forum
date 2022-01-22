@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "react-bootstrap";
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { Link, useHistory } from "react-router-dom";
@@ -46,9 +47,6 @@ export default function Register() {
   return (
     <div className="registerWrapper" style={styles.resgisterWrapper}>
       <div className="container" style={styles.container}>
-        <div className="name" style={styles.name}>
-          <h5>Travel</h5>
-        </div>
         <div className="inputs" style={styles.inputs}>
           <input
             style={styles.input}
@@ -73,7 +71,7 @@ export default function Register() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
-          <button onClick={registerNewUser}>Register</button>
+          <Button onClick={registerNewUser}>Register</Button>
 
           <p
             className="warning"
@@ -83,9 +81,6 @@ export default function Register() {
           </p>
         </div>
         <div className="login" style={styles.login}>
-          <p>
-            Already registered? <Link to="/login">Log in</Link>
-          </p>
           <p
             className="warning"
             style={passwordMismatch ? styles.mismatch : styles.invisable}
@@ -101,7 +96,6 @@ export default function Register() {
 const styles = {
   resgisterWrapper: {
     height: "100vh",
-    backgroundColor: "#f1e7e0",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -110,9 +104,6 @@ const styles = {
     display: "grid",
     gridTemplateRows: "25% 50% 25%",
     fontSize: "2em",
-  },
-  name: {
-    borderBottom: "5px solid #f1e7e0",
   },
   inputs: {
     paddingTop: "5vh",
@@ -124,7 +115,6 @@ const styles = {
     alignItems: "center",
     marginLeft: "4vh",
     justifyContent: "center",
-    borderBottom: "5px solid #f1e7e0",
   },
   input: {
     borderRadius: "5px",

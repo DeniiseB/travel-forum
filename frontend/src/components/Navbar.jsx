@@ -59,6 +59,7 @@ const styles = {
     width: "100%",
     height: "5rem",
     top: "0",
+    zIndex: "100",
   },
   loginButtons: {
     display: "flex",
@@ -88,6 +89,7 @@ const styles = {
     fontWeight: "600",
     fontSize: "1em",
     marginLeft: "0.2rem",
+    backgroundColor: "#d99e74",
   },
   loggedIn: {
     display: "flex",
