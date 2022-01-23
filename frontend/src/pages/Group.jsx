@@ -19,20 +19,30 @@ function Group() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [groupMembers, setGroupMembers] = useState([]);
   const [isCreator, setIsCreator] = useState(false);
+  const [canComment, setCanComment] = useState(false);
 
   useEffect(() => {
+
     if (!currentUser) {
+      console.log("You are not a member")
       return;
     }
     getAndSetGroup();
+    //commentButtonFunc()
+
   }, [groupid, currentUser]);
 
+  useEffect(() => {
+    commentButtonFunc()
+  })
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
     setGroup(fetchedGroup);
+
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
     checkGroupCreator(fetchedGroup);
+
   }
 
   async function checkGroupCreator(fetchedGroup) {
@@ -41,6 +51,7 @@ function Group() {
     } else {
       setIsCreator(false);
     }
+
   }
 
   async function deleteThisGroup() {
@@ -58,6 +69,7 @@ function Group() {
       commentArray.push(comment);
     }
     setComments(commentArray);
+
   }
 
   async function getAndSetGroupMembers(group) {
@@ -69,6 +81,7 @@ function Group() {
       groupMemberArray.push(fetchedUser);
     }
     setGroupMembers(groupMemberArray);
+    console.log(groupMemberArray[0], "  This is the member")
   }
 
   const toggleInviteModal = () => {
@@ -80,12 +93,32 @@ function Group() {
     await getAndSetGroup();
   };
 
+  function commentButtonFunc() {
+    //lack of better name lol
+
+    if (group.groupAccess === "Public") {
+      console.log("USER IS MEMBER, PUBLIC LOBBY")
+      setCanComment(true)
+    } else if (group.groupAccess === "Private") {
+      console.log("Private")
+      for (var i = 0; i < groupMembers.length; i++) {
+        if (groupMembers[i].id == currentUser.id) {
+          setCanComment(true)
+          console.log("USER IS A MEMBER, PRIVATE LOBBY")
+        }
+      }
+    }
+    else {
+      setCanComment(false)
+      console.log("USER IS NOT A MEMBER")
+    }
+  }
   function redirectToCommentPage() {
     history.push("/create-comment/" + groupid);
   }
 
   return (
-    <div>
+    <div >
       <div style={styles.groupContainer}>
         {group && comments && (
           <div className="m-2">
@@ -125,9 +158,12 @@ function Group() {
                     isCreator={isCreator}
                   />
                 </Col>
+                {canComment &&
+                  
                 <Col>
-                  <Button onClick={redirectToCommentPage}>Comment</Button>
+                  <Button onClick={redirectToCommentPage} >Comment</Button>
                 </Col>
+                }
               </Row>
             </Container>
             <Container className="mt-2">
