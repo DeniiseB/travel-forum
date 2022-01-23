@@ -186,6 +186,14 @@ module.exports = function (app) {
         "",
         false,
       ]);
+
+      let lastInsertedUser = await db.all("SELECT * FROM users WHERE username = ?", user.username);
+      let userId = lastInsertedUser[0].id
+      await db.all("INSERT INTO rolesXusers VALUES(?,?,?)", [
+        null,
+        userId,
+        "member"
+      ]);
       response.json(result);
     } catch (e) {
       console.error(e);
