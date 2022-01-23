@@ -28,7 +28,7 @@ function Group() {
       return;
     }
     getAndSetGroup();
-    //commentButtonFunc()
+    
 
   }, [groupid, currentUser]);
 
@@ -38,7 +38,6 @@ function Group() {
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
     setGroup(fetchedGroup);
-
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
     checkGroupCreator(fetchedGroup);
@@ -51,7 +50,6 @@ function Group() {
     } else {
       setIsCreator(false);
     }
-
   }
 
   async function deleteThisGroup() {
@@ -69,7 +67,6 @@ function Group() {
       commentArray.push(comment);
     }
     setComments(commentArray);
-
   }
 
   async function getAndSetGroupMembers(group) {
@@ -81,7 +78,6 @@ function Group() {
       groupMemberArray.push(fetchedUser);
     }
     setGroupMembers(groupMemberArray);
-    console.log(groupMemberArray[0], "  This is the member")
   }
 
   const toggleInviteModal = () => {
@@ -94,23 +90,17 @@ function Group() {
   };
 
   function commentButtonFunc() {
-    //lack of better name lol
-
     if (group.groupAccess === "Public") {
-      console.log("USER IS MEMBER, PUBLIC LOBBY")
       setCanComment(true)
     } else if (group.groupAccess === "Private") {
-      console.log("Private")
       for (var i = 0; i < groupMembers.length; i++) {
         if (groupMembers[i].id == currentUser.id) {
           setCanComment(true)
-          console.log("USER IS A MEMBER, PRIVATE LOBBY")
         }
       }
     }
     else {
       setCanComment(false)
-      console.log("USER IS NOT A MEMBER")
     }
   }
   function redirectToCommentPage() {
