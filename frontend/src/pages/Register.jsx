@@ -58,14 +58,14 @@ export default function Register() {
 
           <input
             style={styles.input}
-            type="text"
+            type="password"
             placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <input
             style={styles.input}
-            type="text"
+            type="password"
             placeholder="confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -75,7 +75,7 @@ export default function Register() {
 
           <p
             className="warning"
-            style={usernameExists ? styles.warning : styles.hide}
+            style={usernameExists ? styles.warning : styles.invisable}
           >
             This username already exists
           </p>

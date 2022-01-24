@@ -32,10 +32,10 @@ function Home() {
             )}
           </div>
         ) : (
-          <div>
-            <div>
-              <MyGroups />
-            </div>
+            <div>{ currentUser && (currentUser.createdGroups || currentUser.joinedGroups) &&
+              <div>
+                <MyGroups />
+              </div>}
             <div>
               <div style={styles.titlesContainer}>
                 <div>Categories</div>
