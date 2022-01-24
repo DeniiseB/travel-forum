@@ -13,7 +13,7 @@ function Home() {
   return (
     <div className="Home">
       <div style={styles.homeContainer}>
-        {currentUser === null ? (
+        {!currentUser === null ? (
           <div>
             <div style={styles.titlesContainer}>
               <p>Categories</p>

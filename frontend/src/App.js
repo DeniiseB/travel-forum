@@ -22,8 +22,8 @@ function App() {
       <UserContextProvider>
         <CategoryContextProvider>
           <GroupProvider>
-            <Navbar />
             <Router history={history}>
+            <Navbar />
               <main>
                 <Switch>
                   <Route path="/register" exact component={Register} />

@@ -80,7 +80,6 @@ export default function Register() {
             This username already exists
           </p>
         </div>
-        <div className="login" style={styles.login}>
           <p
             className="warning"
             style={passwordMismatch ? styles.mismatch : styles.invisable}
@@ -89,7 +88,7 @@ export default function Register() {
           </p>
         </div>
       </div>
-    </div>
+    
   );
 }
 

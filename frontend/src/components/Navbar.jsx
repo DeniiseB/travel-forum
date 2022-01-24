@@ -3,6 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "reactstrap";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
+import { Dropdown } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const { currentUser, logout } = useContext(UserContext);
@@ -33,14 +35,25 @@ function Navbar() {
         <div>
           <div style={styles.loggedIn}>
             <div>
-              <p>{currentUser.username}</p>
-            </div>
-            <div>
-              <Button onClick={logout} style={styles.logoutButton}>
-                <a href="/" style={{ color: "white" }}>
-                  Logout
-                </a>
-              </Button>
+              <Dropdown>
+                <Dropdown.Toggle style={styles.logoutButton} id="dropdown-basic">
+                  {currentUser.username}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item>
+                    <Link to={"/my-groups"}>My Groups</Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Link to={"/create-group"}>Create a group</Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Link to={"/"} onClick={logout}>
+                      Logout
+                    </Link>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
           </div>
         </div>
@@ -90,6 +103,7 @@ const styles = {
     fontSize: "1em",
     marginLeft: "0.2rem",
     backgroundColor: "#d99e74",
+    borderColor: "#ffffff00",
   },
   loggedIn: {
     display: "flex",
@@ -116,5 +130,8 @@ const styles = {
 
   hide: {
     display: "none",
+  },
+  dropdown: {
+    color: "black",
   },
 };
