@@ -19,20 +19,26 @@ function Group() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [groupMembers, setGroupMembers] = useState([]);
   const [isCreator, setIsCreator] = useState(false);
+  const [canComment, setCanComment] = useState(false);
 
   useEffect(() => {
+
     if (!currentUser) {
       return;
     }
     getAndSetGroup();
   }, [groupid, currentUser]);
 
+  useEffect(() => {
+    commentButtonFunc()
+  })
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
     checkGroupCreator(fetchedGroup);
+
   }
 
   async function checkGroupCreator(fetchedGroup) {
@@ -80,12 +86,26 @@ function Group() {
     await getAndSetGroup();
   };
 
+  function commentButtonFunc() {
+    if (group.groupAccess === "Public") {
+      setCanComment(true)
+    } else if (group.groupAccess === "Private") {
+      for (var i = 0; i < groupMembers.length; i++) {
+        if (groupMembers[i].id == currentUser.id) {
+          setCanComment(true)
+        }
+      }
+    }
+    else {
+      setCanComment(false)
+    }
+  }
   function redirectToCommentPage() {
     history.push("/create-comment/" + groupid);
   }
 
   return (
-    <div>
+    <div >
       <div style={styles.groupContainer}>
         {group && comments && (
           <div className="m-2">
@@ -125,9 +145,12 @@ function Group() {
                     isCreator={isCreator}
                   />
                 </Col>
+                {canComment &&
+                  
                 <Col>
-                  <Button onClick={redirectToCommentPage}>Comment</Button>
+                  <Button onClick={redirectToCommentPage} >Comment</Button>
                 </Col>
+                }
               </Row>
             </Container>
             <Container className="mt-2">
