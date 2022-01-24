@@ -133,7 +133,7 @@ function Group() {
                 </Col>
               </Row>
               <Row>
-                {isCreator && (
+                {(isCreator && group.groupAccess == "Private") && (
                   <Col>
                     <Button onClick={toggleInviteModal}>Invite</Button>
                   </Col>
@@ -143,13 +143,14 @@ function Group() {
                     groupMembers={groupMembers}
                     func={updateGroup}
                     isCreator={isCreator}
+                    group={group}
                   />
                 </Col>
                 {canComment &&
-                  
-                <Col>
-                  <Button onClick={redirectToCommentPage} >Comment</Button>
-                </Col>
+
+                  <Col>
+                    <Button onClick={redirectToCommentPage} >Comment</Button>
+                  </Col>
                 }
               </Row>
             </Container>

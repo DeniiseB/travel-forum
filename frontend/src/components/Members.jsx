@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { Dropdown, Button } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
-
+import { useGroupContext } from "../contexts/GroupContext";
 function Members(props) {
   const { currentUser, deleteUser, blockUser, unblockUser } =
     useContext(UserContext);
-
+  const { addUserIdToGroupMembers } = useGroupContext();
   async function deleteGroupMember(e, memberId) {
     e.stopPropagation();
     let res = await deleteUser(memberId);
@@ -13,7 +13,26 @@ function Members(props) {
       props.func();
     }
   }
+  async function getAndRemoveGroupMember(clickedId) {
+    const groupMembersIds = props.group.groupMembers.split(" ");
+    let finalString = '';
+    for (let id of groupMembersIds) {
+      if (clickedId == id) {
 
+      } else {
+        finalString += id + ' ';
+      }
+    }
+  
+    let groupObject = {
+      groupId: props.group.id,
+      userIds: finalString,
+    };
+    await addUserIdToGroupMembers(groupObject)
+    console.log(props.group.groupMembers, "This is the string")
+    console.log(finalString, "This is the string")
+    console.log(props.group)
+  }
   async function blockGroupMember(e, memberId) {
     e.stopPropagation();
     let res = await blockUser(memberId);
@@ -85,7 +104,7 @@ function Members(props) {
                 {props.isCreator ? (
                   <div>
                     <div>
-                      <Button className="m-1" size="sm" variant="danger">
+                      <Button onClick={() => { getAndRemoveGroupMember(member.id) }} className="m-1" size="sm" variant="danger">
                         Remove
                       </Button>
                     </div>
