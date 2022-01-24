@@ -631,6 +631,21 @@ module.exports = function (app) {
     });
   });
 
+  app.get("/rest/commentsByUser/:id", (req, res) => {
+    const query = "SELECT id FROM comments WHERE userId = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
   app.get("/rest/groupsxcategories", async (req, res) => {
     let query =
       "SELECT COUNT(*) as groupAmount,categories.name,categories.id FROM groupsXcategories, categories, groups WHERE groupsXcategories.categoryId = categories.id AND groupsXcategories.groupId = groups.id GROUP BY categories.name";

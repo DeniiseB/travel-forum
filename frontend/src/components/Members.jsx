@@ -5,7 +5,7 @@ import { useGroupContext } from "../contexts/GroupContext";
 function Members(props) {
   const { currentUser, deleteUser, blockUser, unblockUser } =
     useContext(UserContext);
-  const { addUserIdToGroupMembers } = useGroupContext();
+  const { addUserIdToGroupMembers, fetchCommentByUserId, deleteSpecificComment } = useGroupContext();
   async function deleteGroupMember(e, memberId) {
     e.stopPropagation();
     let res = await deleteUser(memberId);
@@ -23,15 +23,15 @@ function Members(props) {
         finalString += id + ' ';
       }
     }
-  
     let groupObject = {
       groupId: props.group.id,
       userIds: finalString,
     };
-    await addUserIdToGroupMembers(groupObject)
-    console.log(props.group.groupMembers, "This is the string")
-    console.log(finalString, "This is the string")
-    console.log(props.group)
+    let fetched = [];
+    let commentIDS = await fetchCommentByUserId(clickedId)
+    console.log(commentIDS.id)
+    deleteSpecificComment(commentIDS.id)
+  //  await addUserIdToGroupMembers(groupObject)
   }
   async function blockGroupMember(e, memberId) {
     e.stopPropagation();

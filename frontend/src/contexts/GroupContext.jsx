@@ -43,6 +43,16 @@ const GroupProvider = (props) => {
     }
   };
 
+  const fetchCommentByUserId = async (userId) => {
+    try {
+      let res = await fetch("/rest/commentsByUser/" + userId);
+      let resJson = await res.json();
+      return resJson.data;
+    } catch {
+      console.log("Fetching comment by UserId failed");
+    }
+  };
+
   const postNewComment = async (commentToPost) => {
     try {
       let res = await fetch("/rest/comments", {
@@ -148,6 +158,7 @@ const GroupProvider = (props) => {
     getJoinedAndCreatedGroups,
     deleteSpecificGroup,
     deleteSpecificComment,
+    fetchCommentByUserId,
   };
 
   return (
