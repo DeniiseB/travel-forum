@@ -24,12 +24,9 @@ function Group() {
   useEffect(() => {
 
     if (!currentUser) {
-      console.log("You are not a member")
       return;
     }
     getAndSetGroup();
-    
-
   }, [groupid, currentUser]);
 
   useEffect(() => {
