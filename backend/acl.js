@@ -12,8 +12,6 @@ module.exports = function (req, res, next) {
   }
 
   roles.push("*");
-  // roles.push("member");
-
 
   console.log({
     "req.path": req.path,
@@ -31,7 +29,6 @@ module.exports = function (req, res, next) {
       for (role of access.roles) {
         if (roles.includes(role.role)) {
           if (role.methods.includes(req.method)) {
-            // @todo case independent match?
             found = true;
           }
         }
@@ -42,7 +39,7 @@ module.exports = function (req, res, next) {
   if (found) {
     next();
   } else {
-    res.status(403); // @todo skriva logik för att ge "rätt" felmeddelande, som 401 eller 403 beroende på om jag är inloggad eller inte
+    res.status(403);
     res.json({ error: "You don't have access" });
   }
 };
