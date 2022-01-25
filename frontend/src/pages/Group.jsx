@@ -22,23 +22,22 @@ function Group() {
   const [isPrivateMember, setIsPrivateMember] = useState(false);
 
   useEffect(() => {
-
-    if (!currentUser) {
-      return;
-    }
     getAndSetGroup();
   }, [groupid, currentUser]);
 
   useEffect(() => {
-    privateMemberCheck()
-  })
+    privateMemberCheck();
+  });
+
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
+    if (!currentUser) {
+      return;
+    }
     checkGroupCreator(fetchedGroup);
-
   }
 
   async function checkGroupCreator(fetchedGroup) {
@@ -88,18 +87,22 @@ function Group() {
 
   function privateMemberCheck() {
     if (group.groupAccess === "Public") {
-      setIsPrivateMember(true)
+      setIsPrivateMember(true);
     } else if (group.groupAccess === "Private") {
+      if (!currentUser) {
+        setIsPrivateMember(false);
+        return;
+      }
       for (var i = 0; i < groupMembers.length; i++) {
         if (groupMembers[i].id == currentUser.id) {
-          setIsPrivateMember(true)
+          setIsPrivateMember(true);
         }
       }
-    }
-    else {
-      setIsPrivateMember(false)
+    } else {
+      setIsPrivateMember(false);
     }
   }
+
   function redirectToCommentPage() {
     history.push("/create-comment/" + groupid);
   }
@@ -138,16 +141,20 @@ function Group() {
                     <Button onClick={toggleInviteModal}>Invite</Button>
                   </Col>
                 )}
-                <Col>
-                  <Members
-                    groupMembers={groupMembers}
-                    func={updateGroup}
-                    isCreator={isCreator}
-                  />
-                </Col>
-                  <Col>
-                    <Button onClick={redirectToCommentPage}>Comment</Button>
-                  </Col>
+                {currentUser && (
+                  <>
+                    <Col>
+                      <Members
+                        groupMembers={groupMembers}
+                        func={updateGroup}
+                        isCreator={isCreator}
+                      />
+                    </Col>
+                    <Col>
+                      <Button onClick={redirectToCommentPage}>Comment</Button>
+                    </Col>
+                  </>
+                )}
               </Row>
             </Container>
             <Container className="mt-2">
@@ -169,7 +176,7 @@ function Group() {
           </div>
         )}
         {group && comments && !isPrivateMember && (
-          <Container style={{ paddingTop: "8rem"}}>
+          <Container style={{ paddingTop: "8rem" }}>
             <Row>
               <div>Sorry, this group is private</div>
             </Row>
