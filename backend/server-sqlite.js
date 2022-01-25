@@ -100,57 +100,34 @@ module.exports = function (app) {
     }
   });
 
-  //Deleting group 
+  //Deleting group
   app.delete("/rest/groups/:id", async (req, res) => {
     try {
-      
-     await db.all("DELETE FROM groups WHERE groups.id = ?", [req.params.id]);
-     await db.all("DELETE FROM groupsXcategories WHERE groupsXcategories.groupId = ?", [req.params.id]);
-      
+      await db.all("DELETE FROM groups WHERE groups.id = ?", [req.params.id]);
+      await db.all(
+        "DELETE FROM groupsXcategories WHERE groupsXcategories.groupId = ?",
+        [req.params.id]
+      );
+
       let allUsers = await db.all("SELECT * FROM users");
-      
+
       for (let user of allUsers) {
-        let createdGroupsArr = user.createdGroups.split(" ")
-        let joinedGroupsArr = user.joinedGroups.split(" ")
+        let createdGroupsArr = user.createdGroups.split(" ");
+        let joinedGroupsArr = user.joinedGroups.split(" ");
         if (createdGroupsArr.includes(req.params.id)) {
-         
-          createdGroupsArr.splice(createdGroupsArr.indexOf(req.params.id), 1)
-          
-           await db.all("UPDATE users SET createdGroups = ? WHERE users.id = ?", [createdGroupsArr.join(" ").toString(), user.id,]);
-          
+          createdGroupsArr.splice(createdGroupsArr.indexOf(req.params.id), 1);
+
+          await db.all(
+            "UPDATE users SET createdGroups = ? WHERE users.id = ?",
+            [createdGroupsArr.join(" ").toString(), user.id]
+          );
         }
         if (joinedGroupsArr.includes(req.params.id)) {
-         
-         joinedGroupsArr.splice(joinedGroupsArr.indexOf(req.params.id), 1)
-         await db.all("UPDATE users SET joinedGroups = ? WHERE users.id = ?", [joinedGroupsArr.join(" ").toString(), user.id,]);
-          
-        }
-      }
-      res.json({
-        deleted: "true"
-      })
-    }
-    catch (e) {
-      console.log(e)
-       res.json({
-         error: "Something went wrong",
-       });
-    }
-  });
-
-
-  //Deleting comment from a group
-  app.delete("/rest/comments/:id", async (req, res) => {
-    try {
-     await db.all("DELETE FROM comments WHERE comments.id = ?", [req.params.id]);
-
-      let allGroups = await db.all("SELECT * FROM groups");
-      for (let group of allGroups) {
-        let commentsArr = group.commentIds.split(" ")
-
-        if (commentsArr.includes(req.params.id)) {
-          commentsArr.splice(commentsArr.indexOf(req.params.id), 1)
-           await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?",[commentsArr.join(" ").toString(), group.id]);
+          joinedGroupsArr.splice(joinedGroupsArr.indexOf(req.params.id), 1);
+          await db.all("UPDATE users SET joinedGroups = ? WHERE users.id = ?", [
+            joinedGroupsArr.join(" ").toString(),
+            user.id,
+          ]);
         }
       }
       res.json({
@@ -164,7 +141,35 @@ module.exports = function (app) {
     }
   });
 
+  //Deleting comment from a group
+  app.delete("/rest/comments/:id", async (req, res) => {
+    try {
+      await db.all("DELETE FROM comments WHERE comments.id = ?", [
+        req.params.id,
+      ]);
 
+      let allGroups = await db.all("SELECT * FROM groups");
+      for (let group of allGroups) {
+        let commentsArr = group.commentIds.split(" ");
+
+        if (commentsArr.includes(req.params.id)) {
+          commentsArr.splice(commentsArr.indexOf(req.params.id), 1);
+          await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?", [
+            commentsArr.join(" ").toString(),
+            group.id,
+          ]);
+        }
+      }
+      res.json({
+        deleted: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
 
   // Registrering
   app.post("/rest/users", async (request, response) => {
@@ -187,12 +192,15 @@ module.exports = function (app) {
         false,
       ]);
 
-      let lastInsertedUser = await db.all("SELECT * FROM users WHERE username = ?", user.username);
-      let userId = lastInsertedUser[0].id
+      let lastInsertedUser = await db.all(
+        "SELECT * FROM users WHERE username = ?",
+        user.username
+      );
+      let userId = lastInsertedUser[0].id;
       await db.all("INSERT INTO rolesXusers VALUES(?,?,?)", [
         null,
         userId,
-        "member"
+        "member",
       ]);
       response.json(result);
     } catch (e) {
@@ -246,7 +254,6 @@ module.exports = function (app) {
         request.session.passwordAttempts = 0;
         user.loggedIn = true;
         user.role = roleName;
-        // user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
         response.json({ loggedIn: true });
       }
     } else {
@@ -290,17 +297,16 @@ module.exports = function (app) {
   });
 
   app.delete("/rest/comments/:id", async (req, res) => {
-
     const query = "DELETE FROM comments WHERE id = ?";
     const comment = [req.params.id];
-    console.log(comment, "comment inside server sqlite")
+    console.log(comment, "comment inside server sqlite");
     db.run(query, comment, function (err) {
       if (err) {
         return console.error(err.message);
       }
       console.log(`Row(s) deleted ${this.changes}`);
     });
-  })
+  });
 
   app.get("/rest/users/:id", (req, res) => {
     const query = "SELECT * FROM users WHERE id = ?";
@@ -310,14 +316,16 @@ module.exports = function (app) {
         res.status(400).json({ error: error.message });
         return;
       }
+      let user = row;
+      delete user.password;
       res.json({
         message: "Great success",
-        data: row,
+        data: user,
       });
     });
   });
 
-  app.get("/rest/users/:username", (req, res) => {
+  app.get("/rest/users/name/:username", (req, res) => {
     const query = "SELECT * FROM users WHERE username = ?";
     const params = [req.params.username];
     db.get(query, params, (error, row) => {
@@ -325,9 +333,10 @@ module.exports = function (app) {
         res.status(400).json({ error: error.message });
         return;
       }
+      let user = row;
+      delete user.password;
       res.json({
-        message: "Great success",
-        data: row,
+        data: user,
       });
     });
   });

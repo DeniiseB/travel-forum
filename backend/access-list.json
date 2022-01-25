@@ -6,18 +6,19 @@
       { "role": "admin", "methods": ["GET", "PUT", "DELETE"] }
     ]
   },
+    {
+    "path": "/rest/users/*",
+    "roles": [
+      { "role": "anonymous", "methods": ["POST"] },
+      { "role": "member", "methods": ["GET"] },
+      { "role": "admin", "methods": ["GET", "DELETE", "PATCH"] }
+    ]
+  },
   {
     "path": "/api/*",
     "roles": [
       { "role": "*", "methods": ["GET", "PATCH"] },
       { "role": "admin", "methods": ["GET", "PUT", "DELETE"] }
-    ]
-  },
-  {
-    "path": "/rest/users*",
-    "roles": [
-      { "role": "anonymous", "methods": ["POST"] },
-      { "role": "admin", "methods": ["GET", "DELETE", "PATCH"] }
     ]
   },
 
