@@ -170,13 +170,36 @@ module.exports = function (app) {
   //Deleting user from db
   app.delete("/rest/users/:id", async (req, res) => {
     try {
+      let thisUser = await db.all("SELECT * FROM users WHERE users.id = ?", [req.params.id]);
+      
       await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
       await db.all("DELETE FROM rolesXusers WHERE rolesXusers.userId = ?", [
         req.params.id,
       ]);
 
+        let commentsOfUser = await db.all("SELECT id FROM comments WHERE comments.author = ?",[thisUser[0].username]);
+        
+        await db.all("DELETE FROM comments WHERE comments.author = ?", [ thisUser[0].username,]);
+
       let allGroups = await db.all("SELECT * FROM groups");
       for (let group of allGroups) {
+        
+        let groupCommentIds = group.commentIds.split(" ")
+        
+        for (let commentId of groupCommentIds) {
+          for (let userComment of commentsOfUser) {
+            if (commentId == userComment.id) {
+              
+              groupCommentIds.splice(groupCommentIds.indexOf(commentId, 1));
+            }
+          }
+        }
+        
+        await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?", [
+          groupCommentIds.join(" "),
+          group.id,
+        ]);
+     
         let joinedMembersArr = group.groupMembers.split(" ");
         if (joinedMembersArr.includes(req.params.id)) {
           joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1);
