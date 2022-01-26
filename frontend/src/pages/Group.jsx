@@ -148,6 +148,7 @@ function Group() {
                         groupMembers={groupMembers}
                         func={updateGroup}
                         isCreator={isCreator}
+                        creatorUserId={group.creatorUserId}
                       />
                     </Col>
                     <Col>

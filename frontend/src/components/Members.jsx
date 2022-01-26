@@ -16,10 +16,10 @@ function Members(props) {
 
   async function blockGroupMember(e, memberId) {
     e.stopPropagation();
-    let res = await blockUser(memberId);
+     let res = await blockUser(memberId);
     if (res.status === 200) {
       props.func();
-    }
+    } 
   }
 
   async function unblockGroupMember(e, memberId) {
@@ -43,46 +43,49 @@ function Members(props) {
                 <div style={styles.userName}>{member.username}</div>
                 {currentUser && currentUser.role === "admin" ? (
                   <div style={styles.buttons}>
-                    {member.blocked ? (
+                    {member.id !== props.creatorUserId ? (
                       <div>
+                        {member.blocked ? (
+                          <div>
+                            <Button
+                              className="m-1"
+                              size="sm"
+                              onClick={(e) => {
+                                unblockGroupMember(e, member.id);
+                              }}
+                            >
+                              Unblock
+                            </Button>
+                          </div>
+                        ) : (
+                          <div>
+                            <Button
+                              className="m-1"
+                              size="sm"
+                              variant="warning"
+                              onClick={(e) => {
+                                blockGroupMember(e, member.id);
+                              }}
+                            >
+                              Block
+                            </Button>
+                          </div>
+                        )}
+                        {"  "}
                         <Button
-                          className="m-1"
                           size="sm"
+                          variant="danger"
                           onClick={(e) => {
-                            unblockGroupMember(e, member.id);
+                            deleteGroupMember(e, member.id);
                           }}
                         >
-                          Unblock
+                          Delete
                         </Button>
                       </div>
-                    ) : (
-                      <div>
-                        <Button
-                          className="m-1"
-                          size="sm"
-                          variant="warning"
-                          onClick={(e) => {
-                            blockGroupMember(e, member.id);
-                          }}
-                        >
-                          Block
-                        </Button>
-                      </div>
-                    )}
-
-                    {"  "}
-                    <Button
-                      size="sm"
-                      variant="danger"
-                      onClick={(e) => {
-                        deleteGroupMember(e, member.id);
-                      }}
-                    >
-                      Delete
-                    </Button>
+                    ) : null}
                   </div>
                 ) : null}
-                {props.isCreator && currentUser.role==="groupAdmin" ? (
+                {props.isCreator && currentUser.role === "groupAdmin" ? (
                   <div>
                     <div>
                       <Button className="m-1" size="sm" variant="danger">
