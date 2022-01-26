@@ -121,6 +121,7 @@ function Group() {
                   <Row>
                     <Col>
                       <Button
+                        variant="danger"
                         onClick={(e) => {
                           deleteThisGroup();
                         }}
@@ -145,7 +146,7 @@ function Group() {
                   </Col>
                 )}
                 {currentUser && (
-                  <div>
+                  <>
                     <Col>
                       <Members
                         groupMembers={groupMembers}
@@ -154,17 +155,12 @@ function Group() {
                         creatorUserId={group.creatorUserId}
                       />
                     </Col>
-
                     {currentUser.role !== "admin" ? (
-                      
-                        <Col>
-                          <Button onClick={redirectToCommentPage}>
-                            Comment
-                          </Button>
-                        </Col>
-                      
+                      <Col>
+                        <Button onClick={redirectToCommentPage}>Comment</Button>
+                      </Col>
                     ) : null}
-                  </div>
+                  </>
                 )}
               </Row>
             </Container>
@@ -227,8 +223,5 @@ const styles = {
   delete: {
     marginTop: "5vh",
     paddingBottom: "4vh",
-  },
-  commentContainer: {
-    float: "left",
   },
 };
