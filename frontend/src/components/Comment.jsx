@@ -8,6 +8,7 @@ function Comment(props) {
   const { currentUser } = useContext(UserContext);
 
   async function deleteThisComment(commentId) {
+    console.log("comment")
     let res = await deleteSpecificComment(commentId);
     if (res.status === 200) {
       props.func();
@@ -58,5 +59,7 @@ const styles = {
   delete: {
     position: "absolute",
     right: "2rem",
+    width: "2vw",
+    height:"2vh"
   },
 };

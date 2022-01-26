@@ -47,7 +47,7 @@
     "roles": [
       { "role": "*", "methods": ["GET"] },
       { "role": "member", "methods": ["POST", "PATCH"] },
-      { "role": "groupAdmin", "methods": ["DELETE", "PATCH"] },
+      { "role": "groupAdmin", "methods": ["DELETE", "PATCH", "POST"] },
       { "role": "groupModerator", "methods": ["POST", "PATCH"] },
       { "role": "admin", "methods": ["GET", "DELETE", "PATCH"] }
     ]
