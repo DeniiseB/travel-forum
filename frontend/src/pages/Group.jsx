@@ -161,12 +161,13 @@ function Group() {
               </Row>
             </Container>
             <Container className="mt-2">
-              {comments.map((commentObject) => (
+              {comments.map((commentObject, index) => (
                 <Comment
-                  key={commentObject.id}
+                  key={index}
                   commentObject={commentObject}
                   func={updateGroup}
                   isCreator={isCreator}
+                  commentIndex={index}
                 />
               ))}
             </Container>

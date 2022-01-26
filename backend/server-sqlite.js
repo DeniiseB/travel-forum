@@ -400,6 +400,7 @@ module.exports = function (app) {
         "UPDATE rolesXusers SET roleName = ? WHERE rolesXusers.userId = ?",
         ["groupAdmin", newGroup.creatorUserId]
       );
+      req.session.user.role = "groupAdmin";
     }
 
     if (
