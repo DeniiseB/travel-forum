@@ -92,6 +92,9 @@ function Group() {
       if (!currentUser) {
         setIsPrivateMember(false);
         return;
+      } else if (currentUser.role === "admin") {
+        setIsPrivateMember(true);
+        return;
       }
       for (var i = 0; i < groupMembers.length; i++) {
         if (groupMembers[i].id == currentUser.id) {
