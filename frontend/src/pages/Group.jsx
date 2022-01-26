@@ -151,9 +151,16 @@ function Group() {
                         creatorUserId={group.creatorUserId}
                       />
                     </Col>
-                    <Col>
-                      <Button onClick={redirectToCommentPage}>Comment</Button>
-                    </Col>
+
+                    {currentUser.role !== "admin" ? (
+                      
+                        <Col>
+                          <Button onClick={redirectToCommentPage}>
+                            Comment
+                          </Button>
+                        </Col>
+                      
+                    ) : null}
                   </>
                 )}
               </Row>
