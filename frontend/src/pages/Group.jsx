@@ -164,7 +164,7 @@ function Group() {
                         </Col>
                       
                     ) : null}
-                  </>
+                  </div>
                 )}
               </Row>
             </Container>
