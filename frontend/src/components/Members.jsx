@@ -14,6 +14,7 @@ function Members(props) {
   }
   async function getAndRemoveGroupMember(clickedId) {
     await removeFromGroup(clickedId)
+    props.func();
   }
   async function blockGroupMember(e, memberId) {
     e.stopPropagation();
