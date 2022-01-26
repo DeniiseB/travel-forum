@@ -21,6 +21,9 @@ module.exports = function (app) {
 
   // Inloggning
   app.post("/rest/login", async (request, response) => {
+
+
+    try {
     request.setTimeout(10);
     request.session.passwordAttempts = request.session.passwordAttempts || 1;
 
@@ -71,6 +74,11 @@ module.exports = function (app) {
       response.status(401);
       response.json({ loggedIn: false, message: "no matching user" });
     }
+    }
+    catch (e) {
+      console.log(e)
+    }
+  
   });
 
   // Hämta inloggad användare
@@ -349,7 +357,9 @@ module.exports = function (app) {
     );
   });
 
-  app.post("/rest/groups", (req, res) => {
+  //Posting new group
+  app.post("/rest/groups", async (req, res) => {
+
     const newGroup = req.body;
     const sql =
       "INSERT INTO groups (creatorUserId, groupName, groupAccess, commentIds, groupMembers, groupModerators) VALUES (?, ?, ?, ?, ?, ?)";
@@ -361,6 +371,14 @@ module.exports = function (app) {
       newGroup.groupMembers,
       newGroup.groupModerators,
     ];
+
+    if (req.session.user.role !== "groupAdmin") {
+     await db.all(
+       "UPDATE rolesXusers SET roleName = ? WHERE rolesXusers.userId = ?",
+       ["groupAdmin", newGroup.creatorUserId]
+     );
+    }
+    
 
     if (
       !newGroup.creatorUserId ||

@@ -82,7 +82,7 @@ function Members(props) {
                     </Button>
                   </div>
                 ) : null}
-                {props.isCreator ? (
+                {props.isCreator && currentUser.role==="groupAdmin" ? (
                   <div>
                     <div>
                       <Button className="m-1" size="sm" variant="danger">
