@@ -13,7 +13,7 @@ function Home() {
   return (
     <div className="Home">
       <div style={styles.homeContainer}>
-        {currentUser === null ? (
+        {!currentUser === null ? (
           <div>
             <div style={styles.titlesContainer}>
               <p>Categories</p>
@@ -32,10 +32,10 @@ function Home() {
             )}
           </div>
         ) : (
-          <div>
-            <div>
-              <MyGroups />
-            </div>
+            <div>{ currentUser && (currentUser.createdGroups || currentUser.joinedGroups) &&
+              <div>
+                <MyGroups />
+              </div>}
             <div>
               <div style={styles.titlesContainer}>
                 <div>Categories</div>

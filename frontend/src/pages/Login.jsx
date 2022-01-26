@@ -55,7 +55,7 @@ function Login() {
           />
 
           <input
-            type="text"
+            type="password"
             placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -72,7 +72,7 @@ function Login() {
 
           <p
             className="warning"
-            style={badCredentials ? styles.warning : styles.hide}
+            style={badCredentials ? styles.warning : styles.unvisable}
           >
             Bad credentials
           </p>

@@ -62,7 +62,7 @@ const UserContextProvider = (props) => {
 
   const getUserByUserName = async (userName) => {
     try {
-      let res = await fetch("/rest/users/" + userName);
+      let res = await fetch("/rest/users/name/" + userName);
       let resJson = await res.json();
       return resJson.data;
     } catch {

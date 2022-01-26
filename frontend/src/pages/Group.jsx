@@ -19,26 +19,25 @@ function Group() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [groupMembers, setGroupMembers] = useState([]);
   const [isCreator, setIsCreator] = useState(false);
-  const [canComment, setCanComment] = useState(false);
+  const [isPrivateMember, setIsPrivateMember] = useState(false);
 
   useEffect(() => {
-
-    if (!currentUser) {
-      return;
-    }
     getAndSetGroup();
   }, [groupid, currentUser]);
 
   useEffect(() => {
-    commentButtonFunc()
-  })
+    privateMemberCheck();
+  });
+
   async function getAndSetGroup() {
     const fetchedGroup = await fetchGroupById(groupid);
     setGroup(fetchedGroup);
     await getAndSetComments(fetchedGroup);
     await getAndSetGroupMembers(fetchedGroup);
+    if (!currentUser) {
+      return;
+    }
     checkGroupCreator(fetchedGroup);
-
   }
 
   async function checkGroupCreator(fetchedGroup) {
@@ -86,29 +85,33 @@ function Group() {
     await getAndSetGroup();
   };
 
-  function commentButtonFunc() {
+  function privateMemberCheck() {
     if (group.groupAccess === "Public") {
-      setCanComment(true)
+      setIsPrivateMember(true);
     } else if (group.groupAccess === "Private") {
+      if (!currentUser) {
+        setIsPrivateMember(false);
+        return;
+      }
       for (var i = 0; i < groupMembers.length; i++) {
         if (groupMembers[i].id == currentUser.id) {
-          setCanComment(true)
+          setIsPrivateMember(true);
         }
       }
-    }
-    else {
-      setCanComment(false)
+    } else {
+      setIsPrivateMember(false);
     }
   }
+
   function redirectToCommentPage() {
     history.push("/create-comment/" + groupid);
   }
 
   return (
-    <div >
+    <div>
       <div style={styles.groupContainer}>
-        {group && comments && (
-          <div className="m-2">
+        {group && comments && isPrivateMember && (
+          <div className="m-1">
             <Container>
               {currentUser && currentUser.role === "admin" ? (
                 <div style={styles.delete}>
@@ -133,19 +136,21 @@ function Group() {
                 </Col>
               </Row>
               <Row>
-                {(isCreator && group.groupAccess == "Private") && (
+                {isCreator && group.groupAccess === "Private" && (
                   <Col>
                     <Button onClick={toggleInviteModal}>Invite</Button>
                   </Col>
                 )}
-                <Col>
-                  <Members
-                    groupMembers={groupMembers}
-                    func={updateGroup}
-                    isCreator={isCreator}
-                    group={group}
-                  />
-                </Col>
+                {currentUser && (
+                  <Col>
+                    <Members
+                      groupMembers={groupMembers}
+                      func={updateGroup}
+                      isCreator={isCreator}
+                      group={group}
+                    />
+                  </Col>
+                )}
                 {canComment &&
 
                   <Col>
@@ -164,7 +169,20 @@ function Group() {
                 />
               ))}
             </Container>
+            <Invite
+              showModal={toggleInviteModal}
+              show={showInviteModal}
+              group={group}
+              updateGroup={updateGroup}
+            />
           </div>
+        )}
+        {group && comments && !isPrivateMember && (
+          <Container style={{ paddingTop: "8rem" }}>
+            <Row>
+              <div>Sorry, this group is private</div>
+            </Row>
+          </Container>
         )}
         {!group && (
           <div style={styles.spinnerDiv}>
@@ -173,12 +191,6 @@ function Group() {
             </Spinner>
           </div>
         )}
-        <Invite
-          showModal={toggleInviteModal}
-          show={showInviteModal}
-          group={group}
-          updateGroup={updateGroup}
-        />
       </div>
     </div>
   );

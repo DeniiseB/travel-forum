@@ -101,7 +101,7 @@ function Members(props) {
                     </Button>
                   </div>
                 ) : null}
-                {props.isCreator ? (
+                {props.isCreator && currentUser.role==="groupAdmin" ? (
                   <div>
                     <div>
                       <Button onClick={() => { getAndRemoveGroupMember(member.id) }} className="m-1" size="sm" variant="danger">

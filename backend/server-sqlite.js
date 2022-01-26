@@ -12,197 +12,18 @@ function getHash(password) {
 module.exports = function (app) {
   const sqlite = require("sqlite3");
 
-  // öppnar och ansluter till databasen
   const db = new sqlite.Database("./database/travel.db");
 
-  // vi gör om metoderna all och run till promise-metoder så att vi kan använda async/await för att vänta på databasen
   const util = require("util");
   db.all = util.promisify(db.all);
 
   // REST routes (endpoints)
-  app.get("/rest/users", async (req, res) => {
-    let query = "SELECT * FROM users";
-    let result = await db.all(query);
-    res.json(result);
-  });
-
-  //Deleting user from db
-  app.delete("/rest/users/:id", async (req, res) => {
-    try {
-      await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
-      await db.all("DELETE FROM rolesXusers WHERE rolesXusers.userId = ?", [
-        req.params.id,
-      ]);
-
-      let allGroups = await db.all("SELECT * FROM groups");
-      for (let group of allGroups) {
-        let joinedMembersArr = group.groupMembers.split(" ");
-        if (joinedMembersArr.includes(req.params.id)) {
-          joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1);
-          if (joinedMembersArr.length > 0) {
-            await db.all(
-              "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
-              [joinedMembersArr.join(" "), group.id]
-            );
-          } else {
-            await db.all(
-              "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
-              ["", group.id]
-            );
-          }
-        }
-      }
-
-      res.json({
-        deleted: "true",
-      });
-    } catch (e) {
-      console.log(e);
-      res.json({
-        error: "Something went wrong",
-      });
-    }
-  });
-
-  //Blocking user
-  app.patch("/rest/users/block/:id", async (req, res) => {
-    try {
-      await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
-        true,
-        req.params.id,
-      ]);
-      res.json({
-        blocked: "true",
-      });
-    } catch (e) {
-      console.log(e);
-      res.json({
-        error: "Something went wrong",
-      });
-    }
-  });
-
-  //Unblock user
-  app.patch("/rest/users/unblock/:id/", async (req, res) => {
-    try {
-      await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
-        false,
-        req.params.id,
-      ]);
-      res.json({
-        unblocked: "true",
-      });
-    } catch (e) {
-      console.log(e);
-      res.json({
-        error: "Something went wrong",
-      });
-    }
-  });
-
-  //Deleting group 
-  app.delete("/rest/groups/:id", async (req, res) => {
-    try {
-      
-     await db.all("DELETE FROM groups WHERE groups.id = ?", [req.params.id]);
-     await db.all("DELETE FROM groupsXcategories WHERE groupsXcategories.groupId = ?", [req.params.id]);
-      
-      let allUsers = await db.all("SELECT * FROM users");
-      
-      for (let user of allUsers) {
-        let createdGroupsArr = user.createdGroups.split(" ")
-        let joinedGroupsArr = user.joinedGroups.split(" ")
-        if (createdGroupsArr.includes(req.params.id)) {
-         
-          createdGroupsArr.splice(createdGroupsArr.indexOf(req.params.id), 1)
-          
-           await db.all("UPDATE users SET createdGroups = ? WHERE users.id = ?", [createdGroupsArr.join(" ").toString(), user.id,]);
-          
-        }
-        if (joinedGroupsArr.includes(req.params.id)) {
-         
-         joinedGroupsArr.splice(joinedGroupsArr.indexOf(req.params.id), 1)
-         await db.all("UPDATE users SET joinedGroups = ? WHERE users.id = ?", [joinedGroupsArr.join(" ").toString(), user.id,]);
-          
-        }
-      }
-      res.json({
-        deleted: "true"
-      })
-    }
-    catch (e) {
-      console.log(e)
-       res.json({
-         error: "Something went wrong",
-       });
-    }
-  });
-
-
-  //Deleting comment from a group
-  app.delete("/rest/comments/:id", async (req, res) => {
-    try {
-     await db.all("DELETE FROM comments WHERE comments.id = ?", [req.params.id]);
-
-      let allGroups = await db.all("SELECT * FROM groups");
-      for (let group of allGroups) {
-        let commentsArr = group.commentIds.split(" ")
-
-        if (commentsArr.includes(req.params.id)) {
-          commentsArr.splice(commentsArr.indexOf(req.params.id), 1)
-           await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?",[commentsArr.join(" ").toString(), group.id]);
-        }
-      }
-      res.json({
-        deleted: "true",
-      });
-    } catch (e) {
-      console.log(e);
-      res.json({
-        error: "Something went wrong",
-      });
-    }
-  });
-
-
-
-  // Registrering
-  app.post("/rest/users", async (request, response) => {
-    let user = request.body;
-    let encryptedPassword = getHash(user.password); // encrypted password
-    let result;
-    let userExists = await db.all(
-      "SELECT * FROM users WHERE username = ?",
-      user.username
-    );
-    userExists = userExists[0];
-
-    try {
-      result = await db.all("INSERT INTO users VALUES(?,?,?,?,?,?)", [
-        null,
-        user.username,
-        encryptedPassword,
-        "",
-        "",
-        false,
-      ]);
-
-      let lastInsertedUser = await db.all("SELECT * FROM users WHERE username = ?", user.username);
-      let userId = lastInsertedUser[0].id
-      await db.all("INSERT INTO rolesXusers VALUES(?,?,?)", [
-        null,
-        userId,
-        "member"
-      ]);
-      response.json(result);
-    } catch (e) {
-      console.error(e);
-      response.status(400).send("Bad request");
-    }
-  });
 
   // Inloggning
   app.post("/rest/login", async (request, response) => {
+
+
+    try {
     request.setTimeout(10);
     request.session.passwordAttempts = request.session.passwordAttempts || 1;
 
@@ -246,14 +67,18 @@ module.exports = function (app) {
         request.session.passwordAttempts = 0;
         user.loggedIn = true;
         user.role = roleName;
-        // user.roles = ["user"]; // mock (@todo skapa roles tabell i databasen och joina med users)
         response.json({ loggedIn: true });
       }
     } else {
       request.session.passwordAttempts++;
-      response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+      response.status(401);
       response.json({ loggedIn: false, message: "no matching user" });
     }
+    }
+    catch (e) {
+      console.log(e)
+    }
+  
   });
 
   // Hämta inloggad användare
@@ -289,18 +114,49 @@ module.exports = function (app) {
     });
   });
 
-  app.delete("/rest/comments/:id", async (req, res) => {
+  app.get("/rest/users", async (req, res) => {
+    let query = "SELECT * FROM users";
+    let result = await db.all(query);
+    res.json(result);
+  });
 
-    const query = "DELETE FROM comments WHERE id = ?";
-    const comment = [req.params.id];
-    console.log(comment, "comment inside server sqlite")
-    db.run(query, comment, function (err) {
-      if (err) {
-        return console.error(err.message);
-      }
-      console.log(`Row(s) deleted ${this.changes}`);
-    });
-  })
+  // Registrering
+  app.post("/rest/users", async (request, response) => {
+    let user = request.body;
+    let encryptedPassword = getHash(user.password); // encrypted password
+    let result;
+    let userExists = await db.all(
+      "SELECT * FROM users WHERE username = ?",
+      user.username
+    );
+    userExists = userExists[0];
+
+    try {
+      result = await db.all("INSERT INTO users VALUES(?,?,?,?,?,?)", [
+        null,
+        user.username,
+        encryptedPassword,
+        "",
+        "",
+        false,
+      ]);
+
+      let lastInsertedUser = await db.all(
+        "SELECT * FROM users WHERE username = ?",
+        user.username
+      );
+      let userId = lastInsertedUser[0].id;
+      await db.all("INSERT INTO rolesXusers VALUES(?,?,?)", [
+        null,
+        userId,
+        "member",
+      ]);
+      response.json(result);
+    } catch (e) {
+      console.error(e);
+      response.status(400).send("Bad request");
+    }
+  });
 
   app.get("/rest/users/:id", (req, res) => {
     const query = "SELECT * FROM users WHERE id = ?";
@@ -310,14 +166,77 @@ module.exports = function (app) {
         res.status(400).json({ error: error.message });
         return;
       }
+      let user = row;
+      delete user.password;
       res.json({
         message: "Great success",
-        data: row,
+        data: user,
       });
     });
   });
 
-  app.get("/rest/users/:username", (req, res) => {
+  //Deleting user from db
+  app.delete("/rest/users/:id", async (req, res) => {
+    try {
+      let thisUser = await db.all("SELECT * FROM users WHERE users.id = ?", [req.params.id]);
+      
+      await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
+      await db.all("DELETE FROM rolesXusers WHERE rolesXusers.userId = ?", [
+        req.params.id,
+      ]);
+
+        let commentsOfUser = await db.all("SELECT id FROM comments WHERE comments.author = ?",[thisUser[0].username]);
+        
+        await db.all("DELETE FROM comments WHERE comments.author = ?", [ thisUser[0].username,]);
+
+      let allGroups = await db.all("SELECT * FROM groups");
+      for (let group of allGroups) {
+        
+        let groupCommentIds = group.commentIds.split(" ")
+        
+        for (let commentId of groupCommentIds) {
+          for (let userComment of commentsOfUser) {
+            if (commentId == userComment.id) {
+              
+              groupCommentIds.splice(groupCommentIds.indexOf(commentId, 1));
+            }
+          }
+        }
+        
+        await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?", [
+          groupCommentIds.join(" "),
+          group.id,
+        ]);
+     
+        let joinedMembersArr = group.groupMembers.split(" ");
+        if (joinedMembersArr.includes(req.params.id)) {
+          joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1);
+          if (joinedMembersArr.length > 0) {
+            await db.all(
+              "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
+              [joinedMembersArr.join(" "), group.id]
+            );
+          } else {
+            await db.all(
+              "UPDATE groups SET groupMembers = ? WHERE groups.id = ?",
+              ["", group.id]
+            );
+          }
+        }
+      }
+
+      res.json({
+        deleted: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+  app.get("/rest/users/name/:username", (req, res) => {
     const query = "SELECT * FROM users WHERE username = ?";
     const params = [req.params.username];
     db.get(query, params, (error, row) => {
@@ -325,11 +244,48 @@ module.exports = function (app) {
         res.status(400).json({ error: error.message });
         return;
       }
+      let user = row;
+      delete user.password;
       res.json({
-        message: "Great success",
-        data: row,
+        data: user,
       });
     });
+  });
+
+  //Blocking user
+  app.patch("/rest/users/block/:id", async (req, res) => {
+    try {
+      await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
+        true,
+        req.params.id,
+      ]);
+      res.json({
+        blocked: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+  //Unblock user
+  app.patch("/rest/users/unblock/:id/", async (req, res) => {
+    try {
+      await db.all("UPDATE users SET blocked = ? WHERE users.id = ?", [
+        false,
+        req.params.id,
+      ]);
+      res.json({
+        unblocked: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
   });
 
   app.patch("/api/user/joinedgroup/:id", (req, res) => {
@@ -386,7 +342,47 @@ module.exports = function (app) {
     res.json(result);
   });
 
-  app.post("/rest/groups", (req, res) => {
+  app.get("/rest/groups/:id", (req, res) => {
+    const query = "SELECT * FROM groups WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
+  app.patch("/api/groups/:id", (req, res) => {
+    var data = {
+      groupMembers: req.body.userIds,
+    };
+    db.run(
+      `UPDATE groups set 
+           groupMembers = COALESCE(?,groupMembers)
+           WHERE id = ?`,
+      [data.groupMembers, req.params.id],
+      function (err, result) {
+        if (err) {
+          res.status(400).json({ error: res.message });
+          return;
+        }
+        res.json({
+          message: "success",
+          data: data,
+          changes: this.changes,
+        });
+      }
+    );
+  });
+
+  //Posting new group
+  app.post("/rest/groups", async (req, res) => {
+
     const newGroup = req.body;
     const sql =
       "INSERT INTO groups (creatorUserId, groupName, groupAccess, commentIds, groupMembers, groupModerators) VALUES (?, ?, ?, ?, ?, ?)";
@@ -398,6 +394,14 @@ module.exports = function (app) {
       newGroup.groupMembers,
       newGroup.groupModerators,
     ];
+
+    if (req.session.user.role !== "groupAdmin") {
+     await db.all(
+       "UPDATE rolesXusers SET roleName = ? WHERE rolesXusers.userId = ?",
+       ["groupAdmin", newGroup.creatorUserId]
+     );
+    }
+    
 
     if (
       !newGroup.creatorUserId ||
@@ -419,6 +423,70 @@ module.exports = function (app) {
         id: this.lastID,
       });
     });
+  });
+
+  app.patch("/rest/groups/:id", async (req, res) => {
+    try {
+      let data = await db.all(
+        "UPDATE groups SET commentIds = ? WHERE groups.id = ?",
+        [req.body.str, req.params.id]
+      );
+      if (!req.body.str || !req.params.id) {
+        res.json({ error: "No empty fields allowed" });
+        return;
+      }
+      if (res.error) {
+        res.status(400).json({ error: res.error.message });
+        return;
+      }
+
+      res.json({
+        message: "PUT into groups.commentId Success",
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  //Deleting group
+  app.delete("/rest/groups/:id", async (req, res) => {
+    try {
+      await db.all("DELETE FROM groups WHERE groups.id = ?", [req.params.id]);
+      await db.all(
+        "DELETE FROM groupsXcategories WHERE groupsXcategories.groupId = ?",
+        [req.params.id]
+      );
+
+      let allUsers = await db.all("SELECT * FROM users");
+
+      for (let user of allUsers) {
+        let createdGroupsArr = user.createdGroups.split(" ");
+        let joinedGroupsArr = user.joinedGroups.split(" ");
+        if (createdGroupsArr.includes(req.params.id)) {
+          createdGroupsArr.splice(createdGroupsArr.indexOf(req.params.id), 1);
+
+          await db.all(
+            "UPDATE users SET createdGroups = ? WHERE users.id = ?",
+            [createdGroupsArr.join(" ").toString(), user.id]
+          );
+        }
+        if (joinedGroupsArr.includes(req.params.id)) {
+          joinedGroupsArr.splice(joinedGroupsArr.indexOf(req.params.id), 1);
+          await db.all("UPDATE users SET joinedGroups = ? WHERE users.id = ?", [
+            joinedGroupsArr.join(" ").toString(),
+            user.id,
+          ]);
+        }
+      }
+      res.json({
+        deleted: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
   });
 
   app.post("/rest/comments", (req, res) => {
@@ -452,6 +520,152 @@ module.exports = function (app) {
         id: this.lastID,
       });
     });
+  });
+
+  app.delete("/rest/comments/:id", async (req, res) => {
+    const query = "DELETE FROM comments WHERE id = ?";
+    const comment = [req.params.id];
+    console.log(comment, "comment inside server sqlite");
+    db.run(query, comment, function (err) {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log(`Row(s) deleted ${this.changes}`);
+    });
+  });
+
+  app.post("/rest/comments", (req, res) => {
+    const newComment = req.body;
+    const sql =
+      "INSERT INTO comments (userId, date, content, author) VALUES (?, ?, ?, ?)";
+    const params = [
+      newComment.userId,
+      newComment.date,
+      newComment.content,
+      newComment.author,
+    ];
+
+    if (
+      !newComment.userId ||
+      !newComment.date ||
+      !newComment.content.trim() ||
+      !newComment.author.trim()
+    ) {
+      res.json({ error: "No empty fields allowed" });
+      return;
+    }
+
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: "Returning comment ID",
+        id: this.lastID,
+      });
+    });
+  });
+
+  app.get("/rest/comments/:id", (req, res) => {
+    const query = "SELECT * FROM comments WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
+  //Deleting comment from a group
+  app.delete("/rest/comments/:id", async (req, res) => {
+    try {
+      await db.all("DELETE FROM comments WHERE comments.id = ?", [
+        req.params.id,
+      ]);
+
+      let allGroups = await db.all("SELECT * FROM groups");
+      for (let group of allGroups) {
+        let commentsArr = group.commentIds.split(" ");
+
+        if (commentsArr.includes(req.params.id)) {
+          commentsArr.splice(commentsArr.indexOf(req.params.id), 1);
+          await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?", [
+            commentsArr.join(" ").toString(),
+            group.id,
+          ]);
+        }
+      }
+      res.json({
+        deleted: "true",
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        error: "Something went wrong",
+      });
+    }
+  });
+
+  app.get("/rest/categories", async (req, res) => {
+    let query = "SELECT * from categories";
+    let result = await db.all(query);
+    res.json(result);
+  });
+
+  app.get("/rest/categories/:id", (req, res) => {
+    const query = "SELECT * FROM categories WHERE id = ?";
+    const params = [req.params.id];
+    db.get(query, params, (error, row) => {
+      if (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      console.log("row ", row);
+      res.json({
+        message: "Great success",
+        data: row,
+      });
+    });
+  });
+
+  app.get("/rest/groupsxcategories", async (req, res) => {
+    let query =
+      "SELECT COUNT(*) as groupAmount,categories.name,categories.id FROM groupsXcategories, categories, groups WHERE groupsXcategories.categoryId = categories.id AND groupsXcategories.groupId = groups.id GROUP BY categories.name";
+    let result = await db.all(query);
+    res.json(result);
+  });
+
+  app.post("/rest/groupsxcategories", (req, res) => {
+    const newRow = req.body;
+    const sql =
+      "INSERT INTO groupsXcategories (groupId, categoryId) VALUES (?, ?)";
+    const params = [newRow.groupId, newRow.categoryId];
+
+    if (!newRow.groupId || !newRow.categoryId) {
+      res.json({ error: "No empty fields allowed" });
+      return;
+    }
+
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ success: "Post to groupsXcategories db succeeded" });
+    });
+  });
+
+  app.get("/rest/groupsxcategories/:id", async (req, res) => {
+    const query = "SELECT groupId FROM groupsXcategories WHERE categoryId = ?";
+    const params = [req.params.id];
+    let result = await db.all(query, params);
+    res.json(result);
   });
 
   //Get created groups of user
