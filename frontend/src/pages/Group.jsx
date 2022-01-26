@@ -122,6 +122,7 @@ function Group() {
                     <Col>
                       <Button
                         variant="danger"
+                        size="sm"
                         onClick={(e) => {
                           deleteThisGroup();
                         }}

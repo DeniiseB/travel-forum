@@ -24,6 +24,7 @@ function CreateGroup() {
 
     if (!currentUser) { 
       history.push("/")
+      return
     }
 
     let commentObject = await postComment();
