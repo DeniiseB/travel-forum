@@ -4,9 +4,7 @@ module.exports = function (req, res, next) {
   let roles = [];
 
   if (req.session?.user?.role) {
-    //for (let userRole of req.session.user.roles) {
       roles.push(req.session.user.role);
-    //}
   } else {
     roles = ["anonymous"];
   }
@@ -26,7 +24,7 @@ module.exports = function (req, res, next) {
 
   for (access of accessList) {
     if (req.path.match(new RegExp(access.path))) {
-      for (role of access.roles) {
+      for (let role of access.roles) {
         if (roles.includes(role.role)) {
           if (role.methods.includes(req.method)) {
             found = true;

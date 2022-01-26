@@ -92,6 +92,9 @@ function Group() {
       if (!currentUser) {
         setIsPrivateMember(false);
         return;
+      } else if (currentUser.role === "admin") {
+        setIsPrivateMember(true);
+        return;
       }
       for (var i = 0; i < groupMembers.length; i++) {
         if (groupMembers[i].id == currentUser.id) {
@@ -148,26 +151,31 @@ function Group() {
                         groupMembers={groupMembers}
                         func={updateGroup}
                         isCreator={isCreator}
-                        group={group}
+                        creatorUserId={group.creatorUserId}
                       />
                     </Col>
 
-
-                    <Col>
-                      <Button onClick={redirectToCommentPage} >Comment</Button>
-                    </Col>
-                  </div>
-
+                    {currentUser.role !== "admin" ? (
+                      
+                        <Col>
+                          <Button onClick={redirectToCommentPage}>
+                            Comment
+                          </Button>
+                        </Col>
+                      
+                    ) : null}
+                  </>
                 )}
               </Row>
             </Container>
             <Container className="mt-2">
-              {comments.map((commentObject) => (
+              {comments.map((commentObject, index) => (
                 <Comment
-                  key={commentObject.id}
+                  key={index}
                   commentObject={commentObject}
                   func={updateGroup}
                   isCreator={isCreator}
+                  commentIndex={index}
                 />
               ))}
             </Container>

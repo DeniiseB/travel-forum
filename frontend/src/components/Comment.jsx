@@ -17,7 +17,7 @@ function Comment(props) {
 
   return (
     <Container style={styles.commentContainer}>
-      {(currentUser && currentUser.role) === "admin" || props.isCreator ? (
+      {((currentUser && currentUser.role) === "admin" || props.isCreator) && props.commentIndex !== 0 ? (
         <div
           style={styles.delete}
           onClick={(e) => deleteThisComment(props.commentObject.id)}
