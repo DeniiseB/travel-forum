@@ -11,6 +11,7 @@
     "roles": [
       { "role": "anonymous", "methods": ["POST", "DELETE"] },
       { "role": "member", "methods": ["GET", "PATCH"] },
+      { "role": "groupAdmin", "methods": ["GET", "PATCH"] },
       { "role": "admin", "methods": ["GET", "DELETE", "PATCH"] }
     ]
   },
