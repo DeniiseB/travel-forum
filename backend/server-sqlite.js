@@ -21,64 +21,60 @@ module.exports = function (app) {
 
   // Inloggning
   app.post("/rest/login", async (request, response) => {
-
-
     try {
-    request.setTimeout(10);
-    request.session.passwordAttempts = request.session.passwordAttempts || 1;
+      request.setTimeout(10);
+      request.session.passwordAttempts = request.session.passwordAttempts || 1;
 
-    if (request.session.passwordAttempts > 3) {
-      await sleep(60000);
-      request.session.passwordAttempts = 0; //Setting password attempts to 0 after 1 min
-      response.status(403);
-      response.json({
-        error: "Attempts are now restored",
-      });
-      return;
-    }
-
-    function sleep(ms) {
-      return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-      });
-    }
-    let encryptedPassword = getHash(request.body.password);
-    let user = await db.all(
-      "SELECT * FROM users WHERE username = ? AND password = ?",
-      [request.body.username, encryptedPassword]
-    );
-
-    user = user[0];
-
-    if (user && user.username) {
-      if (user.blocked) {
+      if (request.session.passwordAttempts > 3) {
+        await sleep(60000);
+        request.session.passwordAttempts = 0; //Setting password attempts to 0 after 1 min
         response.status(403);
-        response.json({ blocked: true });
-      } else {
-        roleName = await db.all(
-          "SELECT roleName FROM rolesXusers WHERE userId= ?",
-          [user.id]
-        );
-        roleName = roleName[0].roleName;
-
-        request.session.user = user;
-
-        console.log(request.session.user);
-        request.session.passwordAttempts = 0;
-        user.loggedIn = true;
-        user.role = roleName;
-        response.json({ loggedIn: true });
+        response.json({
+          error: "Attempts are now restored",
+        });
+        return;
       }
-    } else {
-      request.session.passwordAttempts++;
-      response.status(401);
-      response.json({ loggedIn: false, message: "no matching user" });
+
+      function sleep(ms) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
+      }
+      let encryptedPassword = getHash(request.body.password);
+      let user = await db.all(
+        "SELECT * FROM users WHERE username = ? AND password = ?",
+        [request.body.username, encryptedPassword]
+      );
+
+      user = user[0];
+
+      if (user && user.username) {
+        if (user.blocked) {
+          response.status(403);
+          response.json({ blocked: true });
+        } else {
+          roleName = await db.all(
+            "SELECT roleName FROM rolesXusers WHERE userId= ?",
+            [user.id]
+          );
+          roleName = roleName[0].roleName;
+
+          request.session.user = user;
+
+          console.log(request.session.user);
+          request.session.passwordAttempts = 0;
+          user.loggedIn = true;
+          user.role = roleName;
+          response.json({ loggedIn: true });
+        }
+      } else {
+        request.session.passwordAttempts++;
+        response.status(401);
+        response.json({ loggedIn: false, message: "no matching user" });
+      }
+    } catch (e) {
+      console.log(e);
     }
-    }
-    catch (e) {
-      console.log(e)
-    }
-  
   });
 
   // Hämta inloggad användare
@@ -178,36 +174,41 @@ module.exports = function (app) {
   //Deleting user from db
   app.delete("/rest/users/:id", async (req, res) => {
     try {
-      let thisUser = await db.all("SELECT * FROM users WHERE users.id = ?", [req.params.id]);
-      
+      let thisUser = await db.all("SELECT * FROM users WHERE users.id = ?", [
+        req.params.id,
+      ]);
+
       await db.all("DELETE FROM users WHERE users.id = ?", [req.params.id]);
       await db.all("DELETE FROM rolesXusers WHERE rolesXusers.userId = ?", [
         req.params.id,
       ]);
 
-        let commentsOfUser = await db.all("SELECT id FROM comments WHERE comments.author = ?",[thisUser[0].username]);
-        
-        await db.all("DELETE FROM comments WHERE comments.author = ?", [ thisUser[0].username,]);
+      let commentsOfUser = await db.all(
+        "SELECT id FROM comments WHERE comments.author = ?",
+        [thisUser[0].username]
+      );
+
+      await db.all("DELETE FROM comments WHERE comments.author = ?", [
+        thisUser[0].username,
+      ]);
 
       let allGroups = await db.all("SELECT * FROM groups");
       for (let group of allGroups) {
-        
-        let groupCommentIds = group.commentIds.split(" ")
-        
+        let groupCommentIds = group.commentIds.split(" ");
+
         for (let commentId of groupCommentIds) {
           for (let userComment of commentsOfUser) {
             if (commentId == userComment.id) {
-              
               groupCommentIds.splice(groupCommentIds.indexOf(commentId, 1));
             }
           }
         }
-        
+
         await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?", [
           groupCommentIds.join(" "),
           group.id,
         ]);
-     
+
         let joinedMembersArr = group.groupMembers.split(" ");
         if (joinedMembersArr.includes(req.params.id)) {
           joinedMembersArr.splice(joinedMembersArr.indexOf(req.params.id), 1);
@@ -382,7 +383,6 @@ module.exports = function (app) {
 
   //Posting new group
   app.post("/rest/groups", async (req, res) => {
-
     const newGroup = req.body;
     const sql =
       "INSERT INTO groups (creatorUserId, groupName, groupAccess, commentIds, groupMembers, groupModerators) VALUES (?, ?, ?, ?, ?, ?)";
@@ -396,12 +396,12 @@ module.exports = function (app) {
     ];
 
     if (req.session.user.role !== "groupAdmin") {
-     await db.all(
-       "UPDATE rolesXusers SET roleName = ? WHERE rolesXusers.userId = ?",
-       ["groupAdmin", newGroup.creatorUserId]
-     );
+      await db.all(
+        "UPDATE rolesXusers SET roleName = ? WHERE rolesXusers.userId = ?",
+        ["groupAdmin", newGroup.creatorUserId]
+      );
+      req.session.user.role = "groupAdmin";
     }
-    
 
     if (
       !newGroup.creatorUserId ||
@@ -505,51 +505,6 @@ module.exports = function (app) {
       !newComment.date ||
       !newComment.content.trim() ||
       !newComment.author
-    ) {
-      res.json({ error: "No empty fields allowed" });
-      return;
-    }
-
-    db.run(sql, params, function (err, result) {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({
-        message: "Returning comment ID",
-        id: this.lastID,
-      });
-    });
-  });
-
-  app.delete("/rest/comments/:id", async (req, res) => {
-    const query = "DELETE FROM comments WHERE id = ?";
-    const comment = [req.params.id];
-    console.log(comment, "comment inside server sqlite");
-    db.run(query, comment, function (err) {
-      if (err) {
-        return console.error(err.message);
-      }
-      console.log(`Row(s) deleted ${this.changes}`);
-    });
-  });
-
-  app.post("/rest/comments", (req, res) => {
-    const newComment = req.body;
-    const sql =
-      "INSERT INTO comments (userId, date, content, author) VALUES (?, ?, ?, ?)";
-    const params = [
-      newComment.userId,
-      newComment.date,
-      newComment.content,
-      newComment.author,
-    ];
-
-    if (
-      !newComment.userId ||
-      !newComment.date ||
-      !newComment.content.trim() ||
-      !newComment.author.trim()
     ) {
       res.json({ error: "No empty fields allowed" });
       return;
