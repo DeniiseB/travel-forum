@@ -948,13 +948,13 @@ module.exports = function (app) {
       let allGroups = await db.all("SELECT * FROM groups");
       for (let group of allGroups) {
 
-        // let userGroups = thisUser.joinedGroups.split(" ");
-        // for (let userGroup of userGroups) {
+        let userGroups = thisUser[0].joinedGroups.split(" ");
+        for (let userGroup of userGroups) {
 
-        //   if (userGroup == group.id) {
-        //     userGroups.splice(userGroups.indexOf(userGroup), 1);
-        //   }
-        // }
+          if (userGroup == group.id) {
+            userGroups.splice(userGroups.indexOf(userGroup), 1);
+          }
+        }
 
         let groupCommentIds = group.commentIds.split(" ")
 
@@ -966,10 +966,10 @@ module.exports = function (app) {
             }
           }
         }
-        // await db.all("UPDATE users SET joinedGroups = ? WHERE groups.id = ?", [
-        //   userGroups.join(" "),
-        //   group.id,
-        // ]);
+        await db.all("UPDATE users SET joinedGroups = ? WHERE joinedGroups = ?", [
+          userGroups.join(" "),
+          group.id,
+        ]);
         await db.all("UPDATE groups SET commentIds = ? WHERE groups.id = ?", [
           groupCommentIds.join(" "),
           group.id,

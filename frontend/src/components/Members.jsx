@@ -1,11 +1,10 @@
 import { useContext } from "react";
 import { Dropdown, Button } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
-import { useGroupContext } from "../contexts/GroupContext";
 function Members(props) {
   const { currentUser, deleteUser, blockUser, unblockUser, removeFromGroup } =
     useContext(UserContext);
-  const { addUserIdToGroupMembers, fetchCommentByUserId, deleteSpecificComment } = useGroupContext();
+
   async function deleteGroupMember(e, memberId) {
     e.stopPropagation();
     let res = await deleteUser(memberId);
@@ -14,27 +13,7 @@ function Members(props) {
     }
   }
   async function getAndRemoveGroupMember(clickedId) {
-    const groupMembersIds = props.group.groupMembers.split(" ");
-    let finalString = '';
-    for (let id of groupMembersIds) {
-      if (clickedId == id) {
-
-      } else {
-        finalString += id + ' ';
-      }
-    }
-    let groupObject = {
-      groupId: props.group.id,
-      userIds: finalString,
-    };
-    let fetched = [];
-    // let commentIDS = await fetchCommentByUserId(clickedId)
-    // console.log(commentIDS.id)
-    // deleteSpecificComment(commentIDS.id)
-    //await addUserIdToGroupMembers(groupObject)
-
     await removeFromGroup(clickedId)
-
   }
   async function blockGroupMember(e, memberId) {
     e.stopPropagation();
