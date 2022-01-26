@@ -69,7 +69,7 @@ const GroupProvider = (props) => {
     }
   };
 
-  const addUserIdToGroupMembers = async (groupObject) => {
+  const addUserIdToGroupMembers = async (groupObject, ) => {
     try {
       let res = await fetch("/api/groups/" + groupObject.groupId, {
         method: "PATCH",

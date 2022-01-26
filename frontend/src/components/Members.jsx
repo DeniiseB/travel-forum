@@ -3,7 +3,7 @@ import { Dropdown, Button } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
 import { useGroupContext } from "../contexts/GroupContext";
 function Members(props) {
-  const { currentUser, deleteUser, blockUser, unblockUser } =
+  const { currentUser, deleteUser, blockUser, unblockUser, removeFromGroup } =
     useContext(UserContext);
   const { addUserIdToGroupMembers, fetchCommentByUserId, deleteSpecificComment } = useGroupContext();
   async function deleteGroupMember(e, memberId) {
@@ -28,10 +28,13 @@ function Members(props) {
       userIds: finalString,
     };
     let fetched = [];
-    let commentIDS = await fetchCommentByUserId(clickedId)
-    console.log(commentIDS.id)
-    deleteSpecificComment(commentIDS.id)
-  //  await addUserIdToGroupMembers(groupObject)
+    // let commentIDS = await fetchCommentByUserId(clickedId)
+    // console.log(commentIDS.id)
+    // deleteSpecificComment(commentIDS.id)
+    //await addUserIdToGroupMembers(groupObject)
+
+    await removeFromGroup(clickedId)
+
   }
   async function blockGroupMember(e, memberId) {
     e.stopPropagation();
@@ -101,7 +104,7 @@ function Members(props) {
                     </Button>
                   </div>
                 ) : null}
-                {props.isCreator && currentUser.role==="groupAdmin" ? (
+                {props.isCreator ? (
                   <div>
                     <div>
                       <Button onClick={() => { getAndRemoveGroupMember(member.id) }} className="m-1" size="sm" variant="danger">

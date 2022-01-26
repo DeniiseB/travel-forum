@@ -142,21 +142,23 @@ function Group() {
                   </Col>
                 )}
                 {currentUser && (
-                  <Col>
-                    <Members
-                      groupMembers={groupMembers}
-                      func={updateGroup}
-                      isCreator={isCreator}
-                      group={group}
-                    />
-                  </Col>
-                )}
-                {canComment &&
+                  <div>
+                    <Col>
+                      <Members
+                        groupMembers={groupMembers}
+                        func={updateGroup}
+                        isCreator={isCreator}
+                        group={group}
+                      />
+                    </Col>
 
-                  <Col>
-                    <Button onClick={redirectToCommentPage} >Comment</Button>
-                  </Col>
-                }
+
+                    <Col>
+                      <Button onClick={redirectToCommentPage} >Comment</Button>
+                    </Col>
+                  </div>
+
+                )}
               </Row>
             </Container>
             <Container className="mt-2">
