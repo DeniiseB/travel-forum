@@ -89,7 +89,7 @@ module.exports = function (app) {
     }
     if (user && user.username) {
       user.loggedIn = true;
-      delete user.password; // skicka aldrig password till frontend
+      delete user.password;
       roleName = await db.all(
         "SELECT roleName FROM rolesXusers WHERE userId= ?",
         [user.id]
@@ -98,7 +98,7 @@ module.exports = function (app) {
       user.role = roleName;
       response.json(user);
     } else {
-      response.status(401); // unauthorized  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+      response.status(401);
       response.json({ loggedIn: false, message: "not logged in" });
     }
   });

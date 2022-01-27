@@ -11,15 +11,6 @@ module.exports = function (req, res, next) {
 
   roles.push("*");
 
-  console.log({
-    "req.path": req.path,
-    "req.method": req.method,
-    "req.body": req.body,
-    "req.session.user": req.session.user,
-    roles: roles,
-    accessList: accessList,
-  });
-
   let found = false;
 
   for (access of accessList) {
